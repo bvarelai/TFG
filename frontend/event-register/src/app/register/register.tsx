@@ -1,26 +1,30 @@
 "use client";
 
-import { useState } from "react";
-import { redirect } from 'next/navigation'
+import { useState, useEffect } from "react";
+import { redirect } from 'next/navigation';
 
-
-interface User {
-  id: number;
-  name: string;
-  email: string;
-}
-
-export default function Register() {
-  const [username, setUsername] = useState<string>("");
+export default function Login() {
+  const [user_name, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [age, setAge] = useState<string>("");
+  const [city, setCity] = useState<string>("");
+  const [autonomous_community, setAutonomousCommunity] = useState<string>("");
+  const [country, setCountry] = useState<string>("");
   const [error, setError] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
+  const [sucess, setSucess] = useState<boolean>(false);
 
+  
   const validateForm = (): boolean => {
-    if (!username || !password) {
-      setError("Username and password are required");
+    
+    if (!user_name || !password || !age || !city || !autonomous_community || !country) {
+      setError("Los datos del usuario son requeridos");
       return false;
     }
+    if (isNaN(Number(age))){
+      setError("La edad debe ser númerica");
+      return false;
+    }    
     setError("");
     return true;
   };
@@ -29,62 +33,117 @@ export default function Register() {
     event.preventDefault();
     if (!validateForm()) return;
     setLoading(true);
+    setSucess(false);
+    setError("")
 
-    const formDetails = new URLSearchParams();
-    formDetails.append("username", username);
-    formDetails.append("password", password);
-
-    try {
-      const response = await fetch("http://localhost:8000/api/user", {
-        method: "POST",
-        headers: {
-         'Content-Type': 'application/x-www-form-urlencoded',
-        },
-      });
-
-      setLoading(false);
-
-      if (response.ok) {
-        const data: {result : string } = await response.json();
-        localStorage.setItem("result", data.result);    
-      } else {
-        const errorData: { detail?: string } = await response.json();
-        setError(errorData.detail || "Resgistration failed!");
-      }
-      console.log(formDetails);  
-      console.log(response);
-       
-    } catch (error) {
-      setLoading(false);
-      setError("An error occurred. Please try again later.");
-    }
-  };
+    const formDetails = 
+    {
+       "user_name" : user_name,
+       "password" : password,  
+       "age" :  age,
+       "city": city,
+       "autonomous_community"  : autonomous_community,
+       "country"  : country
+    } 
     
+      let response = await fetch('http://localhost:8000/api/user', {
+        method: 'POST',
+        headers: {
+         'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formDetails)
+      });
+              
+      if (!response.ok) {
+        setLoading(false);
+        setError('Ya existe un usuario con estos datos');
+        return;
+        }
+  
+      let data = await response.json();       
+      setLoading(true);
+      setError("");
+      setSucess(true);
+      redirect('/events'); 
+  }
   return (
-    <div>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>Username:</label>
-          <input
-            type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-          />
-        </div>
-        <div>
-          <label>Password:</label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </div>
-        <button type="submit" disabled={loading}>
-          {loading ? "Register in..." : "Register"}
-        
-        </button>
-        {error && <p style={{ color: "red" }}>{error}</p>}
-      </form>
-    </div>
+    <form 
+    id = "welcome-form"
+    className="flex grid grid-rows-[10px_1fr_20px] min-h-screen p-8 pb-20 gap-16 sm:p-10 font-[family-name:var(--font-geist-sans)] "
+    onSubmit={handleSubmit}>
+      <div 
+        id = "register-div"
+        className="flex flex-col gap-10 row-start-2 items-center font-[family-name:var(--font-geist-mono)] ">                                
+          <label id="label-register"> Register</label>
+          <div className="flex flex-col gap-6 items-center relative"> 
+            <input className="relative top-[-90px]"
+              id = "user"  
+              name = "user_name"
+              placeholder="Nombre"
+              type="text"
+              value={user_name}
+              onChange={(e) => setUsername(e.target.value)}
+            />
+            <input className="relative top-[-90px]"
+              id = "password"
+              name= "password"
+              placeholder="Contraseña"
+              type="text"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            <input className="relative top-[-90px]"
+              id = "age"
+              name= "age"
+              placeholder="Edad"
+              type="text"
+              value={age}
+              onChange={(e) => setAge(e.target.value)}
+            />
+            <input className="relative top-[-90px]"
+              id = "city"
+              name= "age"
+              placeholder="Ciudad"
+              type="text"
+              value={city}
+              onChange={(e) => setCity(e.target.value)}
+            />
+            <input className="relative top-[-90px]"
+              id = "autonomous_community"
+              name= "autonomous_community"
+              placeholder="Comunidad Autonoma"
+              type="text"
+              value={autonomous_community}
+              onChange={(e) => setAutonomousCommunity(e.target.value)}
+            />
+            <input className="relative top-[-90px]"
+              id = "country"
+              name= "country"
+              placeholder="country"
+              type="text"
+              value={country}
+              onChange={(e) => setCountry(e.target.value)}
+            />
+          </div>        
+          <div className="flex flex-col items-center relative">
+                <button
+                id = "register-button"
+                type = "submit"  
+                className=" relative top-[-75px] rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"   
+                disabled={loading}>  
+                  {loading ? "..." : "Registrarse"} 
+                </button>
+                {error && <p style={{ color: "red" }}>{error}</p>}
+                {sucess && <p style={{ color: "green" }}>register successful</p>}   
+          </div>
+      </div> 
+  </form>
+
+    /*
+    
+  */
+
+
+
   );
 };
