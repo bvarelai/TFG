@@ -48,7 +48,7 @@ async def verify_user_token(token: str):
     verify_token(token=token)
     return {"message": "El token es válido"}
 
-@router.get("/user/protected")
+@router.get("/protected")
 def protected_route(request: Request):
     token = request.cookies.get("access_cookie")    
     if not token:
