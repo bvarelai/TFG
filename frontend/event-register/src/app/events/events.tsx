@@ -9,7 +9,7 @@ export default function Events() {
   useEffect(() => {
     const checkAuth = async () => {
 
-        const response = await fetch("http://localhost:8000/protected", {
+        const response = await fetch("http://localhost:8000/user/protected", {
                 method: "GET",
                 credentials: "include",
             });

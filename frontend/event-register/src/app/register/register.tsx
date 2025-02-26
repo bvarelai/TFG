@@ -17,7 +17,7 @@ export default function Login() {
   
   const validateForm = (): boolean => {
     
-    if (!user_name || !password || !age || !city || !autonomous_community || !country) {
+    if (!user_name || !password || !age || !country) {
       setError("Los datos del usuario son requeridos");
       return false;
     }
@@ -45,8 +45,13 @@ export default function Login() {
        "autonomous_community"  : autonomous_community,
        "country"  : country
     } 
+
+    const formDetailsLogin = new URLSearchParams();
+    formDetailsLogin.append("username", user_name);
+    formDetailsLogin.append("password", password);
+
     
-      let response = await fetch('http://localhost:8000/api/user', {
+      let response = await fetch('http://localhost:8000/user/register', {
         method: 'POST',
         headers: {
          'Content-Type': 'application/json',
@@ -58,13 +63,39 @@ export default function Login() {
         setLoading(false);
         setError('Ya existe un usuario con estos datos');
         return;
-        }
+      }
   
-      let data = await response.json();       
-      setLoading(true);
-      setError("");
-      setSucess(true);
-      redirect('/events'); 
+      const responselogin = await fetch('http://localhost:8000/user/login', {
+        method: 'POST',
+        headers: {
+         'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: formDetailsLogin,
+        credentials : "include",
+    });
+                 
+    if (!responselogin.ok) {
+      setLoading(false);
+      setError('Usuario y/o contraseña incorrectos');
+      return;
+    }
+    const data = await responselogin.json();
+    localStorage.setItem('token', data.access_token);  
+    const token = localStorage.getItem('token');
+ 
+    const responseToken = await fetch(`http://localhost:8000/user/token/${token}`, {
+      method: 'GET'});
+      
+    if (!responseToken.ok) {
+      setLoading(false);
+      setError('Token verification failed');
+      return;
+    }
+     
+    setLoading(true);
+    setError("");
+    setSucess(true);
+    redirect('/events'); 
   }
   return (
     <form 
@@ -103,7 +134,7 @@ export default function Login() {
             <input className="relative top-[-90px]"
               id = "city"
               name= "age"
-              placeholder="Ciudad"
+              placeholder="Ciudad *"
               type="text"
               value={city}
               onChange={(e) => setCity(e.target.value)}
@@ -111,7 +142,7 @@ export default function Login() {
             <input className="relative top-[-90px]"
               id = "autonomous_community"
               name= "autonomous_community"
-              placeholder="Comunidad Autonoma"
+              placeholder="Comunidad Autónoma *"
               type="text"
               value={autonomous_community}
               onChange={(e) => setAutonomousCommunity(e.target.value)}

@@ -1,7 +1,8 @@
-import Login from "../login/login";
+import Events from "./events";
+
 export default async function Page() {
      
   return (     
-    <h1>Usted esta logueado</h1>
+    <Events/> 
   );
 }
