@@ -12,26 +12,26 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 router = APIRouter()
 
-@router.post("/api/user")
+@router.post("/user/register")
 def register_user( user: UserCreate, db: Session = Depends(get_db)):
     db_user = get_user_by_username(db, user_name=user.user_name)
     if db_user:
         raise HTTPException(status_code=400, detail="Nombre de usuario ya registrado")
     return create_user(db=db, user=user)
 
-@router.get("/api/user/{userName}")
+@router.get("/user/{user_name}")
 def find_users(user_name: str, db: Session = Depends(get_db)):
     db_user = get_user_by_username(db, user_name)
     if not db_user:
         raise HTTPException(status_code=404, detail="No hay usuarios disponibles")
     return db_user
 
-@router.post("/token")
-def login_for_access_token(response: Response, form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
+@router.post("/user/login")
+def login_user(response: Response, form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     user = authenticate_user(form_data.username, form_data.password, db)
     if not user:
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
+            status_code=401,
             detail="Nombre de usuario o contraseña incorrecto",
             headers={"WWW-Authenticate": "Bearer"},
         )
@@ -43,12 +43,12 @@ def login_for_access_token(response: Response, form_data: OAuth2PasswordRequestF
             key="access_cookie", value=access_token, httponly=True, samesite="Lax")
     return {"access_token": access_token, "response" : response, "token_type": "bearer"}
 
-@router.get("/api/token/{token}")
+@router.get("/user/token/{token}")
 async def verify_user_token(token: str):
     verify_token(token=token)
     return {"message": "El token es válido"}
 
-@router.get("/protected")
+@router.get("/user/protected")
 def protected_route(request: Request):
     token = request.cookies.get("access_cookie")    
     if not token:
