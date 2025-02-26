@@ -14,16 +14,68 @@
   }
 }
  
-
 body {
   color: var(--foreground);
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
 }
-
-input{
-  color: black;
+#welcome-form {
+  background-color: #333;
+  display: flex;
+  justify-content: center; 
+  padding: 115px; 
+  
 }
+#welcome-div{
+  background-color: #555555;
+  width: 30%;
+  border-radius: 10px;
+  justify-content: center;
+  height: 520px;
+}
+#register-div{
+  background-color: #555555;
+  width: 30%;
+  border-radius: 10px;
+  justify-content: center;
+  height: 540px;
+}
+
+
+#label-login{
+  font-style:geist-sans;
+  font-size: 35px;
+  padding-block-end: 40%;
+}
+
+#label-register{
+  font-style:geist-sans;
+  font-size: 35px;
+  padding-block-end: 20%
+
+}
+ input{
+  color: black;
+  border-radius: 5px;
+  background-color: #F0F0F0;
+ }
+ #login-button:hover{ 
+  background-color:#333;
+}
+ #link-login:hover{
+  background-color: #333;
+ }
+ #register-button:hover{
+  background-color:#333;
+ }
+ 
+ 
+ 
+
+
+
+
+
 
 
 
