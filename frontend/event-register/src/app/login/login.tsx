@@ -3,8 +3,10 @@
 import { useState, useEffect } from "react";
 import { redirect } from 'next/navigation';
 import Link from 'next/link'
-import { middleware } from "../context/authContext";
-import { NextRequest } from "next/server";
+import { EyeClosedIcon, EyeOpenIcon} from "@radix-ui/react-icons"
+import { Button, Spinner} from "@radix-ui/themes";
+
+
 
 export default function Login() {
   const [user_name, setUsername] = useState<string>("");
@@ -12,6 +14,7 @@ export default function Login() {
   const [error, setError] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [token, setToken] = useState<boolean>(false);
+  const [visible, setVisible] = useState<boolean>(false);
   //const {login} = useAuthContext();
   
   const validateForm = (): boolean => {
@@ -71,15 +74,15 @@ export default function Login() {
   
   return (
     <form 
-    id = "welcome-form"
-    className="flex grid grid-rows-[10px_1fr_20px] min-h-screen p-8 pb-20 gap-16 sm:p-10 font-[family-name:var(--font-geist-sans)] "
+    id = "login-form"
+    className="flex grid grid-rows-[10px_1fr_20px] min-h-screen p-8 pb-20 gap-16 sm:p-10 "
     onSubmit={handleSubmit}>
       <div 
-        id = "welcome-div"
-        className="flex flex-col gap-5 row-start-2 items-center font-[family-name:var(--font-geist-mono)] border-4 border-solid border-white/[.08]  ">                                         
-          <label id="label-login"> Login</label>
+        id = "login-div"
+        className="flex flex-col gap-5 row-start-2 items-center border-2 border-solid border-white/[.08]  ">                                         
+          <label id="label-login"> User Login</label>
           <div className="flex flex-col gap-6 items-center relative"> 
-            <input className="relative top-[-100px]"
+            <input className="relative top-[-100px] transparent"
               id = "user_name"  
               name = "user_name"
               placeholder="Nombre"
@@ -91,22 +94,25 @@ export default function Login() {
               id = "password"
               name= "password"
               placeholder="Contraseña"
-              type="password"
+              type={visible? "text": "password"}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-            />                        
+            />     
+            <span className="absolute top-[-45px] right-0 mr-1 cursor-pointer"            
+            onClick={() => setVisible(!visible)}>
+              {visible ? <EyeOpenIcon color="violet" /> : <EyeClosedIcon color="violet"/>}
+            </span>              
           </div>        
           <div className="flex flex-col items-center gap-3 relative ">
-                <button
+                <Button variant="solid"
+                color="violet"
                 id = "login-button"
                 type = "submit"  
-                className="relative top-[-40px] rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"   
+                className="relative top-[-65px] rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:border-transparent text-sm sm:text-base h-10 sm:h-10 px-4 sm:px-5 sm:min-w-40"   
                 disabled={loading}>  
-                  {loading ? "..." : "Iniciar Sesión"} 
-                </button>
-                <p className=' relative top-[-40px]  my-4 hover:border-transparent'>No tienes cuenta? &nbsp; 
-                  <Link id= "link-login" className=" rounded-full border border-solid border-black/[.08] h-12 w-64 px-4 sm:px-5" href="/register">Registrate</Link>
-                </p>
+                  {loading ? <Spinner/> : "Iniciar Sesión"} 
+                </Button>
+                <Link id= "link-login" className="relative top-[-35px]" href="/register">No tienes cuenta?</Link>
                 {error && <p style={{ color: "red" }}>{error}</p>}
                 {token && <p style={{ color: "green" }}>Login successful</p>}   
           </div>

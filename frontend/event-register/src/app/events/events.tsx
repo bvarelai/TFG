@@ -15,7 +15,7 @@ export default function Events() {
             });
 
             if (!response.ok) {
-                redirect("/login"); 
+                redirect("/protected"); 
             }
             const data = await response.json();
             localStorage.setItem('token', data.token);
