@@ -56,6 +56,7 @@ export default function Login() {
     }
     const data = await response.json();
     localStorage.setItem('token', data.access_token);  
+    localStorage.setItem('user_name', user_name); 
     const token = localStorage.getItem('token');
  
    const responseToken = await fetch(`http://localhost:8000/user/token/${token}`, {
@@ -82,7 +83,7 @@ export default function Login() {
         className="flex flex-col gap-5 row-start-2 items-center border-2 border-solid border-white/[.08]  ">                                         
           <label id="label-login"> User Login</label>
           <div className="flex flex-col gap-6 items-center relative"> 
-            <input className="relative top-[-100px] transparent"
+            <input className="relative top-[-120px] transparent"
               id = "user_name"  
               name = "user_name"
               placeholder="Nombre"
@@ -90,7 +91,7 @@ export default function Login() {
               value={user_name}
               onChange={(e) => setUsername(e.target.value)}
             />
-            <input className="relative top-[-100px]"
+            <input className="relative top-[-120px]"
               id = "password"
               name= "password"
               placeholder="Contraseña"
@@ -98,7 +99,7 @@ export default function Login() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />     
-            <span className="absolute top-[-45px] right-0 mr-1 cursor-pointer"            
+            <span className="absolute top-[-65px] right-0 mr-1 cursor-pointer"            
             onClick={() => setVisible(!visible)}>
               {visible ? <EyeOpenIcon color="violet" /> : <EyeClosedIcon color="violet"/>}
             </span>              
@@ -108,9 +109,9 @@ export default function Login() {
                 color="violet"
                 id = "login-button"
                 type = "submit"  
-                className="relative top-[-65px] rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:border-transparent text-sm sm:text-base h-10 sm:h-10 px-4 sm:px-5 sm:min-w-40"   
+                className="relative top-[-45px] rounded-full border border-solid  dark:border-white/[.145] flex items-center justify-center hover:border-transparent text-sm sm:text-base h-10 sm:h-10 px-4 sm:px-5 sm:min-w-40"   
                 disabled={loading}>  
-                  {loading ? <Spinner/> : "Iniciar Sesión"} 
+                  {loading ? "Cargando" : "Iniciar Sesión"} 
                 </Button>
                 <Link id= "link-login" className="relative top-[-35px]" href="/register">No tienes cuenta?</Link>
                 {error && <p style={{ color: "red" }}>{error}</p>}
