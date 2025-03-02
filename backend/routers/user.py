@@ -24,7 +24,7 @@ def find_users(user_name: str, db: Session = Depends(get_db)):
     db_user = get_user_by_username(db, user_name)
     if not db_user:
         raise HTTPException(status_code=404, detail="No hay usuarios disponibles")
-    return db_user
+    return db_user.user_name
 
 @router.post("/user/login")
 def login_user(response: Response, form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
@@ -42,6 +42,14 @@ def login_user(response: Response, form_data: OAuth2PasswordRequestForm = Depend
     response.set_cookie(
             key="access_cookie", value=access_token, httponly=True, samesite="Lax")
     return {"access_token": access_token, "response" : response, "token_type": "bearer"}
+
+@router.post("/user/logout/{user_name}")
+def logout_user(user_name: str, response: Response, db: Session = Depends(get_db)):
+    db_user = get_user_by_username(db, user_name)
+    if not db_user:
+        raise HTTPException(status_code=404, detail="Usuario no encontrado")     
+    response.delete_cookie(key="access_cookie")
+    return {"message": "Usuario deslogueado"}
 
 @router.get("/user/token/{token}")
 async def verify_user_token(token: str):
