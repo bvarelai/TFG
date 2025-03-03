@@ -80,18 +80,8 @@ export default function Login() {
       return;
     }
     const data = await responselogin.json();
-    localStorage.setItem('token', data.access_token);  
-    const token = localStorage.getItem('token');
- 
-    const responseToken = await fetch(`http://localhost:8000/user/token/${token}`, {
-      method: 'GET'});
+    localStorage.setItem('user_name', user_name); 
       
-    if (!responseToken.ok) {
-      setLoading(false);
-      setError('Token verification failed');
-      return;
-    }
-     
     setLoading(true);
     setError("");
     setSucess(true);

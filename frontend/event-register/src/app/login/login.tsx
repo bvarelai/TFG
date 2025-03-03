@@ -6,8 +6,6 @@ import Link from 'next/link'
 import { EyeClosedIcon, EyeOpenIcon} from "@radix-ui/react-icons"
 import { Button, Spinner} from "@radix-ui/themes";
 
-
-
 export default function Login() {
   const [user_name, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -55,18 +53,8 @@ export default function Login() {
       return;
     }
     const data = await response.json();
-    localStorage.setItem('token', data.access_token);  
-    localStorage.setItem('user_name', user_name); 
-    const token = localStorage.getItem('token');
- 
-   const responseToken = await fetch(`http://localhost:8000/user/token/${token}`, {
-      method: 'GET'});
-      
-    if (!responseToken.ok) {
-      setLoading(false);
-      setError('Token verification failed');
-      return;
-    }  
+    localStorage.setItem('user_name', user_name);  
+
     setLoading(true);
     setError('');
     setToken(true);
