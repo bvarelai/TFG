@@ -101,34 +101,42 @@ def test_login_unauthorized_user():
 }
     
 def test_login_user_without_credentials():
-    response = user.post("/user/login",
-                        data={"username": "usuario", "password" : "contraseña"},
-                        headers={"content-type" : "application/x-www-form-urlencoded"}
-    )
+    response_login = user.post("/user/login",
+                               data={"username": "usuario", "password": "contraseña"},
+                               headers={"content-type": "application/x-www-form-urlencoded"})
+    
+    assert response_login.status_code == 200
+
+    user.post("/user/logout/usuario")
+
     response_protected = user.get("/protected")
-    assert response.status_code == 200
+    assert response_protected.status_code == 401
+    assert response_protected.json() == {
+        "detail": "No autorizado"
+    }
 
 def test_logout_user():
-    response_logout = user.post("/user/logout/usuario", cookies={"access_cookie": response_logout.cookies["access_cookie"]})
+    response_logout = user.post("/user/logout/usuario")
     assert response_logout.status_code == 200
     assert response_logout.json() == {
         "message" : "Usuario deslogueado"
     }
 
 def test_logout_non_existent_user():
-    response_logout = user.post("/user/logout/usuario5", cookies={"access_cookie": response_logout.cookies["access_cookie"]})
+    response_logout = user.post("/user/logout/usuario5")
     assert response_logout.status_code == 404
     assert response_logout.json() == {
         "detail" : "Usuario no encontrado"
     }    
 
 def test_protected_route():
-    response_protected = user.get("/protected", cookies={"access_cookie": response_protected.cookies["access_cookie"]})
+    response_protected = user.get("/protected", cookies={"access_cookie": "test_token"})
     assert response_protected.status_code == 200
     assert response_protected.json() == {
-        "message" : "Ruta protegida"
-    }
+        "message" : "Ruta protegida accesible", "token" : "test_token"}
+    
 def test_protected_route_fail():
+    user.post("/user/logout/usuario")
     response_protected = user.get("/protected")
     assert response_protected.status_code == 401
     assert response_protected.json() == {

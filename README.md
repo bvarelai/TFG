@@ -15,3 +15,12 @@
 `npm install radix-themes-tw postcss-import --dev` **Para que funcione la configuracion del Tailwind**  
 - Para ejecutar el frontend usamos el siguiente comando:  
 `npm run dev`
+
+## Testing
+### Backend
+### Frontend
+- Para las pruebas End-to-End usamos Playwright, un testing framework que nos proporciona NextJs
+`npm init playwright` 
+npm run build **En una terminal**
+npm run start
+npx playwright test **En otra terminal** 
