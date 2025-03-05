@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { redirect } from 'next/navigation';
 import Link from 'next/link'
 import { EyeClosedIcon, EyeOpenIcon} from "@radix-ui/react-icons"
-import { Button, Spinner} from "@radix-ui/themes";
+import { Button} from "@radix-ui/themes";
 
 export default function Login() {
   const [user_name, setUsername] = useState<string>("");
@@ -68,13 +68,13 @@ export default function Login() {
     onSubmit={handleSubmit}>
       <div 
         id = "login-div"
-        className="flex flex-col gap-5 row-start-2 items-center border-2 border-solid border-white/[.08]  ">                                         
+        className="flex flex-col gap-5 row-start-2 items-center border-2 border-solid border-white/[.08]">                                         
           <label id="label-login"> User Login</label>
           <div className="flex flex-col gap-6 items-center relative"> 
             <input className="relative top-[-120px] transparent"
               id = "user_name"  
               name = "user_name"
-              placeholder="Nombre"
+              placeholder="nombre"
               type="text"
               value={user_name}
               onChange={(e) => setUsername(e.target.value)}
@@ -82,7 +82,7 @@ export default function Login() {
             <input className="relative top-[-120px]"
               id = "password"
               name= "password"
-              placeholder="Contraseña"
+              placeholder="contraseña"
               type={visible? "text": "password"}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -99,7 +99,7 @@ export default function Login() {
                 type = "submit"  
                 className="relative top-[-45px] rounded-full border border-solid  dark:border-white/[.145] flex items-center justify-center hover:border-transparent text-sm sm:text-base h-10 sm:h-10 px-4 sm:px-5 sm:min-w-40"   
                 disabled={loading}>  
-                  {loading ? "Cargando" : "Iniciar Sesión"} 
+                  {loading ? "..." : "Iniciar Sesión"} 
                 </Button>
                 <Link id= "link-login" className="relative top-[-35px]" href="/register">No tienes cuenta?</Link>
                 {error && <p style={{ color: "red" }}>{error}</p>}

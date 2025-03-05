@@ -1,5 +1,7 @@
 @import "tailwindcss/base";
 @import "@radix-ui/themes/styles.css";
+@import "@radix-ui/colors/black-alpha.css";
+@import "@radix-ui/colors/violet.css";
 
 @tailwind base;
 @tailwind components;
@@ -35,7 +37,7 @@ body {
   width: 60%;
   border-radius: 10px;
   justify-content: center;
-  height: 650px;
+  height: 450px;
 }
 
 #welcome_title{
@@ -85,16 +87,18 @@ body {
 
 /*Diseño para el login*/
 
+#label-login{
+  font-style:geist-sans;
+  font-size: 35px;
+  padding-block-end: 40%;
+}
+
 #user_name{
   background-color: #1a1a1a;
   border: 1px solid #333;
   color: white; 
 }
 #user_name:hover{
-  border-color: #6a5acd;
-}
-
-#user_name:focus{
   border-color: #6a5acd;
 }
 
@@ -107,15 +111,15 @@ body {
   border-color: #6a5acd;
 }
 
-#login-button:hover{
-  background-color: #9D4EDD;
-}
 
 #login-button{
   background-color: #6a5acd;
   color: white;
 }
 
+#login-button:hover{
+  background-color: #9D4EDD;
+}
 
 #link-login{
   color: #6a5acd;
@@ -136,6 +140,93 @@ body {
   height: 520px;
 }
 
+/*Diseño para register*/
+
+#label-register{
+  font-style:geist-sans;
+  font-size: 35px;
+  padding-block-end: 25%;
+}
+
+#user_name{
+  background-color: #1a1a1a;
+  border: 1px solid #333;
+  color: white; 
+}
+#user_name:hover{
+  border-color: #6a5acd;
+}
+
+#password{
+  background-color: #1a1a1a;
+  border: 1px solid #333;
+  color: white; 
+}
+#password:hover{
+  border-color: #6a5acd;
+}
+
+#age{
+  background-color: #1a1a1a;
+  border: 1px solid #333;
+  color: white; 
+}
+#age:hover{
+  border-color: #6a5acd;
+}
+
+#city{
+  background-color: #1a1a1a;
+  border: 1px solid #333;
+  color: white; 
+}
+#city:hover{
+  border-color: #6a5acd;
+}
+
+#autonomous_community{
+  background-color: #1a1a1a;
+  border: 1px solid #333;
+  color: white; 
+}
+#autonomous_community:hover{
+  border-color: #6a5acd;
+}
+
+#country{
+  background-color: #1a1a1a;
+  border: 1px solid #333;
+  color: white; 
+}
+#country:hover{
+  border-color: #6a5acd;
+}
+
+#register-button{
+  background-color: #6a5acd;
+  color: white;
+}
+
+#register-button:hover{
+  background-color: #9D4EDD;
+}
+
+#register-form{
+  background-color: #0f111a;
+  display: flex;
+  justify-content: center; 
+  padding: 115px; 
+}
+
+#register-div{
+  background-color: #1a1c2c;
+  width: 30%;
+  border-radius: 10px;
+  justify-content: center;
+  height: 620px;
+}
+
+
 /*Diseño para events*/
 #events-first-div{
   background-color: #0f111a;
@@ -147,6 +238,15 @@ body {
   border-radius: 10px;
   justify-content: center;
   height: 300px;
+}
+
+#events-third-div-1{
+  margin-left: 62px;
+  margin-top: 15px;
+}
+
+#events_title{
+font-size: 25px;
 }
 
 @keyframes spin {
@@ -162,46 +262,74 @@ body {
   margin-top: 5px;
 }
 
+#events-box{
+  border-radius: 10px;
+  background-color: #1a1c2c;
+  height: 50px;
+  margin-top: 10px;
+  margin-right: 15px;
+}
+
+.AvatarFallback {
+	width: 30px;
+	height: 30px;
+  border-radius: 10px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background-color: #A9A9A9;
+	color: #6a5acd;
+	font-size: 15px;
+	line-height: 1;
+	font-weight: 500;
+}
+
+
+
+#events-main-div{
+  height: 100vh;
+ 
+}
+#events-fourth-div{
+  margin-top: 20px;
+  flex: 1;
+  border-radius: 10px;
+  margin-block-end: 20px;
+  margin-right: 15px;
+}
+
+#events-menu-div{
+  justify-content:left;
+  background-color: #1a1c2c;
+  width: 220px;
+  border-radius: 10px;
+  margin-left: 15px;
+  
+}
+
+#events-list-div{
+  background-color: #1a1c2c;
+  width: 20%;
+  flex: 1;
+  border-radius: 10px;
+  margin-left: 25px;
+
+}
+ 
+#logout-button{
+  color: white;
+  width: 215px;
+  height: 60px;
+  border-radius: 3px;
+  font-size: 18px;
+}
 
 #logout-button:hover{
-  background-color: #9D4EDD;
-}
-
-#logout-button{
-  background-color: #6a5acd;
-  color: white;
+  background-color: #282b40;
+  color:#6a5acd
 }
 
 
-#register-div{
-  background-color: #555555;
-  width: 30%;
-  border-radius: 10px;
-  justify-content: center;
-  height: 540px;
-}
-
-
-#label-login{
-  font-style:geist-sans;
-  font-size: 35px;
-  padding-block-end: 40%;
-}
-
-#label-register{
-  font-style:geist-sans;
-  font-size: 35px;
-  padding-block-end: 20%
-
-}
- 
- 
- #register-button:hover{
-  background-color:#333;
- }
- 
- 
- 
 
 
 
