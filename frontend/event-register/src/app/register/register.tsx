@@ -2,9 +2,13 @@
 
 import { useState, useEffect } from "react";
 import { redirect } from 'next/navigation';
-import { Button} from "@radix-ui/themes";
+import { Button, Text, Flex} from "@radix-ui/themes";
+import { Checkbox } from "radix-ui";
+import { CheckIcon } from "@radix-ui/react-icons";
+
 
 export default function Login() {
+  
   const [user_name, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [age, setAge] = useState<string>("");
@@ -14,6 +18,7 @@ export default function Login() {
   const [error, setError] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [sucess, setSucess] = useState<boolean>(false);
+  const [organizer, setOrganizer] = useState<boolean>(false);
 
   
   const validateForm = (): boolean => {
@@ -44,7 +49,8 @@ export default function Login() {
        "age" :  age,
        "city": city,
        "autonomous_community"  : autonomous_community,
-       "country"  : country
+       "country"  : country,
+       "is_organizer" : organizer
     } 
 
     const formDetailsLogin = new URLSearchParams();
@@ -95,10 +101,10 @@ export default function Login() {
     onSubmit={handleSubmit}>
       <div 
         id = "register-div"
-        className="flex flex-col gap-10 row-start-2 items-center">                                
-          <label id="label-register"> Register</label>
+        className="flex flex-col gap-10 row-start-2 items-center border-2 border-solid border-white/[.08]">                                
+          <label id="label-register"> Registro de Usuario</label>
           <div className="flex flex-col gap-6 items-center relative"> 
-            <input className="relative top-[-90px]"
+            <input className="relative top-[-110px]"
               id = "user_name"  
               name = "user_name"
               placeholder="nombre"
@@ -106,7 +112,7 @@ export default function Login() {
               value={user_name}
               onChange={(e) => setUsername(e.target.value)}
             />
-            <input className="relative top-[-90px]"
+            <input className="relative top-[-110px]"
               id = "password"
               name= "password"
               placeholder="contraseña"
@@ -114,7 +120,7 @@ export default function Login() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
-            <input className="relative top-[-90px]"
+            <input className="relative top-[-110px]"
               id = "age"
               name= "age"
               placeholder="edad"
@@ -122,7 +128,7 @@ export default function Login() {
               value={age}
               onChange={(e) => setAge(e.target.value)}
             />
-            <input className="relative top-[-90px]"
+            <input className="relative top-[-110px]"
               id = "city"
               name= "age"
               placeholder="ciudad *"
@@ -130,7 +136,7 @@ export default function Login() {
               value={city}
               onChange={(e) => setCity(e.target.value)}
             />
-            <input className="relative top-[-90px]"
+            <input className="relative top-[-110px]"
               id = "autonomous_community"
               name= "autonomous_community"
               placeholder="comunidad autónoma *"
@@ -138,7 +144,7 @@ export default function Login() {
               value={autonomous_community}
               onChange={(e) => setAutonomousCommunity(e.target.value)}
             />
-            <input className="relative top-[-90px]"
+            <input className="relative top-[-110px]"
               id = "country"
               name= "country"
               placeholder="país"
@@ -146,18 +152,34 @@ export default function Login() {
               value={country}
               onChange={(e) => setCountry(e.target.value)}
             />
+             <div className="flex flex-rows gap-2.5 relative top-[-80px] items-center"
+             onClick={() => setOrganizer(!organizer)}>
+              <Text className="Label" htmlFor="c1">
+                Ser organizador
+              </Text>
+              {!organizer ? <Checkbox.Root className="CheckboxRoot" id="checkbox-register" >
+                <Checkbox.Indicator className="CheckboxIndicator">
+                  <CheckIcon />
+                </Checkbox.Indicator>
+              </Checkbox.Root> : <Checkbox.Root className="CheckboxRoot" defaultChecked>
+                <Checkbox.Indicator className="CheckboxIndicator">
+                  <CheckIcon />
+                </Checkbox.Indicator>
+              </Checkbox.Root>}
+              
+             </div>      
           </div>        
           <div className="flex flex-col items-center relative">
                 <Button
                 color="violet"
                 id = "register-button"
                 type = "submit"  
-                className=" relative top-[-55px] rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"   
+                className=" relative top-[-55px] rounded-full border-2 border-solid  dark:border-white/[.145] transition-colors flex items-center justify-center hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"   
                 disabled={loading}>  
                   {loading ? "..." : "Registrarse"} 
                 </Button>
-                {error && <p style={{ color: "red" }}>{error}</p>}
-                {sucess && <p style={{ color: "green" }}>register successful</p>}   
+                {error && <label id = "p-red" style={{ color: "red" }}>{error}</label>}
+                {sucess && <label id = "p-green" style={{ color: "green" }}>Register successfull</label>}   
           </div>
       </div> 
   </form>

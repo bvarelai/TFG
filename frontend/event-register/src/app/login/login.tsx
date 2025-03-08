@@ -69,7 +69,7 @@ export default function Login() {
       <div 
         id = "login-div"
         className="flex flex-col gap-5 row-start-2 items-center border-2 border-solid border-white/[.08]">                                         
-          <label id="label-login"> User Login</label>
+          <label id="label-login"> Login de Usuario </label>
           <div className="flex flex-col gap-6 items-center relative"> 
             <input className="relative top-[-120px] transparent"
               id = "user_name"  
@@ -92,9 +92,8 @@ export default function Login() {
               {visible ? <EyeOpenIcon color="violet" /> : <EyeClosedIcon color="violet"/>}
             </span>              
           </div>        
-          <div className="flex flex-col items-center gap-3 relative ">
+          <div id = "login-div-2" className="flex flex-col items-center gap-3 relative ">
                 <Button variant="solid"
-                color="violet"
                 id = "login-button"
                 type = "submit"  
                 className="relative top-[-45px] rounded-full border border-solid  dark:border-white/[.145] flex items-center justify-center hover:border-transparent text-sm sm:text-base h-10 sm:h-10 px-4 sm:px-5 sm:min-w-40"   
@@ -102,8 +101,8 @@ export default function Login() {
                   {loading ? "..." : "Iniciar Sesión"} 
                 </Button>
                 <Link id= "link-login" className="relative top-[-35px]" href="/register">No tienes cuenta?</Link>
-                {error && <p style={{ color: "red" }}>{error}</p>}
-                {token && <p style={{ color: "green" }}>Login successful</p>}   
+                {error && <label id = "p-red"   data-testid="error-message"  style={{ color: "red" }}>{error}</label>}
+                {token && <label id = "p-green"   data-testid="success-message" style={{ color: "green" }}>Login successfull</label>}   
           </div>
       </div> 
   </form>
