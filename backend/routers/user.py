@@ -1,7 +1,6 @@
-from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
-from fastapi import APIRouter, Depends, HTTPException, Request, Response,status
-from crud.user import create_user, get_user_by_username, authenticate_user
+from fastapi import APIRouter, Depends, HTTPException, Request, Response
+from crud.user import create_user, find_user_by_name, authenticate_user
 from utils.utils import create_access_token,verify_token
 from database import get_db
 from datetime import timedelta
@@ -14,14 +13,14 @@ router = APIRouter()
 
 @router.post("/user/register")
 def register_user( user: UserCreate, db: Session = Depends(get_db)):
-    db_user = get_user_by_username(db, user_name=user.user_name)
+    db_user = find_user_by_name(db, user_name=user.user_name)
     if db_user:
         raise HTTPException(status_code=400, detail="Nombre de usuario ya registrado")
     return create_user(db=db, user=user)
 
 @router.get("/user/{user_name}")
-def find_users(user_name: str, db: Session = Depends(get_db)):
-    db_user = get_user_by_username(db, user_name)
+def find_user(user_name: str, db: Session = Depends(get_db)):
+    db_user = find_user_by_name(db, user_name)
     if not db_user:
         raise HTTPException(status_code=404, detail="No hay usuarios disponibles")
     return db_user
@@ -46,7 +45,7 @@ def login_user(response: Response, form_data: OAuth2PasswordRequestForm = Depend
 
 @router.post("/user/logout/{user_name}")
 def logout_user(user_name: str, response: Response, db: Session = Depends(get_db)):
-    db_user = get_user_by_username(db, user_name)
+    db_user = find_user_by_name(db, user_name)
     if not db_user:
         raise HTTPException(status_code=404, detail="Usuario no encontrado")     
     response.delete_cookie(key="access_cookie")

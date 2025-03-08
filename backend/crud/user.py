@@ -10,7 +10,7 @@ def create_user(db: Session,  user: UserCreate):
     db.commit() 
     return "Usuario creado"
 
-def get_user_by_username(db: Session, user_name: str):
+def find_user_by_name(db: Session, user_name: str):
     return db.query(User).filter(User.user_name == user_name).first()
 
 # Autenticación usuario
