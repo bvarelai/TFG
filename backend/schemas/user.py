@@ -7,3 +7,4 @@ class UserCreate(BaseModel):
     city: str
     autonomous_community : str
     country : str
+    is_organizer: bool

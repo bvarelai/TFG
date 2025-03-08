@@ -1,5 +1,4 @@
 from fastapi.testclient import TestClient
-from routers.user import router
 from main import app
 from sqlalchemy import create_engine, delete
 from sqlalchemy.orm import sessionmaker
@@ -11,7 +10,7 @@ engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
-def override_get_db():
+def _get_db_test():
     db = TestingSessionLocal()
     try:
         yield db
@@ -19,7 +18,7 @@ def override_get_db():
         db.close()
 
 Base.metadata.create_all(bind=engine)
-app.dependency_overrides[get_db] = override_get_db
+app.dependency_overrides[get_db] = _get_db_test
 
 user = TestClient(app)
 
@@ -28,7 +27,7 @@ def test_register_user():
     response = user.post("/user/register",
                          json={"user_name": "usuario", "password" : "contraseña",
                                "age" : "edad", "city" : "ciudad",
-                               "autonomous_community" : "comunidad autónoma", "country": "país"},
+                               "autonomous_community" : "comunidad autónoma", "country": "país", "is_organizer" : True},
                          headers={"content-type" : "application/json"}
     )
     assert response.status_code==200
@@ -40,8 +39,7 @@ def test_register_an_existing_user():
     user_data = {
         "user_name": "usuario2", "password" : "password2",
         "age" : "34", "city" : "ciudad2",
-        "autonomous_community" : "comunidad Autónoma2", "country": "país2"
-    }
+        "autonomous_community" : "comunidad Autónoma2", "country": "país2" , "is_organizer" : False}
 
     user.post("/user/register", json=user_data, headers={"content-type" : "application/json"})
     
@@ -57,8 +55,7 @@ def test_find_user():
     user_data = {
         "user_name": "usuario3", "password" : "password3",
         "age" : "35", "city" : "ciudad3",
-        "autonomous_community" : "comunidad Autónoma3", "country": "país3"
-    }
+        "autonomous_community" : "comunidad Autónoma3", "country": "país3",  "is_organizer" : True}
     user.post("/user/register", json=user_data)
     response = user.get("/user/usuario3")
     assert response.status_code == 200
@@ -67,6 +64,7 @@ def test_find_user():
         "user_name": "usuario3",
         "user_id": 3,
         "country": "país3",
+        "is_organizer" : True,
         "password": "password3",
         "city": "ciudad3"
     }

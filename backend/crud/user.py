@@ -5,7 +5,7 @@ from schemas.user import UserCreate
 
 # Dar de alta al usuario
 def create_user(db: Session,  user: UserCreate):
-    db_user = User(user_name=user.user_name, password=user.password, age=user.age, city=user.city, autonomous_community=user.autonomous_community, country=user.country)
+    db_user = User(user_name=user.user_name, password=user.password, age=user.age, city=user.city, autonomous_community=user.autonomous_community, country=user.country, is_organizer=user.is_organizer)
     db.add(db_user)
     db.commit() 
     return "Usuario creado"
