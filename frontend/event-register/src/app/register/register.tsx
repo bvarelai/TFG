@@ -2,9 +2,10 @@
 
 import { useState, useEffect } from "react";
 import { redirect } from 'next/navigation';
-import { Button, Text, Flex} from "@radix-ui/themes";
+import { Button, Text } from "@radix-ui/themes";
 import { Checkbox } from "radix-ui";
 import { CheckIcon } from "@radix-ui/react-icons";
+import Image from 'next/image'
 
 
 export default function Login() {
@@ -87,12 +88,13 @@ export default function Login() {
       return;
     }
     const data = await responselogin.json();
-    localStorage.setItem('user_name', user_name); 
+    localStorage.setItem('user_name', user_name);
+    localStorage.setItem('organizer', data.access_token);
       
     setLoading(true);
     setError("");
     setSucess(true);
-    redirect('/events'); 
+    redirect('/home'); 
   }
   return (
     <form 
@@ -102,62 +104,68 @@ export default function Login() {
       <div 
         id = "register-div"
         className="flex flex-col gap-10 row-start-2 items-center border-2 border-solid border-white/[.08]">                                
-          <label id="label-register"> Registro de Usuario</label>
+          <Image className="relative top-[+25px]"
+                src="/logo.png"
+                width={300}
+                height={300}
+                alt="Application`s Logo"
+                id = "image-login"  
+          />   
           <div className="flex flex-col gap-6 items-center relative"> 
-            <input className="relative top-[-110px]"
+            <input className="relative top-[-10px]"
               id = "user_name"  
               name = "user_name"
-              placeholder="nombre"
+              placeholder="Name"
               type="text"
               value={user_name}
               onChange={(e) => setUsername(e.target.value)}
             />
-            <input className="relative top-[-110px]"
+            <input className="relative top-[-20px]"
               id = "password"
               name= "password"
-              placeholder="contraseña"
+              placeholder="Password"
               type="text"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
-            <input className="relative top-[-110px]"
+            <input className="relative top-[-30px]"
               id = "age"
               name= "age"
-              placeholder="edad"
+              placeholder="Age"
               type="text"
               value={age}
               onChange={(e) => setAge(e.target.value)}
             />
-            <input className="relative top-[-110px]"
+            <input className="relative top-[-40px]"
               id = "city"
               name= "age"
-              placeholder="ciudad *"
+              placeholder="City *"
               type="text"
               value={city}
               onChange={(e) => setCity(e.target.value)}
             />
-            <input className="relative top-[-110px]"
+            <input className="relative top-[-50px]"
               id = "autonomous_community"
               name= "autonomous_community"
-              placeholder="comunidad autónoma *"
+              placeholder="Autonomous Community *"
               type="text"
               value={autonomous_community}
               onChange={(e) => setAutonomousCommunity(e.target.value)}
             />
-            <input className="relative top-[-110px]"
+            <input className="relative top-[-60px]"
               id = "country"
               name= "country"
-              placeholder="país"
+              placeholder="Country"
               type="text"
               value={country}
               onChange={(e) => setCountry(e.target.value)}
             />
-             <div className="flex flex-rows gap-2.5 relative top-[-80px] items-center"
+             <div id = "check-box-register"className="flex flex-rows gap-2.5 relative top-[-80px] items-center"
              onClick={() => setOrganizer(!organizer)}>
               <Text className="Label" htmlFor="c1">
-                Ser organizador
+                Be organizer
               </Text>
-              {!organizer ? <Checkbox.Root className="CheckboxRoot" id="checkbox-register" >
+              {!organizer ? <Checkbox.Root className="CheckboxRoot">
                 <Checkbox.Indicator className="CheckboxIndicator">
                   <CheckIcon />
                 </Checkbox.Indicator>
@@ -171,12 +179,11 @@ export default function Login() {
           </div>        
           <div className="flex flex-col items-center relative">
                 <Button
-                color="violet"
                 id = "register-button"
                 type = "submit"  
-                className=" relative top-[-55px] rounded-full border-2 border-solid  dark:border-white/[.145] transition-colors flex items-center justify-center hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"   
+                className=" relative top-[-80px] rounded-full flex items-center justify-center hover:border-transparent text-sm sm:text-base h-10 sm:h-10 px-4 sm:px-5 sm:min-w-40"   
                 disabled={loading}>  
-                  {loading ? "..." : "Registrarse"} 
+                  {loading ? "..." : "SignUp"} 
                 </Button>
                 {error && <label id = "p-red" style={{ color: "red" }}>{error}</label>}
                 {sucess && <label id = "p-green" style={{ color: "green" }}>Register successfull</label>}   

@@ -1,10 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState} from "react";
 import { redirect } from 'next/navigation';
-import Link from 'next/link'
 import { EyeClosedIcon, EyeOpenIcon} from "@radix-ui/react-icons"
 import { Button} from "@radix-ui/themes";
+import Image from 'next/image'
 
 export default function Login() {
   const [user_name, setUsername] = useState<string>("");
@@ -13,7 +13,6 @@ export default function Login() {
   const [loading, setLoading] = useState<boolean>(false);
   const [token, setToken] = useState<boolean>(false);
   const [visible, setVisible] = useState<boolean>(false);
-  //const {login} = useAuthContext();
   
   const validateForm = (): boolean => {
     
@@ -54,13 +53,21 @@ export default function Login() {
     }
     const data = await response.json();
     localStorage.setItem('user_name', user_name);  
+    localStorage.setItem('organizer',data.access_token);
 
     setLoading(true);
     setError('');
     setToken(true);
-    redirect('/events');   
+    redirect('/home');   
     }
-  
+
+    const goToRegister = (event: React.MouseEvent<HTMLButtonElement>) => {
+      event.preventDefault(); 
+      setLoading(false);
+      setError('');
+      redirect('/register');
+    }
+
   return (
     <form 
     id = "login-form"
@@ -68,39 +75,53 @@ export default function Login() {
     onSubmit={handleSubmit}>
       <div 
         id = "login-div"
-        className="flex flex-col gap-5 row-start-2 items-center border-2 border-solid border-white/[.08]">                                         
-          <label id="label-login"> Login de Usuario </label>
+        className="flex flex-col gap-5 row-start-2 relative items-center border-2 border-solid border-white/[.08]">                                         
+           <Image className="relative top-[-35px]"
+              src="/logo.png"
+              width={300}
+              height={300}
+              alt="Application`s Logo"
+              id = "image-login"  
+           />  
           <div className="flex flex-col gap-6 items-center relative"> 
-            <input className="relative top-[-120px] transparent"
-              id = "user_name"  
+            <input className="relative top-[-50px] transparent"
+              id = "username"  
               name = "user_name"
-              placeholder="nombre"
+              placeholder="Username"
               type="text"
               value={user_name}
               onChange={(e) => setUsername(e.target.value)}
             />
-            <input className="relative top-[-120px]"
-              id = "password"
+            <input className="relative top-[-60px]"
+              id = "pass_word"
               name= "password"
-              placeholder="contraseña"
+              placeholder="Password"
               type={visible? "text": "password"}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />     
-            <span className="absolute top-[-65px] right-0 mr-1 cursor-pointer"            
+            <span className="absolute top-[+2px] right-0 mr-1 cursor-pointer"            
             onClick={() => setVisible(!visible)}>
-              {visible ? <EyeOpenIcon color="violet" /> : <EyeClosedIcon color="violet"/>}
+              {visible ? <EyeOpenIcon color="plum" /> : <EyeClosedIcon color="plum"/>}
             </span>              
           </div>        
           <div id = "login-div-2" className="flex flex-col items-center gap-3 relative ">
                 <Button variant="solid"
                 id = "login-button"
                 type = "submit"  
-                className="relative top-[-45px] rounded-full border border-solid  dark:border-white/[.145] flex items-center justify-center hover:border-transparent text-sm sm:text-base h-10 sm:h-10 px-4 sm:px-5 sm:min-w-40"   
+                className="relative top-[-50px] rounded-full flex items-center justify-center hover:border-transparent text-sm sm:text-base h-10 sm:h-10 px-4 sm:px-5 sm:min-w-40"   
                 disabled={loading}>  
-                  {loading ? "..." : "Iniciar Sesión"} 
+                  {loading ? "..." : "Login"} 
                 </Button>
-                <Link id= "link-login" className="relative top-[-35px]" href="/register">No tienes cuenta?</Link>
+                <div id="span-or" className="relative top-[-50px]">
+                 <span>or</span>
+                </div>
+                <Button variant="soft" color = "pink"
+                id ="login-button-to-register"
+                type = "submit"
+                className="relative top-[-50px] rounded-full flex items-center justify-center hover:border-transparent text-sm sm:text-base h-10 sm:h-10 px-4 sm:px-5 sm:min-w-40"   
+                onClick={goToRegister}
+                > Create a new account </Button>
                 {error && <label id = "p-red"   data-testid="error-message"  style={{ color: "red" }}>{error}</label>}
                 {token && <label id = "p-green"   data-testid="success-message" style={{ color: "green" }}>Login successfull</label>}   
           </div>

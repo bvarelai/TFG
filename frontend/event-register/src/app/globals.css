@@ -2,6 +2,8 @@
 @import "@radix-ui/themes/styles.css";
 @import "@radix-ui/colors/black-alpha.css";
 @import "@radix-ui/colors/violet.css";
+@import "@radix-ui/colors/green.css";
+
 
 @tailwind base;
 @tailwind components;
@@ -87,54 +89,85 @@ body {
 
 /*Diseño para el login*/
 
+#image-event{
+  margin-left: 50px;
+}
+
+
 #label-login{
   font-style:geist-sans;
   font-size: 35px;
   padding-block-end: 40%;
 }
 
-#user_name{
-  background-color: #1a1a1a;
+#username{
+  background-color: rgba(15, 17, 26, 0.8);
   border: 1px solid #333;
   color: white; 
+  width: 250px;
+  height: 30px;
 }
-#user_name:hover{
-  border-color: #6a5acd;
+#username:hover{
+  border-color: #9678C8;
 }
 
-#password{
-  background-color: #1a1a1a;
+#pass_word{
+  background-color: rgba(15, 17, 26, 0.8);
   border: 1px solid #333;
   color: white; 
+  width: 250px;
+  height: 30px;
 }
-#password:hover{
-  border-color: #6a5acd;
+#pass_word:hover{
+  border-color: #9678C8;
 }
-
 
 #login-button{
-  background-color: #6a5acd;
   color: white;
+  border: 1px solid #333;
+  width: 250px;
 }
 
 #login-button:hover{
-  background-color: #9D4EDD;
+  border-color: #9678C8;
 }
 
-#link-login{
-  color: #6a5acd;
- }
+#span-or {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  color: white; 
+}
+
+#span-or::before,
+#span-or::after {
+  content: "─────────";
+  flex: 1;
+  border-bottom: px solid #ffffff;
+  margin: 0 10px; 
+}
+
+#login-button-to-register{
+  color: white;
+  border: 1px solid #333;
+  width: 250px;
+}
+
+#login-button-to-register:hover{
+  border-color: #9678C8;
+}
 
 #login-form {
-  background-color: #0f111a;
+  backdrop-filter: blur(10px);
+  background-color: #1a1c2c;
   display: flex;
   justify-content: center; 
   padding: 115px; 
   
 }
 #login-div{
-  background-color: #1a1c2c;
-  width: 30%;
+  background-color: rgba(15, 17, 26, 0.8);
+  width: 25%;
   border-radius: 10px;
   justify-content: center;
   height: 520px;
@@ -152,57 +185,75 @@ body {
 }
 
 #user_name{
-  background-color: #1a1a1a;
+  background-color: rgba(15, 17, 26, 0.8);
   border: 1px solid #333;
   color: white; 
+  width: 250px;
+  height: 30px;
 }
+
 #user_name:hover{
-  border-color: #6a5acd;
+  border-color: #9678C8;
 }
 
 #password{
-  background-color: #1a1a1a;
+  background-color: rgba(15, 17, 26, 0.8);
   border: 1px solid #333;
   color: white; 
+  width: 250px;
+  height: 30px;
 }
 #password:hover{
-  border-color: #6a5acd;
+  border-color: #9678C8;
 }
 
 #age{
-  background-color: #1a1a1a;
+  background-color: rgba(15, 17, 26, 0.8);
   border: 1px solid #333;
   color: white; 
+  width: 250px;
+  height: 30px;
 }
 #age:hover{
-  border-color: #6a5acd;
+  border-color: #9678C8;
 }
 
 #city{
-  background-color: #1a1a1a;
+  background-color: rgba(15, 17, 26, 0.8);
   border: 1px solid #333;
   color: white; 
+  width: 250px;
+  height: 30px;
 }
 #city:hover{
-  border-color: #6a5acd;
+  border-color: #9678C8;
 }
 
 #autonomous_community{
-  background-color: #1a1a1a;
+  background-color: rgba(15, 17, 26, 0.8);
   border: 1px solid #333;
   color: white; 
+  width: 250px;
+  height: 30px;
 }
 #autonomous_community:hover{
-  border-color: #6a5acd;
+  border-color: #9678C8;
 }
 
 #country{
-  background-color: #1a1a1a;
+  background-color: rgba(15, 17, 26, 0.8);
   border: 1px solid #333;
   color: white; 
+  width: 250px;
+  height: 30px;
 }
 #country:hover{
-  border-color: #6a5acd;
+  border-color: #9678C8;
+}
+
+#check-box-register{
+  margin-top: 30px;
+
 }
 
 .CheckboxRoot {
@@ -225,31 +276,33 @@ body {
 }
 
 .CheckboxIndicator {
-	color: #6a5acd;
+	color: #9678C8;
 }
 
+
 #register-button{
-  background-color: #6a5acd;
   color: white;
+  border: 1px solid #333;
+  width: 250px;
 }
 
 #register-button:hover{
-  background-color: #9D4EDD;
+  border-color: #9678C8;
 }
 
 #register-form{
-  background-color: #0f111a;
+  background-color: #1a1c2c;
   display: flex;
   justify-content: center; 
   padding: 115px; 
 }
 
 #register-div{
-  background-color: #1a1c2c;
-  width: 30%;
+  background-color: rgba(15, 17, 26, 0.8);
+  width: 25%;
   border-radius: 10px;
   justify-content: center;
-  height: 620px;
+  height: 610px;
   box-shadow:  0 0 20px 2px black;
 }
 
@@ -267,13 +320,28 @@ body {
   height: 300px;
 }
 
-#events-third-div-1{
-  margin-left: 62px;
-  margin-top: 15px;
+
+#events-third-div{
+  height: 70px;
+  box-shadow:  0 0 5px 1px black;
+  background-color: #1a1c2c;
+
 }
 
+
+#events-third-div-1{
+  height: 70px;
+  margin-left: -60px;
+}
+
+#image-event{
+  margin-left: 50px;
+}
+
+
 #events_title{
-font-size: 25px;
+  margin-left: 15px;
+  font-size: 27px;
 }
 
 @keyframes spin {
@@ -291,11 +359,14 @@ font-size: 25px;
 
 #events-box{
   border-radius: 10px;
-  background-color: #1a1c2c;
   height: 50px;
   margin-top: 10px;
   margin-right: 15px;
 }
+#events-box:hover{
+  background-color: #1a1c2c;
+}
+
 
 .AvatarFallback {
 	width: 30px;
@@ -315,47 +386,432 @@ font-size: 25px;
 
 #events-main-div{
   height: 100vh;
- 
-}
-#events-fourth-div{
-  margin-top: 20px;
-  flex: 1;
-  border-radius: 10px;
-  margin-block-end: 20px;
-  margin-right: 15px;
+  background-color: #1a1c2c;
+
 }
 
 #events-menu-div{
   justify-content:left;
-  background-color: #1a1c2c;
-  width: 220px;
-  border-radius: 10px;
-  margin-left: 15px;
-  
+  background-color: rgba(15, 17, 26, 0.8);
+  border-radius: 5px;
+  width: 104px;
+  margin-left: 10px;
+  margin-top: 10px;
+  margin-block-end: 10px;
 }
 
-#events-list-div{
-  background-color: #1a1c2c;
-  width: 20%;
-  flex: 1;
-  border-radius: 10px;
-  margin-left: 25px;
-
-}
- 
-#logout-button{
+#home-button{
   color: white;
-  width: 215px;
+  width: 100px;
   height: 60px;
   border-radius: 3px;
-  font-size: 18px;
+  font-size: 17px;
+}
+
+#home-button:hover{
+  background-color: #282b40;
+  color:#9678C8;
+}
+
+
+#myevents-button{
+  color: white;
+  width: 100px;
+  height: 60px;
+  border-radius: 3px;
+  font-size: 17px;
+}
+
+#myevents-button:hover{
+  background-color: #282b40;
+  color:#9678C8
+}
+
+#myevents-button-1{
+  color: white;
+  width: 100px;
+  height: 60px;
+  border-radius: 3px;
+  font-size: 17px;
+}
+
+
+#myevents-button-1:hover{
+  background-color: #5a5c72;
+  color:white
+}
+
+
+#myinscriptions-button{
+  color: white;
+  width: 100px;
+  height: 60px;
+  border-radius: 3px;
+  font-size: 17px;
+}
+
+#myinscriptions-button:hover{
+  background-color: #282b40;
+  color:#9678C8
+}
+
+#myinscriptions-button-1{
+  color: white;
+  width: 100px;
+  height: 60px;
+  border-radius: 3px;
+  font-size: 17px;
+}
+
+#myinscriptions-button-1:hover{
+  background-color: #5a5c72;
+  color:white
+}
+
+
+#stadistics-button{
+  color: white;
+  width: 100px;
+  height: 60px;
+  border-radius: 3px;
+  font-size: 17px;
+}
+
+#stadistics-button:hover{
+  background-color: #282b40;
+  color:#9678C8
+}
+
+#profile-button{
+  color: white;
+  width: 100px;
+  height: 60px;
+  border-radius: 3px;
+  font-size: 17px;
+}
+
+#profile-button:hover{
+  background-color: #282b40;
+  color:#9678C8
+}
+
+#logout-button{
+  color: white;
+  width: 100px;
+  height: 60px;
+  border-radius: 3px;
+  font-size: 17px;
 }
 
 #logout-button:hover{
   background-color: #282b40;
-  color:#6a5acd
+  color:#9678C8
 }
 
+/*Diseño de boton a event*/
+
+#events-list-div{
+  width: 100%;
+  border-radius: 5px;
+  margin-left: 15px;
+  background-color: rgba(15, 17, 26, 0.8);
+  margin-top: 10px;
+  margin-block-end: 10px;
+  margin-right: 10px;
+
+}
+
+
+#title-events{
+  width: 100%;
+  background-color: red;
+  height: 200px;
+}
+
+#filter-events{
+  width: 100%;
+  background-color: blue;
+  height: 70px;
+  color: white;
+}
+
+#search-event{
+  height: 26px;
+  background-color: #282b40;
+  color: black;
+  margin-left: 20px;
+  margin-top: 30px;
+  width: 1000px;
+  color:white;
+}
+
+#textfield-events{
+  margin-left: 6px;
+}
+#heading-events{
+  margin-top: 40px;
+  margin-left: 25px;
+  font-style:geist-sans;
+  font-size: 25px;
+}
+
+#events_disp{
+  background-color: grey;
+  width: 100%;
+  height: 100%;
+}
+
+#create-event{
+  width: 40px;
+  height: 40px;
+  border-radius: 25px;
+  border: 2px solid #333;
+  background-color: #1a1c2c;
+  color: white;
+  margin-left: 15px;
+  margin-top: 15px;
+}
+
+#create-event:hover{
+  background-color: var(--violet-12);
+  color: #9678C8
+}
+
+
+.DialogOverlay {
+	background-color: var(--black-a9);
+	position: fixed;
+	inset: 0;
+	animation: overlayShow 150ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.DialogContent {
+	background-color: rgba(15, 17, 26, 0.8);
+	border-radius: 10px;
+	box-shadow: var(--shadow-6);
+  border-color: #1a1c2c;
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: 670px;
+  height: 390px;
+	max-width: 700px;
+	max-height: 600px;
+	padding: 25px;
+	animation: contentShow 150ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.DialogContent:focus {
+	outline: none;
+}
+
+.DialogTitle {
+	margin: 0;
+	font-weight: 500;
+	color: white;
+	font-size: 25px;
+}
+
+.DialogDescription {
+	margin: 10px 0 20px;
+	color: #B0B0B0;
+	font-size: 17px;
+	line-height: 1.5;
+}
+
+.Button {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 10px;
+	padding: 0 15px;
+	font-size: 15px;
+	line-height: 1;
+	font-weight: 500;
+	height: 35px;
+	user-select: none;
+}
+
+
+.Button.green {
+	background-color: rgba(15, 17, 26, 0.8);
+	color: var(--green-11);
+	outline-color: var(--green-7);
+  border: 1px solid #333;
+  border-radius: 15px;
+  margin-top: 37px;
+  margin-left: 488px;
+}
+.Button.green:hover {
+	background-color: var(--green-12);
+}
+
+.IconButton {
+	all: unset;
+	font-family: inherit;
+	border-radius: 100%;
+	height: 25px;
+	width: 25px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	color: #9678C8;
+	position: absolute;
+	top: 10px;
+	right: 10px;
+	background-color: #282b40;
+}
+.IconButton:hover {
+	background-color: #1a1c2c;
+}
+
+#fieldset-create{
+  margin-top: 30px;  
+  align-items: center;
+	justify-content: center;
+}
+
+
+#event-name{
+  background-color: rgba(15, 17, 26, 0.8);
+  border: 1px solid #333;
+  color: white; 
+  width: 200px;
+  height: 30px;
+}
+#event-name:hover{
+  border-color: #9678C8;
+}
+
+#event-type{
+  background-color: rgba(15, 17, 26, 0.8);
+  border: 1px solid #333;
+  color: white; 
+  width: 200px;
+  height: 30px;
+}
+#event-type:hover{
+  border-color: #9678C8;
+}
+
+#event-edition{
+  background-color: rgba(15, 17, 26, 0.8);
+  border: 1px solid #333;
+  color: white; 
+  width: 200px;
+  height: 30px;
+}
+#event-edition:hover{
+  border-color: #9678C8;
+}
+
+#event-category{
+  background-color: rgba(15, 17, 26, 0.8);
+  border: 1px solid #333;
+  color: white; 
+  width: 200px;
+  height: 30px;
+}
+#event-category:hover{
+  border-color: #9678C8;
+}
+
+#event-date{
+  background-color: rgba(15, 17, 26, 0.8);
+  border: 1px solid #333;
+  color: white; 
+  width: 200px;
+  height: 30px;
+}
+#event-date:hover{
+  border-color: #9678C8;
+}
+
+#event-location{
+  background-color: rgba(15, 17, 26, 0.8);
+  border: 1px solid #333;
+  color: white; 
+  width: 200px;
+  height: 30px;
+}
+#event-location:hover{
+  border-color: #9678C8;
+}
+
+#event-description{
+  background-color: rgba(15, 17, 26, 0.8);
+  border: 1px solid #333;
+  color: white; 
+  width: 200px;
+  height: 30px;
+}
+#event-description:hover{
+  border-color: #9678C8;
+}
+
+#event-capacity{
+  background-color: rgba(15, 17, 26, 0.8);
+  border: 1px solid #333;
+  color: white; 
+  width: 200px;
+  height: 30px;
+}
+#event-capacity:hover{
+  border-color: #9678C8;
+}
+
+#box-event1{
+  border-radius: 10px;
+  border-color: white;
+  background-color: #1a1c2c;
+  margin-left: 40px;
+  margin-top: 90px;
+  height: 250px;
+  width: 250px;
+}
+ 
+#heading-event-name{
+    margin-left: 90px;
+    margin-top: 15px;
+    font-size: 18px;
+}
+#capacity-event{
+   font-size: 14px;
+   margin-top: 70%;
+   margin-left: -100px;  
+}
+
+#type-event{
+  font-size: 14px;
+  margin-top: 40%;
+  margin-left: -100px;  
+
+   
+}
+
+#box-event2{
+  background-color: orange;
+  margin-left: 400px;
+  margin-top: 100px;
+}
+
+#box-event3{
+  background-color: orange;
+  margin-left: 40px;
+  margin-top: 100px;
+}
+
+#box-event4{
+  background-color: orange;
+  margin-left: 40px;
+  margin-top: 100px;
+}
+#box-event5{
+  background-color: orange;
+  margin-left: 40px;
+  margin-top: 100px;
+}
+ 
 
 
 
