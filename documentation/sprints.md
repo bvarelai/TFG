@@ -6,7 +6,7 @@ Tanto la instalación del backend como del software
 50 horas de predicción  
 3 o 4 horas diarias  
 
-## Sprint 2 : Gestión de Usuarios (14/02/205-
+## Sprint 2 : Gestión de Usuarios (14/02/205 - 08/03/2025)
  - Autenticación y registro de estos y Testing  
  50 horas de predicción 
  14 al 18 -> 3 o 4 horas  
@@ -18,11 +18,11 @@ Tanto la instalación del backend como del software
  26/02/2025 -> 4 horas  
  27/02/2025 -> 4 horas  
 
-## Sprint 3 : Gestión de eventos y inscripciones
+## Sprint 3 : Gestión de eventos y inscripciones (08/03/2025 - ) 
 Poder dar de alta eventos, modificarlos o eliminarlos. Inscribir o desuscribirte de un evento  
 + Testing  
 
-## Sprint 4 : Creación de filtros para facilitar la búsqueda al usuario y estadisticas de eventos
+## Sprint 4 : Creación de filtros para facilitar la búsqueda al usuario y estadisticas de usuarios
 
 ## Sprint 5 : Permitir que usuarios puedan comentar eventos
 

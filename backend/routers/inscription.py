@@ -11,7 +11,11 @@ def register_inscription(inscription: InscriptionCreate, db: Session = Depends(g
     db_inscription = find_inscription_by_userId_and_eventId(db, user_id=inscription.user_id, event_id=inscription.event_id)
     if db_inscription:
         raise HTTPException(status_code=400, detail="Inscription name already register")
-    return create_inscription(db, inscription)
+    
+    db_inscription = create_inscription(db, inscription, event_id=inscription.event_id) 
+    if not db_inscription:
+        raise HTTPException(status_code=400, detail="Can't create inscription")
+    return db_inscription 
 
 @router.get("/inscription/find/{user_id}")
 def get_all_inscription_by_userId(user_id: int, db: Session = Depends(get_db)):

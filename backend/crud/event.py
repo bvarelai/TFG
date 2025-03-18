@@ -13,6 +13,10 @@ def create_event(db: Session,  event: EventCreate):
 def find_event_by_name(db: Session, event_name: str):
     return db.query(Event).filter(Event.event_name == event_name).first()
 
+def find_event_by_eventId(db: Session, event_id: int):
+    return db.query(Event).filter(Event.event_id == event_id)
+
+
 def find_event_by_userId(db: Session, user_id: int):
     return db.query(Event).filter(Event.user_id == user_id).all()
 

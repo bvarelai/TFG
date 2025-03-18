@@ -1,10 +1,17 @@
 from sqlalchemy.orm import Session
 from models.inscription import Inscription
 from schemas.inscription import InscriptionCreate
+from crud.event import find_event_by_eventId
 from datetime import datetime,timedelta
 
 def create_inscription(db: Session, inscription: InscriptionCreate):
     db_inscription = Inscription(event_id = inscription.event_id, user_id = inscription.user_id, inscription_description=inscription.inscription_description, inscription_date=datetime.now())
+    
+    event = find_event_by_eventId(db=db, event_id=inscription.event_id)
+   
+    if not event:
+        return False
+    
     db.add(db_inscription)
     db.commit() 
     return "Inscription created"
@@ -20,13 +27,18 @@ def remove_inscription(db: Session,user_id: int, event_id: int):
     if not db_inscription:
        return False   
     
-    actual_date = datetime.now()
-    diferencia = db_inscription.inscription_date - actual_date
+    event = find_event_by_eventId(db=db, event_id=event_id)
+   
+    if not event:
+        return False
 
-    if actual_date > db_inscription.inscription_date:
+    event_date = event.celebration_date
+    diferencia = db_inscription.inscription_date - event_date
+
+    if event_date < db_inscription.inscription_date:
         return False
     
-    if actual_date == db_inscription.inscription_date:
+    if event_date == db_inscription.inscription_date:
         return False
     
     if diferencia < timedelta(days=3):
