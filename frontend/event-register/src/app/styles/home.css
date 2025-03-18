@@ -1,0 +1,96 @@
+#events-main-div{
+    height: 100vh;
+    background-color: #1a1c2c;
+  
+  }
+  
+  #events-menu-div{
+    justify-content:left;
+    background-color: rgba(15, 17, 26, 0.8);
+    border-radius: 5px;
+    width: 104px;
+    margin-left: 10px;
+    margin-top: 10px;
+    margin-block-end: 10px;
+  }
+  
+  #home-button{
+    color: white;
+    width: 100px;
+    height: 60px;
+    border-radius: 3px;
+    font-size: 17px;
+  }
+  
+  #home-button:hover{
+    background-color: #282b40;
+    color:#9678C8;
+  }
+  
+  
+  #myevents-button{
+    color: white;
+    width: 100px;
+    height: 60px;
+    border-radius: 3px;
+    font-size: 17px;
+  }
+  
+  #myevents-button:hover{
+    background-color: #282b40;
+    color:#9678C8
+  }
+  
+  
+  #myinscriptions-button{
+    color: white;
+    width: 100px;
+    height: 60px;
+    border-radius: 3px;
+    font-size: 17px;
+  }
+  
+  #myinscriptions-button:hover{
+    background-color: #282b40;
+    color:#9678C8
+  }
+  
+  
+  #stadistics-button{
+    color: white;
+    width: 100px;
+    height: 60px;
+    border-radius: 3px;
+    font-size: 17px;
+  }
+  
+  #stadistics-button:hover{
+    background-color: #282b40;
+    color:#9678C8
+  }
+  
+  #profile-button{
+    color: white;
+    width: 100px;
+    height: 60px;
+    border-radius: 3px;
+    font-size: 17px;
+  }
+  
+  #profile-button:hover{
+    background-color: #282b40;
+    color:#9678C8
+  }
+  
+  #logout-button{
+    color: white;
+    width: 100px;
+    height: 60px;
+    border-radius: 3px;
+    font-size: 17px;
+  }
+  
+  #logout-button:hover{
+    background-color: #282b40;
+    color:#9678C8
+  }

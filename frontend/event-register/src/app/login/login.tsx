@@ -2,8 +2,8 @@
 
 import { useState} from "react";
 import { redirect } from 'next/navigation';
-import { EyeClosedIcon, EyeOpenIcon} from "@radix-ui/react-icons"
-import { Button} from "@radix-ui/themes";
+import { EyeClosedIcon, EyeOpenIcon, ExclamationTriangleIcon} from "@radix-ui/react-icons"
+import { Button, Callout} from "@radix-ui/themes";
 import Image from 'next/image'
 
 export default function Login() {
@@ -52,8 +52,9 @@ export default function Login() {
       return;
     }
     const data = await response.json();
+    localStorage.setItem('user_id',  data.user_id);
     localStorage.setItem('user_name', user_name);  
-    localStorage.setItem('organizer',data.access_token);
+    localStorage.setItem('organizer', data.organizer);
 
     setLoading(true);
     setError('');
@@ -81,11 +82,10 @@ export default function Login() {
               width={300}
               height={300}
               alt="Application`s Logo"
-              id = "image-login"  
            />  
           <div className="flex flex-col gap-6 items-center relative"> 
             <input className="relative top-[-50px] transparent"
-              id = "username"  
+              id = "input-login"  
               name = "user_name"
               placeholder="Username"
               type="text"
@@ -93,7 +93,7 @@ export default function Login() {
               onChange={(e) => setUsername(e.target.value)}
             />
             <input className="relative top-[-60px]"
-              id = "pass_word"
+              id = "input-login"
               name= "password"
               placeholder="Password"
               type={visible? "text": "password"}
@@ -109,23 +109,32 @@ export default function Login() {
                 <Button variant="solid"
                 id = "login-button"
                 type = "submit"  
-                className="relative top-[-50px] rounded-full flex items-center justify-center hover:border-transparent text-sm sm:text-base h-10 sm:h-10 px-4 sm:px-5 sm:min-w-40"   
+                className="relative top-[-40px] rounded-full flex items-center justify-center hover:border-transparent text-sm sm:text-base h-10 sm:h-10 px-4 sm:px-5 sm:min-w-40"   
                 disabled={loading}>  
                   {loading ? "..." : "Login"} 
                 </Button>
-                <div id="span-or" className="relative top-[-50px]">
+                <div id="span-or" className="relative top-[-40px]">
                  <span>or</span>
                 </div>
                 <Button variant="soft" color = "pink"
-                id ="login-button-to-register"
+                id ="login-button"
                 type = "submit"
-                className="relative top-[-50px] rounded-full flex items-center justify-center hover:border-transparent text-sm sm:text-base h-10 sm:h-10 px-4 sm:px-5 sm:min-w-40"   
+                className="relative top-[-40px] rounded-full flex items-center justify-center hover:border-transparent text-sm sm:text-base h-10 sm:h-10 px-4 sm:px-5 sm:min-w-40"   
                 onClick={goToRegister}
                 > Create a new account </Button>
-                {error && <label id = "p-red"   data-testid="error-message"  style={{ color: "red" }}>{error}</label>}
-                {token && <label id = "p-green"   data-testid="success-message" style={{ color: "green" }}>Login successfull</label>}   
+                {error &&
+                 <div id = "p-red" data-testid="error-message">
+                    <Callout.Root color="red" size="2" variant="outline" className="flex items-center ">
+                      <Callout.Icon className="callout-icon-large" >
+                        <ExclamationTriangleIcon  />
+                      </Callout.Icon>
+                      <Callout.Text className="callout-text-large"> {error} </Callout.Text> 
+                    </Callout.Root>
+                 </div>}
           </div>
       </div> 
+  
+  
   </form>
 
     /*

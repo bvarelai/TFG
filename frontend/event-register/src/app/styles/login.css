@@ -1,0 +1,66 @@
+@import "@radix-ui/themes/styles.css";
+
+/*Diseño escritorio*/
+
+#login-form {
+  backdrop-filter: blur(10px);
+  background-color: #1a1c2c;
+  display: flex;
+  justify-content: center; 
+  padding: 115px; 
+  
+}
+#login-div{
+  background-color: rgba(15, 17, 26, 0.8);
+  width: 25%;
+  border-radius: 10px;
+  justify-content: center;
+  height: 500px;
+  box-shadow:  0 0 20px 2px black;
+  margin-top: 70px;
+}
+
+
+#label-login{
+  font-style:geist-sans;
+  font-size: 35px;
+  padding-block-end: 40%;
+}
+
+  #input-login{
+  background-color: rgba(15, 17, 26, 0.8);
+  border: 1px solid #333;
+  color: white; 
+  width: 250px;
+  height: 30px;
+}
+  
+  #input-login:hover{
+    border-color: #9678C8;
+  }
+  
+  
+  #login-button{
+    color: white;
+    border: 1px solid #333;
+    width: 250px;
+  }
+  
+  #login-button:hover{
+    border-color: #9678C8;
+  }
+  
+  #span-or {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    color: white; 
+  }
+  
+  #span-or::before,
+  #span-or::after {
+    content: "─────────";
+    flex: 1;
+    border-bottom: px solid #ffffff;
+    margin: 0 10px; 
+  }
