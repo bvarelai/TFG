@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from fastapi import APIRouter, Depends, HTTPException, Request, Response
-from crud.user import create_user, find_user_by_name, authenticate_user
+from crud.user import create_user, find_user_by_name, find_all_user, authenticate_user, remove_user
 from utils.utils import create_access_token,verify_token
 from database import get_db
 from datetime import timedelta
@@ -18,12 +18,19 @@ def register_user( user: UserCreate, db: Session = Depends(get_db)):
         raise HTTPException(status_code=400, detail="Nombre de usuario ya registrado")
     return create_user(db=db, user=user)
 
-@router.get("/user/{user_name}")
-def find_user(user_name: str, db: Session = Depends(get_db)):
+@router.get("/user/find/{user_name}")
+def get_user(user_name: str, db: Session = Depends(get_db)):
     db_user = find_user_by_name(db, user_name)
     if not db_user:
-        raise HTTPException(status_code=404, detail="No hay usuarios disponibles")
+        raise HTTPException(status_code=404, detail="usuario no disponible")
     return db_user
+
+@router.get("/user/find")
+def get_all_user(db: Session = Depends(get_db)):
+    db_all_user = find_all_user(db)
+    if not db_all_user:
+        raise HTTPException(status_code=404, detail="No hay usuarios disponibles")
+    return db_all_user
 
 @router.post("/user/login")
 def login_user(response: Response, form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
@@ -41,7 +48,7 @@ def login_user(response: Response, form_data: OAuth2PasswordRequestForm = Depend
     verify_token(token=access_token)
     response.set_cookie(
             key="access_cookie", value=access_token, httponly=True, samesite="Lax")
-    return {"message": "Usuario logueado"}
+    return {"message": "Usuario logueado", "organizer": user.is_organizer, "user_id" : user.user_id}
 
 @router.post("/user/logout/{user_name}")
 def logout_user(user_name: str, response: Response, db: Session = Depends(get_db)):
@@ -58,3 +65,10 @@ def protected_route(request: Request):
         raise HTTPException(status_code=401, detail="No autorizado")
     
     return {"message": "Ruta protegida accesible", "token": token}    
+
+@router.delete("/user/delete/{user_name}")
+def delete_user(user_name : str, db: Session = Depends(get_db)):
+    db_user = remove_user(db,user_name)
+    if not db_user:
+        raise HTTPException(status_code=404, detail="No se puede eliminar este usuario")
+    return "Usuario Eliminado"
