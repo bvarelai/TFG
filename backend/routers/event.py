@@ -36,9 +36,9 @@ def get_all_event(db:Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="No events available")
     return db_all_event
 
-@router.put("/event/update/")
-def update_event(event: EventUpdate, db: Session= Depends(get_db)):
-    db_event = change_event(db,event)
+@router.put("/event/update/{event_name}")
+def update_event(event: EventUpdate, event_name : str , db: Session= Depends(get_db)):
+    db_event = change_event(db,event, event_name)
     if not db_event:
         raise HTTPException(status_code=404, detail="Can't update the event")
     return db_event

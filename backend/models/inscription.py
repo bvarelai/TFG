@@ -6,8 +6,9 @@ class Inscription(Base):
     __tablename__ = "Inscriptions"
     event_id = Column(Integer, ForeignKey("Events.event_id"), primary_key=True,  index=True) 
     user_id = Column(Integer, ForeignKey("Users.user_id"), primary_key=True, index=True) 
-    inscription_description =  Column(String)
+    event_name = Column(String, nullable=None, index=True)
     inscription_date = Column(DateTime)                 
+    location = Column(String, nullable=None)
 
 event = relationship("Events", back_populates="Inscriptions")
 user = relationship("Users", back_populates="Inscriptions")

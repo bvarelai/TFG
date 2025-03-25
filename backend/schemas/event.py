@@ -11,6 +11,7 @@ class EventCreate(BaseModel):
     event_description : str
     location: str
     celebration_date : datetime
+    end_date : datetime
     capacity : int
 
 class EventUpdate(BaseModel):
@@ -22,4 +23,5 @@ class EventUpdate(BaseModel):
     event_description : Optional[str]
     location: Optional[str]
     celebration_date : Optional[datetime]
+    end_date : Optional[datetime]
     capacity : Optional[int]

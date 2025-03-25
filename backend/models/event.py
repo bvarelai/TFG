@@ -12,7 +12,8 @@ class Event(Base):
     category = Column(String,nullable=None, index=True)
     event_description = Column(String)
     location = Column(String, nullable=None)
-    celebration_date = Column(DateTime(timezone=True), nullable=None) 
+    celebration_date = Column(DateTime(timezone=True), nullable=None)
+    end_date = Column(DateTime(timezone=True), nullable=None) 
     capacity = Column(Integer,nullable=None, index=True)
 
 inscription = relationship("Inscriptions", back_populates="Events")
