@@ -52,7 +52,7 @@ export default function Login() {
       return;
     }
     const data = await response.json();
-    localStorage.setItem('user_id',  data.user_id);
+    localStorage.setItem('user_id',  data.user_id.toString());
     localStorage.setItem('user_name', user_name);  
     localStorage.setItem('organizer', data.organizer);
 

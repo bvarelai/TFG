@@ -4,12 +4,13 @@
 @import "styles/protected.css";
 @import "styles/home.css";
 @import "styles/event.css";
+@import "styles/myinscriptions.css";
+@import "styles/myevents.css";
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
  
-
 :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -27,6 +28,8 @@ body {
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+
 
 
 

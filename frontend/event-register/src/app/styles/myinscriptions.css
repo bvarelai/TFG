@@ -1,3 +1,25 @@
-#div-table{
-    margin-left: 100px;
+#box-myinscription{
+  border-radius: 15px;
+  background-color: #1a1c2c;
+  margin-left: 40px;
+  margin-top: 50px;
+  height: 210px;
+  width: 270px;
 }
+
+#info-date-myinscription-div{
+  margin-top: 20px;
+  margin-left: 15px;  
+}
+
+#info-clock-myinscription-div{
+  margin-top: 5px;
+  margin-left: 15px;  
+}  
+
+#info-members-myinscription-div{
+  margin-top: 5px;
+  margin-left: 15px;
+
+}
+
