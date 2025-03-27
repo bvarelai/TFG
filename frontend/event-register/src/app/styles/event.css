@@ -16,7 +16,7 @@
 #title-events{
   width: 100%;
   height: 100px;
-  border-radius: 5px;
+  border-radius: 2px;
   background-color: #3D2C58;
 }
 
@@ -33,9 +33,120 @@
   color: black;
   margin-left: 20px;
   margin-top: 30px;
-  width: 1000px;
+  width: 350px;
   color:white;
+  border-radius: 5px;
 }
+
+#filter-by-category{
+  height: 40px;
+}
+
+
+.SelectTrigger {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 4px;
+	padding: 0 15px;
+	font-size: 13px;
+	line-height: 1;
+	height: 35px;
+	gap: 5px;
+  background-color: #1a1c2c;
+	color: white;
+  border-radius: 5px;
+}
+.SelectTrigger:hover {
+  background-color: #282b40;
+  color:#9678C8;
+}
+.SelectTrigger:focus {
+	box-shadow: 0 0 0 2px black;
+}
+.SelectTrigger[data-placeholder] {
+	color: white
+}
+
+.SelectIcon {
+	color: white;
+}
+
+.SelectContent {
+	overflow: hidden;
+  background-color: #1a1c2c;
+	border-radius: 5px;
+	box-shadow:
+		0px 10px 38px -10px rgba(22, 23, 24, 0.35),
+		0px 10px 20px -15px rgba(22, 23, 24, 0.2);
+}
+
+.SelectViewport {
+	padding: 5px;
+}
+
+.SelectItem {
+	font-size: 13px;
+	line-height: 1;
+	color: white;
+	border-radius: 3px;
+	display: flex;
+	align-items: center;
+	height: 25px;
+	padding: 0 35px 0 25px;
+	position: relative;
+	user-select: none;
+}
+.SelectItem[data-disabled] {
+	color: var(--mauve-8);
+	pointer-events: none;
+}
+.SelectItem[data-highlighted] {
+	background-color: #282b40;
+  color:#9678C8;
+}
+
+.SelectLabel {
+	padding: 0 25px;
+	font-size: 12px;
+	line-height: 25px;
+	color: var(--mauve-11);
+}
+
+.SelectSeparator {
+	height: 1px;
+	background-color: var(--violet-6);
+	margin: 5px;
+}
+
+.SelectItemIndicator {
+	position: absolute;
+	left: 0;
+	width: 25px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.SelectScrollButton {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 25px;
+	background-color: #282b40;
+	color: white;
+	cursor: default;
+}
+
+#input-date{
+  background-color: rgba(15, 17, 26, 0.8);
+  border: 1px solid #333;
+  color: white; 
+  width: 200px;
+  height: 30px;
+  border-radius: 5px;
+}
+
 
 #textfield-events{
   margin-left: 6px;
@@ -52,6 +163,9 @@
   width: 100%;
   height: 100%;
   color:white;
+  flex-wrap: wrap;
+  display: flex;
+  justify-content: flex-start;
 }
 
 #create-event{
@@ -87,15 +201,30 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 500px; 
-  height: 640px;
+  width: 600px; 
+  height: 500px;
   max-width: 750px;
-  max-height: 700px;
   padding: 25px;
   animation: contentShow 150ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 .DialogContent:focus {
   outline: none;
+}
+
+.DialogContentCreateEvent{
+  background-color: rgba(15, 17, 26, 0.95);
+  border-radius: 10px;
+  box-shadow: var(--shadow-6);
+  border-color: #1a1c2c;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 550px; 
+  height: 640px;
+  max-width: 670px;
+  padding: 25px;
+  animation: contentShow 150ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .DialogTitle {
@@ -155,26 +284,27 @@
 
 
 #button-green-inscription{
-  background-color: rgba(15, 17, 26, 0.8);
-  color: var(--green-11);
-  outline-color: var(--green-7);
+  color: white;
   border: 1px solid #333;
   border-radius: 15px; 
-  margin-top: -28px;
-  margin-left: 45%;  
+  margin-left: 35%;  
   padding: 0 15px;
-  font-size: 15px;
+  font-size: 16px;
   line-height: 1;
   font-weight: 500;
   height: 30px;
-  width: 80px;
+  width: 110px;
   user-select: none;
 }
 
 #button-green-inscription:hover {
-  background-color: var(--green-12);
+  border-color: #9678C8;
 }
 
+#div-register-inscription{
+  margin-top: 25px;
+  
+}
 
 #title-result{
   margin-top: 25px;
@@ -197,7 +327,14 @@
   margin-left: 40px;
   margin-top: 30px;
   height: 220px;
-  width: 270px;
+  width: 250px;
+  flex-direction: column;
+  justify-content: space-between;
+  display: flex;
+}
+
+#box-event:nth-child(n+7) {
+  margin-top: -10px; /* Reduce el margen superior para los elementos de la segunda fila */
 }
 
 #box-event:hover{
@@ -240,7 +377,6 @@
 }
 
 #event-description{
-  margin-left: 10px;
   margin-top: 10px;
   font-size: 17px;
   color: #B0B0B0;
@@ -259,7 +395,7 @@
 }
   
 #info-date-event-div{
-  margin-top: 25px;
+  margin-top: 15px;
   margin-left: 15px;
 
 }
@@ -272,7 +408,7 @@
 
 #badge{
   margin-top: 20px;
-  margin-left: 90px;
+  margin-left: 80px;
   width: 90px;
   align-items: center;
   justify-content: center;
@@ -303,6 +439,25 @@
 }
 
 .callout-icon-event-register svg{
+  width: 23px;
+  height: 35px;
+  margin-right: 15px; 
+}
+
+#callout-root-event-register-inscription
+{
+  margin-top: 10px;
+  margin-left: 90px;
+  width: 360px;
+  align-items: center;
+  justify-content: center;
+
+}
+.callout-text-event-register-inscription {
+  font-size: 17px;
+}
+
+.callout-icon-event-register-inscription svg{
   width: 23px;
   height: 35px;
   margin-right: 15px; 

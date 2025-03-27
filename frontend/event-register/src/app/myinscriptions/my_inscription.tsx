@@ -11,6 +11,7 @@ export default function MyInscription() {
 
    useEffect(()  => {
       findMyInscription();
+
    },[])
    
    const findMyInscription = async () => { 
@@ -32,20 +33,6 @@ export default function MyInscription() {
    const deleteInscription = async (event_name: string, event_id: string) => {
       
       const user_id = localStorage.getItem('user_id');
-      const storedEventName = localStorage.getItem('event_name')
-      const storedEventType = localStorage.getItem('event_type')
-      const storeEventEdition = localStorage.getItem('event_edition')
-      const storeEventCategory = localStorage.getItem('category')
-      const storeEventDescription = localStorage.getItem('description')
-      const storeEventCelebrationDate = localStorage.getItem('celebration_date')
-      const storeEventEndDate = localStorage.getItem('end_date')
-      const storeEventLocation = localStorage.getItem('location')
-      let storeEventCapacity = localStorage.getItem('capacity')
-      
-      if (storeEventCapacity) {
-         storeEventCapacity = (parseInt(storeEventCapacity) + 1).toString();
-         localStorage.setItem('capacity', storeEventCapacity); 
-      } 
 
       const responseDeleteInscription = await fetch(`http://localhost:8000/inscription/delete/${user_id}/${event_id}`, {
          method: 'DELETE',
@@ -53,29 +40,45 @@ export default function MyInscription() {
 
       if (!responseDeleteInscription.ok){
          setNotification("Error deleting inscription")
+         return;
       }
-      const formDetailsEvent = 
-      {
-         "event_name" : storedEventName,
-         "user_id" : user_id,
-         "event_type" : storedEventType,  
-         "event_edition" :  storeEventEdition,
-         "event_description" : storeEventDescription,
-         "category": storeEventCategory,
-         "location"  : storeEventLocation,
-         "celebration_date"  : storeEventCelebrationDate,
-         "end_date" : storeEventEndDate,
-         "capacity" : storeEventCapacity
+      
+      const reponseFindEvent = await fetch(`http://localhost:8000/event/find/${event_name}`,{
+         method: 'GET',
+      });
+      
+      if(!reponseFindEvent.ok){
+         setNotification('Error finding event')
+         return;
       }
 
-      const responseEvent = await fetch(`http://localhost:8000/event/update/${storedEventName}`, {
+      const data = await reponseFindEvent.json()
+
+      const formDetailsEvent = {
+         event_name: data.event_name,
+         user_id: user_id,
+         event_type: data.event_type,
+         event_edition: data.event_edition,
+         event_description: data.event_description,
+         category: data.category,
+         location: data.location,
+         celebration_date: data.celebration_date,
+         end_date: data.end_date,
+         capacity: data.capacity + 1,
+      };
+      const responseEvent = await fetch(`http://localhost:8000/event/update/${data.event_name}`, {
          method: 'PUT',
          headers: {
-          'Content-Type': 'application/json',
+            'Content-Type': 'application/json',
          },
          body: JSON.stringify(formDetailsEvent)
-      });
-
+      });   
+      
+      if(!responseEvent.ok){
+         setNotification("Event cant update")
+         return;
+      }
+   
       setInscriptions((prevInscriptions) => prevInscriptions.filter((inscription) => inscription.event_name !== event_name));
       findMyInscription();
    }
@@ -83,7 +86,7 @@ export default function MyInscription() {
 
    return (
    <div id = "events-list-div" className='flex flex-col border-2 border-solid border-white/[.08]'>
-      <div id = "title-events" className="flex flex-col relative">
+      <div id = "title-events" className="flex flex-col relative border-2 border-solid border-white/[.08]">
             <Heading id="heading-events">Your inscriptions</Heading>  
       </div>
       <div id = "events_disp" className="flex flex-row">          
@@ -96,25 +99,27 @@ export default function MyInscription() {
                   width="64px"
                   height="100px"
               >
-                  <Heading className="flex" id="heading-event-name">
-                    {inscription.event_name}
+                  <Heading className="flex items-center" id="heading-event-name">
+                     Inscription in {inscription.event_name} 
                   </Heading>
-                  <div  id = "info-date-myinscription-div"className="flex flex-row items-center">
-                     <LapTimerIcon/> 
-                     <span id="event-date">{inscription.inscription_date.split("T")[0]}</span>  
-                  </div>   
-                  <div  id = "info-clock-myinscription-div"className="flex flex-row items-center">
-                     <ClockIcon/> 
-                     <span id="event-date">{inscription.inscription_date.split("T")[1]}</span>  
+                  <div className="flex flex-col px-2 py-2">
+                     <div  id = "info-members-myinscription-div" className="flex flex-row items-center">
+                        <SewingPinFilledIcon/>
+                        <span id="event-date">{inscription.location}</span>   
+                     </div>
+                     <div  id = "info-date-myinscription-div"className="flex flex-row items-center">
+                        <LapTimerIcon/> 
+                        <span id="event-date">{inscription.inscription_date.split("T")[0]}</span>  
+                     </div>   
+                     <div  id = "info-clock-myinscription-div"className="flex flex-row items-center">
+                        <ClockIcon/> 
+                        <span id="event-date">{inscription.inscription_date.split("T")[1]}</span>  
+                     </div>
                   </div>
-                  <div  id = "info-members-myinscription-div" className="flex flex-row items-center">
-                     <SewingPinFilledIcon/>
-                     <span id="event-date">{inscription.location}</span>   
-                  </div>
-                     <div id="buttons-myevent" className="flex flex-row gap-2 items-center">
+                  <div id="buttons-myevent" className="flex flex-row gap-2 items-center">
                         <AlertDialog.Root>
                            <AlertDialog.Trigger>
-                              <TrashIcon id="icon-myevent" />
+                              <TrashIcon id="icon-myinscription" />
                            </AlertDialog.Trigger>
                            <AlertDialog.Content className="AlertDialogContent">
                               <AlertDialog.Title className="AlertDialogTitle">Delete inscription</AlertDialog.Title>
@@ -135,8 +140,7 @@ export default function MyInscription() {
                                  </Flex>
                               </AlertDialog.Content>
                         </AlertDialog.Root>
-                     </div>   
-
+                  </div>   
               </Box> 
             ))
 ) : (

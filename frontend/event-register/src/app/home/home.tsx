@@ -65,11 +65,7 @@ export default function Home() {
   const handleReview = async() => {
     setCurrentContent('review');
   }
-
-  const handleProfile = async() => {
-    setCurrentContent('profile');
-  }
-
+  
   const handleLogout = async () => {      
     setCurrentContent('logout')
   }
@@ -86,8 +82,6 @@ export default function Home() {
         return <Stadistics />;
       case 'review':
         return <Review/>;
-      case 'profile':
-        return <div>{username} {isOrganizer}</div>;
       case 'logout' :
         return <Logout/>
         default:
@@ -123,11 +117,6 @@ export default function Home() {
           onClick={handleStadistics}>
           <ShuffleIcon/>
         </Button>  
-        <Button variant='outline' id="profile-button" className='gap-2'
-          type="submit"
-          onClick={handleProfile}>
-          <PersonIcon/>
-        </Button>
         <Button variant='outline' id="logout-button" className='gap-2'
           onClick={handleLogout}
           type="submit">

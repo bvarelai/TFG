@@ -1,10 +1,11 @@
 
 from sqlalchemy.orm import Session
 from fastapi import APIRouter, Depends, HTTPException, Request, Response, File, UploadFile
-from crud.event import create_event,find_event_by_name,find_event_by_userId,find_all_event,remove_event,change_event
+from crud.event import create_event,find_event_by_name,find_event_by_userId,find_all_event,find_event_by_celebration_date_and_end_date,remove_event,change_event
 from database import get_db
 import csv
 import codecs
+from datetime import datetime
 from schemas.event import EventCreate, EventUpdate
 
 router = APIRouter()
@@ -37,6 +38,13 @@ def get_all_event(db:Session = Depends(get_db)):
     if not db_all_event:
         raise HTTPException(status_code=404, detail="No events available")
     return db_all_event
+
+@router.get("/event/find/{celebration_date}/{end_date}")
+def get_events_by_date(celebration_date: datetime, end_date: datetime, db:Session=Depends(get_db)):
+    db_event = find_event_by_celebration_date_and_end_date(db,celebration_date=celebration_date, end_date=end_date)
+    if not db_event:
+      raise HTTPException(status_code=404, detail="No events available")
+    return db_event
 
 @router.put("/event/update/{event_name}")
 def update_event(event: EventUpdate, event_name : str , db: Session= Depends(get_db)):

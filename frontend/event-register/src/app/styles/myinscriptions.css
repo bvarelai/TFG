@@ -3,23 +3,47 @@
   background-color: #1a1c2c;
   margin-left: 40px;
   margin-top: 50px;
-  height: 210px;
-  width: 270px;
+  height: 150px;
+  width: 320px;
 }
 
+#box-myinscription:hover{
+  border-color: #9678C8;
+}
+
+
 #info-date-myinscription-div{
-  margin-top: 20px;
+ 
   margin-left: 15px;  
 }
 
 #info-clock-myinscription-div{
-  margin-top: 5px;
+ 
   margin-left: 15px;  
 }  
 
 #info-members-myinscription-div{
-  margin-top: 5px;
+ 
   margin-left: 15px;
+  margin-top: -1px;
 
 }
 
+#span-inscription-date{
+  font-size: 15px;
+  color: grey;
+  margin-left: 15px;  
+  margin-top: 5px;
+}
+
+#icon-myinscription{
+  height: 21px;
+  width: 21px;
+  margin-left: 85px;
+}
+
+#icon-myinscription:hover{
+  background-color: #282b40;
+  color:#9678C8;
+  border-radius: 5px;
+}

@@ -15,13 +15,14 @@ def find_event_by_name(db: Session, event_name: str):
 def find_event_by_eventId(db: Session, event_id: int):
     return db.query(Event).filter(Event.event_id == event_id)
 
-
 def find_event_by_userId(db: Session, user_id: int):
     return db.query(Event).filter(Event.user_id == user_id).all()
 
 def find_all_event(db: Session):
     return db.query(Event).all()
 
+def find_event_by_celebration_date_and_end_date(db: Session, celebration_date: datetime, end_date: datetime):
+    return db.query(Event).filter(Event.celebration_date >= celebration_date, Event.end_date <= end_date).all()
 
 def remove_event(db: Session,event_name: str):
     db_event = find_event_by_name(db=db, event_name=event_name)

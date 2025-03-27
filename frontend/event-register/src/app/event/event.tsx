@@ -1,14 +1,16 @@
 "use client";
+
+import * as React from "react";
+import classnames from "classnames";
 import { Heading,TextField,Flex,Box,Button,Badge,Callout} from "@radix-ui/themes";
-import { MagnifyingGlassIcon,PlusIcon,Cross2Icon,MixIcon, LapTimerIcon, PersonIcon,SewingPinFilledIcon,ClockIcon, DrawingPinFilledIcon, ExclamationTriangleIcon} from "@radix-ui/react-icons";
-import { Dialog } from "radix-ui";
-import { useState, useEffect} from "react";
-import { parse } from "path";
+import { MagnifyingGlassIcon,PlusIcon,Cross2Icon,MixIcon, LapTimerIcon, PersonIcon,SewingPinFilledIcon,ClockIcon, DrawingPinFilledIcon, ExclamationTriangleIcon, CheckIcon, ChevronUpIcon, ChevronDownIcon} from "@radix-ui/react-icons";
+import { Dialog,Select} from "radix-ui";
+import { useState, useEffect, useRef} from "react";
 
 
 export default function Events() {
    const [event_id, setEventID] = useState<number>(0);
-   const [user_id, setUserID] = useState<string>("");
+   const [user_id, setUserID] = useState<number>(0);
    const [event_name, setEventname] = useState<string>("");
    const [event_type, setEventType] = useState<string>("");
    const [event_edition, setEventEdition] = useState<string>("");
@@ -23,20 +25,37 @@ export default function Events() {
    const [events, setEvents] = useState<any[]>([]);
    const [isOrganizer, setOrganizer] = useState<boolean>(false);
    const [isRegister, setRegister] = useState<boolean>(false);
-
+   const [uploading, setUploading] = useState(false);
+   const [search_event, setSearchEvent] = useState('')
    
    useEffect(() => {
       const storedUserID = localStorage.getItem('user_id');
       if (storedUserID) {
-        setUserID(storedUserID);
+        setUserID(parseInt(storedUserID));
       }
       const storedValue = localStorage.getItem('organizer');
      if (storedValue !== null) {
          setOrganizer(JSON.parse(storedValue));
-      }      
-      findEvents();
-    }, []);
+      }
+      findEvents()      
+   }, []);
 
+    const SelectItem = React.forwardRef<HTMLDivElement, React.ComponentPropsWithoutRef<typeof Select.Item>>(
+      ({ children, className, ...props }, forwardedRef) => {
+         return (
+            <Select.Item
+               className={classnames("SelectItem", className)}
+               {...props}
+               ref={forwardedRef}
+            >
+               <Select.ItemText>{children}</Select.ItemText>
+               <Select.ItemIndicator className="SelectItemIndicator">
+                  <CheckIcon />
+               </Select.ItemIndicator>
+            </Select.Item>
+         );
+      },
+   );
   
    const validateForm = (): boolean => {
       if (!event_name || !event_type || !event_edition || !category || !location || !celebration_date || !capacity) {
@@ -60,6 +79,26 @@ export default function Events() {
       setError("");
       return true;
     };
+
+      
+   const handleUploadCSV =  async () => {
+
+      const inputRef = useRef<HTMLInputElement | null>(null);
+
+      setUploading(true);
+   
+      const input = inputRef?.current;
+      const reader = new FileReader();
+      const file = input?.files?.[0];
+      if (!file) {
+         setUploading(false);
+         return;
+      }
+      
+      const response = fetch("")
+      
+      reader.readAsText(file);
+   }
 
     const resetForm = () => {
       setEventname("");
@@ -104,16 +143,6 @@ export default function Events() {
          return;
       }
       const data = await responseEvent.json()
-      localStorage.setItem('event_id',data.event_id)   
-      localStorage.setItem('event_name',event_name)
-      localStorage.setItem('event_type',event_type)
-      localStorage.setItem('event_edition',event_edition)
-      localStorage.setItem('category',category)
-      localStorage.setItem('description',description)
-      localStorage.setItem('celebration_date',celebration_date)
-      localStorage.setItem('end_date',end_date)
-      localStorage.setItem('location',location)
-      localStorage.setItem('capacity',capacity.toString())
 
       setEventname("");
       setEventType("");
@@ -141,34 +170,82 @@ export default function Events() {
       setEvents(data);
    }
 
-   const createInscription = async () => {
-      const storedEventId = localStorage.getItem('event_id');   
-      if(storedEventId)
-        setEventID(parseInt(storedEventId))
-      const storedEventName = localStorage.getItem('event_name')
-      const storedEventType = localStorage.getItem('event_type')
-      const storeEventEdition = localStorage.getItem('event_edition')
-      const storeEventCategory = localStorage.getItem('category')
-      const storeEventDescription = localStorage.getItem('description')
-      const storeEventCelebrationDate = localStorage.getItem('celebration_date')
-      const storeEventEndDate = localStorage.getItem('end_date')
-      const storeEventLocation = localStorage.getItem('location')
-      let storeEventCapacity = localStorage.getItem('capacity')
+   const findEventByName = async(e :React.ChangeEvent<HTMLInputElement>)  => {
+      setSearchEvent(e.target.value)
+      if(!e.target.value){
+         return
+      }
+      const responseEvent = await fetch(`http://localhost:8000/event/find/${e.target.value}`, {
+         method: 'GET',
+      });
       
-      if (storeEventCapacity) {
-         storeEventCapacity = (parseInt(storeEventCapacity) - 1).toString();
-         localStorage.setItem('capacity', storeEventCapacity); // Actualizar en localStorage
-      } 
+      if(!responseEvent.ok) {
+         setNotification("No events to show")
+         setEvents([]);
+         return;
+      }
+      const data = await responseEvent.json();
+      if (!Array.isArray(data)) {
+         setEvents([data]);
+      } else {
+         setEvents(data);
+      }
+   }
+   
+   const formatDate = (date: string) => {
+      const parsedDate = new Date(date);
+      return parsedDate.toISOString(); // Convierte la fecha al formato ISO 8601 completo
+   };
+
+   const findEventByDate = async(e :React.ChangeEvent<HTMLInputElement>) => {
+      
+      const { name, value } = e.target;
+
+      if (name === "celebration_date") {
+      setCelebrationDate(value);
+      } else if (name === "end_date") {
+      setEndDate(value);
+      }
+      
+      if (!celebration_date || !end_date) {
+         setNotification("Both start date and end date are required");
+         setEvents([]);
+         return;
+      }
+
+      const formattedStartDate = formatDate(celebration_date);
+      const formattedEndDate = formatDate(end_date);    
+
+      const responseEvent = await fetch(`http://localhost:8000/event/find/${formattedStartDate}/${formattedEndDate}`, {
+         method: 'GET',
+      });
+      
+      if(!responseEvent.ok) {
+         setNotification("No events to show")
+         setEvents([]);
+         return;
+      }
+      const data = await responseEvent.json();
+      if (!Array.isArray(data)) {
+         setEvents([data]);
+         return;
+      } else {
+         setEvents(data);
+         return;
+      }
+   }
+
+   const createInscription = async (event_id : number,event_name : string, event_type:string, event_edition: string, category:string, event_description:string, location:string, celebration_date:string, end_date: string, capacity: number) => {
 
       const formDetails = 
       {
          "event_id" : event_id,
          "user_id" : user_id,
-         "event_name" : storedEventName,
+         "event_name" : event_name,
          "inscription_date" : "2022-12-12T12:12:12",
-         "location" : storeEventLocation
+         "location" : location
       }  
-
+         
       const responseInscription = await fetch('http://localhost:8000/inscription/register' , {
          method: 'POST',
          headers: {
@@ -178,28 +255,27 @@ export default function Events() {
       });
     
       if(!responseInscription.ok){
-       setError('Can`t register')
-       setRegister(true)
+       setError('You are already register in this event')
        return;
       }
       setError('')
-
+   
       const formDetailsEvent = 
       {
-         "event_name" : storedEventName,
+         "event_name" : event_name,
          "user_id" : user_id,
-         "event_type" : storedEventType,  
-         "event_edition" :  storeEventEdition,
-         "event_description" : storeEventDescription,
-         "category": storeEventCategory,
+         "event_type" : event_type,  
+         "event_edition" :  event_edition,
+         "event_description" : event_description,
+         "category": category,
          "location"  : location,
-         "celebration_date"  : storeEventCelebrationDate,
-         "end_date" : storeEventEndDate,
-         "capacity" : storeEventCapacity
+         "celebration_date"  : celebration_date,
+         "end_date" : end_date,
+         "capacity" : capacity - 1
       }
 
 
-      const responseEvent = await fetch(`http://localhost:8000/event/update/${storedEventName}`, {
+      const responseEvent = await fetch(`http://localhost:8000/event/update/${event_name}`, {
          method: 'PUT',
          headers: {
           'Content-Type': 'application/json',
@@ -211,12 +287,13 @@ export default function Events() {
          setError('Can`t register');
          return;
       }
+      setRegister(true)
       findEvents()
    }
 
    return (
       <div id = "events-list-div" className='flex flex-col border-2 border-solid border-white/[.08]'>   
-         <div id = "title-events" className="flex flex-col relative">
+         <div id = "title-events" className="flex flex-col relative border-2 border-solid border-white/[.08]">
             <Heading id="heading-events">All events</Heading>  
          </div>
          <div id = "filter-events" className="flex flex-row gap-2"> 
@@ -230,7 +307,7 @@ export default function Events() {
                   </Dialog.Trigger>   
                   <Dialog.Portal>
                   <Dialog.Overlay className="DialogOverlay" />
-                  <Dialog.Content className="DialogContent border-2 border-solid border-white/[.08]">
+                  <Dialog.Content className="DialogContentCreateEvent border-2 border-solid border-white/[.08]">
                         <Dialog.Title className="DialogTitle">Create a new event</Dialog.Title>
                         <Dialog.Description  className="DialogDescription">
                            Add the event data
@@ -355,15 +432,87 @@ export default function Events() {
                   </Dialog.Portal>           
                </Dialog.Root>    
                <div id = "search-event" className="flex items-center"> 
-                  <TextField.Root id = "textfield-events"variant="soft" placeholder="Search the events…">
+                  <TextField.Root id ="textfield-events"variant="soft" placeholder="Search the events…" onChange={findEventByName} value={search_event}>
                      <TextField.Slot >
                      <MagnifyingGlassIcon height="16" width="16" />
                      </TextField.Slot>
                   </TextField.Root>
                </div>
+               <div id = "filter-by-category" className="flex py-6 px-4">
+                  <Select.Root>
+                     <Select.Trigger className="SelectTrigger" aria-label="Food">
+                        <Select.Value placeholder="Filter by" />
+                        <Select.Icon className="SelectIcon">
+                           <ChevronDownIcon />
+                        </Select.Icon>
+                     </Select.Trigger>
+                     <Select.Portal>
+                        <Select.Content className="SelectContent">
+                           <Select.ScrollUpButton className="SelectScrollButton">
+                              <ChevronUpIcon />
+                           </Select.ScrollUpButton>
+                           <Select.Viewport className="SelectViewport">
+                              <Select.Group>
+                                 <Select.Label className="SelectLabel">Category</Select.Label>
+                                 <SelectItem value="apple">Apple</SelectItem>
+                                 <SelectItem value="banana">Banana</SelectItem>
+                                 <SelectItem value="blueberry">Blueberry</SelectItem>
+                                 <SelectItem value="grapes">Grapes</SelectItem>
+                                 <SelectItem value="pineapple">Pineapple</SelectItem>
+                              </Select.Group>
+                              <Select.Separator className="SelectSeparator" />
+                              <Select.Group>
+                                 <Select.Label className="SelectLabel">Edition</Select.Label>
+                                 <SelectItem value="aubergine">Aubergine</SelectItem>
+                                 <SelectItem value="broccoli">Broccoli</SelectItem>
+                                 <SelectItem value="carrot" disabled>
+                                    Carrot
+                                 </SelectItem>
+                                 <SelectItem value="courgette">Courgette</SelectItem>
+                                 <SelectItem value="leek">Leek</SelectItem>
+                              </Select.Group>
+                              <Select.Separator className="SelectSeparator" />
+                              <Select.Group>
+                                 <Select.Label className="SelectLabel">Meat</Select.Label>
+                                 <SelectItem value="beef">Beef</SelectItem>
+                                 <SelectItem value="chicken">Chicken</SelectItem>
+                                 <SelectItem value="lamb">Lamb</SelectItem>
+                                 <SelectItem value="pork">Pork</SelectItem>
+                              </Select.Group>
+                           </Select.Viewport>
+                           <Select.ScrollDownButton className="SelectScrollButton">
+                              <ChevronDownIcon />
+                           </Select.ScrollDownButton>
+                        </Select.Content>
+                     </Select.Portal>
+                  </Select.Root>
+               </div>
+               <div className = "flex flex-rows items-center"onChange={findEventByDate}>
+                  <div id = "filter-by-date" className="flex flex-row gap-2 items-center px-4">
+                     <label>Start date</label>
+                     <input
+                        id = "input-date"  
+                        name = "event_date"
+                        placeholder="date1"
+                        type="datetime-local" 
+                        value={celebration_date}
+                        onChange={(e) => setCelebrationDate(e.target.value)}
+                     />
+                  </div>
+                  <div id = "filter-by-date" className="flex flex-row gap-2 items-center px-2">
+                     <label>End date</label>
+                     <input
+                        id = "input-date"  
+                        name = "event_date"
+                        placeholder="date1"
+                        type="datetime-local" 
+                        value={end_date}
+                        onChange={(e) => setEndDate(e.target.value)}
+                     />
+                  </div>  
+               </div>
          </div>          
-         <div id = "events_disp" className="flex flex-row" onSubmit={findEvents}>           
-            <Flex gap="6">
+         <div id = "events_disp" className="flex flex-wrap" onSubmit={findEvents}>           
                {events.length > 0 ? (  // Verifica si hay eventos
                   events.map((event) => (
                      <Dialog.Root key={event.event_name}>
@@ -389,18 +538,20 @@ export default function Events() {
                                  <PersonIcon/>
                                  <span id="event-date">{event.capacity}</span>   
                               </div>
-                              {(new Date().toISOString() < event.celebration_date) ? 
-                                 <Badge id="badge" color="green" variant="solid">
-                                       Published
-                                 </Badge> :
-                              ((new Date().toISOString() >= event.celebration_date) && (new Date().toISOString() <= event.end_date)) ?  
-                                 <Badge id="badge" color="orange" variant="solid">
-                                       Ongoing
-                                 </Badge> :
-                                  <Badge id="badge" color="red" variant="solid">
-                                       Finished  
-                                  </Badge>                          
-                              }
+                              <div className="flex items-center py-3">
+                                 {(new Date().toISOString() < event.celebration_date) ? 
+                                    <Badge id="badge" color="green" variant="solid">
+                                          Published
+                                    </Badge> :
+                                 ((new Date().toISOString() >= event.celebration_date) && (new Date().toISOString() <= event.end_date)) ?  
+                                    <Badge id="badge" color="orange" variant="solid">
+                                          Ongoing
+                                    </Badge> :
+                                    <Badge id="badge" color="red" variant="solid">
+                                          Finished  
+                                    </Badge>                          
+                                 }
+                              </div>
                            </Box>   
                         </Dialog.Trigger>
                         <Dialog.Portal>
@@ -411,17 +562,43 @@ export default function Events() {
                                  {event.event_edition} edition
                               </Dialog.Description>
                               <Dialog.Content>
-                                 <div className="flex gap-2 items-center gap-3">
-                                    <div className="flex flex-row gap-1 items-center">
-                                       <LapTimerIcon/>
-                                       <span>{event.celebration_date.split("T")[0]} {event.celebration_date.split("T")[1]}</span>  
+                                 <div className="flex flex-col gap-3">
+                                    <div className="flex items-center gap-3">
+                                       <div className="flex flex-row gap-1 items-center">
+                                          <DrawingPinFilledIcon/>
+                                          <span>{event.category}</span>  
+                                       </div>
+                                       <div className="flex flex-row gap-1 items-center">
+                                          <SewingPinFilledIcon/>
+                                          <span> {event.location}</span>  
+                                       </div> 
+                                       <div className="flex flex-row gap-1 items-center">
+                                          <PersonIcon/>
+                                          <span> {event.capacity}</span>  
+                                       </div>
                                     </div>
-                                    <div className="flex flex-row gap-1 items-center">
-                                       <ClockIcon/>
-                                       <span> {event.end_date.split("T")[0]} {event.end_date.split("T")[1]}</span>  
-                                    </div> 
+                                    <div className="flex flex-col gap-2">
+                                       Start date
+                                       <div className="flex flex-row gap-1 items-center">                                            
+                                          <LapTimerIcon/>
+                                          <span>{event.celebration_date.split("T")[0]}</span>   
+                                       </div>
+                                       <div className="flex flex-row gap-1 items-center">
+                                          <ClockIcon/>
+                                          <span>{event.celebration_date.split("T")[1]}</span>
+                                       </div>
+                                       End date
+                                       <div className="flex flex-row gap-1 items-center">                                            
+                                          <LapTimerIcon/>
+                                          <span>{event.end_date.split("T")[0]}</span>   
+                                       </div>
+                                       <div className="flex flex-row gap-1 items-center">
+                                          <ClockIcon/>
+                                          <span>{event.end_date.split("T")[1]}</span>
+                                       </div>
+                                    </div>
+                                    <p id="event-description">{event.event_description}</p>
                                  </div>
-                                 <p id="event-description">{event.event_description}</p>
                               </Dialog.Content>
                               <Dialog.Close asChild>
                                  <Button className="IconButton" aria-label="Close">
@@ -429,26 +606,19 @@ export default function Events() {
                                  </Button>
                               </Dialog.Close>
                               <Dialog.Close asChild>
-                              {!isOrganizer && (event.capacity > 0 ) && !isRegister && (new Date().toISOString() < event.celebration_date) && 
-                                 <div className="flex items-center">
-                                 <Button onClick={createInscription} id="button-green-inscription">Register</Button> 
+                              {!isOrganizer && (event.capacity > 0 ) && isRegister == false && (new Date().toISOString() < event.celebration_date) && 
+                                 <div id = "div-register-inscription"className="flex items-center">
+                                 <Button variant="soft" color = "pink" onClick={() => createInscription(event.event_id ,event.event_name, event.event_type, event.event_edition, event.category, event.event_description, event.location, event.celebration_date, event.end_date, event.capacity)} id="button-green-inscription">Register</Button> 
                                  </div>
                               }
                               </Dialog.Close>
-                              {error && <label id = "p-red" data-testid="error-message"  style={{ color: "red" }}>{error}</label>}
-                              <Dialog.Title id="title-result" className="DialogTitle">Event result</Dialog.Title> 
-                              {(new Date().toISOString() >= event.end_date) ? 
-                                <div>
-                                      Este es el resultado     
-                                </div> : 
-                                 <Box
-                                 id = "no-box-event-result"
-                                 className="flex flex-col gap-5 "
-                                 >
-                                 <MixIcon id = "no-data-icon"/>
-                                 <label id= "label-no-data">No result to show</label> 
-                                 </Box>                               
-                              }
+                              {error && 
+                                 <Callout.Root id = "callout-root-event-register-inscription" color="red" size="2" variant="outline" className="flex items-center ">
+                                    <Callout.Icon className="callout-icon-event-register-inscription" >
+                                       <ExclamationTriangleIcon  />
+                                    </Callout.Icon>
+                                    <Callout.Text className="callout-text-event-register-inscription"> {error} </Callout.Text> 
+                                 </Callout.Root> }
                            </Dialog.Content>
                         </Dialog.Portal>
                      </Dialog.Root>
@@ -463,7 +633,7 @@ export default function Events() {
                      {notification && <label id= "label-no-data">{notification}</label>}               
                   </Box>
                )}
-            </Flex>
+        
          </div>
       </div>    
    )

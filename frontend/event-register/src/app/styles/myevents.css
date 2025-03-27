@@ -1,12 +1,57 @@
+.DialogContentMyEvent{
+    background-color: rgba(15, 17, 26, 0.95);
+    border-radius: 10px;
+    box-shadow: var(--shadow-6);
+    border-color: #1a1c2c;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 550px; 
+    height: 500px;
+    max-width: 670px;
+    padding: 25px;
+    animation: contentShow 150ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.DialogContentUpdateEvent{
+    background-color: rgba(15, 17, 26, 0.95);
+    border-radius: 10px;
+    box-shadow: var(--shadow-6);
+    border-color: #1a1c2c;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 550px; 
+    height: 640px;
+    max-width: 670px;
+    padding: 25px;
+    animation: contentShow 150ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+
+
 #box-myevent{
     border-radius: 15px;
     background-color: #1a1c2c;
     margin-left: 40px;
-    margin-top: 50px;
+    margin-top: 40px;
     height: 210px;
-    width: 270px;
+    width: 250px;
+    
 }
 
+#box-myevent:nth-child(n+7) {
+    margin-top: -80px; /* Reduce el margen superior para los elementos de la segunda fila */
+  }
+  
+
+#box-myevent:hover{
+    border-color: #9678C8;
+  }
+
+  
 #no-box-myevent{
     border-radius: 15px;
     margin-left: 550px;
@@ -58,6 +103,20 @@
     color:#9678C8;
     border-radius: 5px;
 }
+
+
+#file-myevent{
+    height: 18px;
+    width: 18px;
+}
+
+#file-myevent:hover{
+    background-color: #282b40;
+    color:#9678C8;
+    border-radius: 5px;
+}
+
+
 
 .AlertDialogContent {
     background-color: #1a1c2c;
