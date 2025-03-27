@@ -3,7 +3,6 @@ from models.event import Event
 from schemas.event import EventCreate, EventUpdate
 from datetime import datetime, timedelta
 
-# Dar de alta al usuario
 def create_event(db: Session,  event: EventCreate):
     db_event = Event(user_id=event.user_id,event_name=event.event_name, event_type=event.event_type, event_edition=event.event_edition,category=event.category,event_description=event.event_description, location=event.location, celebration_date=event.celebration_date,end_date=event.end_date, capacity=event.capacity)
     db.add(db_event)

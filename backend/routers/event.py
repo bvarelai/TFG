@@ -1,8 +1,10 @@
 
 from sqlalchemy.orm import Session
-from fastapi import APIRouter, Depends, HTTPException, Request, Response
+from fastapi import APIRouter, Depends, HTTPException, Request, Response, File, UploadFile
 from crud.event import create_event,find_event_by_name,find_event_by_userId,find_all_event,remove_event,change_event
 from database import get_db
+import csv
+import codecs
 from schemas.event import EventCreate, EventUpdate
 
 router = APIRouter()
@@ -48,4 +50,14 @@ def delete_event(event_name : str, db: Session = Depends(get_db)):
     db_event = remove_event(db,event_name)
     if not db_event:
         raise HTTPException(status_code=404, detail="Can't remove the event")
-    return "Evento Eliminado"
+    return "event deleted"
+
+
+
+@router.post("/event/upload")
+async def upload(file: UploadFile = File()):
+    if file.filename.endswith('.csv'):
+        contents = await file.read()
+        with open(file.filename, 'wb') as f: 
+            f.write(contents)
+        return contents;                   

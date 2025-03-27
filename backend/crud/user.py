@@ -7,7 +7,7 @@ def create_user(db: Session,  user: UserCreate):
     db_user = User(user_name=user.user_name,user_surname=user.user_surname,password=user.password, age=user.age, email=user.email, phone=user.phone, city=user.city, autonomous_community=user.autonomous_community, country=user.country, is_organizer=user.is_organizer)
     db.add(db_user)
     db.commit() 
-    return "Usuario creado"
+    return "User created"
 
 def find_user_by_name(db: Session, user_name: str):
     return db.query(User).filter(User.user_name == user_name).first()
@@ -21,7 +21,7 @@ def remove_user(db: Session,user_name: str):
        return False   
     db.delete(db_user)
     db.commit()
-    return "Usuario eliminado"
+    return "User removed"
 
 def authenticate_user(user_name: str, password: str, db: Session):
     user = db.query(User).filter(User.user_name == user_name).first()
