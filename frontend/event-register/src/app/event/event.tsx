@@ -27,6 +27,8 @@ export default function Events() {
    const [isRegister, setRegister] = useState<boolean>(false);
    const [uploading, setUploading] = useState(false);
    const [search_event, setSearchEvent] = useState('')
+   const [filter_celebration_date, setFilterCelebrationDate] = useState<string>("");
+   const [filter_end_date, setFilterEndDate] = useState<string>("");
    
    useEffect(() => {
       const storedUserID = localStorage.getItem('user_id');
@@ -38,7 +40,15 @@ export default function Events() {
          setOrganizer(JSON.parse(storedValue));
       }
       findEvents()      
+      
    }, []);
+
+   useEffect(() => {
+      if (filter_celebration_date && filter_end_date) {
+         findEventByDate();
+      }
+   }, [filter_celebration_date, filter_end_date]);
+
 
     const SelectItem = React.forwardRef<HTMLDivElement, React.ComponentPropsWithoutRef<typeof Select.Item>>(
       ({ children, className, ...props }, forwardedRef) => {
@@ -111,6 +121,54 @@ export default function Events() {
       setcapacity(0);
       setError("");
     };
+
+    const handleSelectChange = (value: string) => {
+      if(value == "small"){
+         findSmallEvents(50)
+      }
+      if (value=="medium"){
+         findMediumEvents(50,200)
+      }
+      if(value == "big"){
+         findBigEvents(200)
+      }
+      if(value == "general"){
+         findEventByCategory("general")
+      }
+      if(value == "junior"){
+         findEventByCategory("junior")
+      } 
+      if(value == "senior"){
+         findEventByCategory("senior")
+      } 
+      if(value == "alevin"){
+         findEventByCategory("alevin")
+      }
+      if(value == "infantil"){
+         findEventByCategory("infantil")
+      }
+      if(value == "football"){
+         findEventByType("football")
+      }
+      if(value == "basketball"){
+         findEventByType("basketball")
+      }
+      if(value == "triathlon"){
+         findEventByType("triathlon")
+      }
+      if(value == "athletics"){
+         findEventByType("athletics")
+      }
+      if(value == "swimming"){
+         findEventByType("swimming")
+      }
+      if(value == "cycling"){
+         findEventByType("cycling")
+      }
+      if(value == "hockey"){
+         findEventByType("hockey")
+      }
+   };
    
     const createEvent = async (event: React.MouseEvent<HTMLButtonElement>) => {
       event.preventDefault()
@@ -173,9 +231,10 @@ export default function Events() {
    const findEventByName = async(e :React.ChangeEvent<HTMLInputElement>)  => {
       setSearchEvent(e.target.value)
       if(!e.target.value){
+         findEvents()
          return
       }
-      const responseEvent = await fetch(`http://localhost:8000/event/find/${e.target.value}`, {
+      const responseEvent = await fetch(`http://localhost:8000/event/find/name/${e.target.value}`, {
          method: 'GET',
       });
       
@@ -189,51 +248,127 @@ export default function Events() {
          setEvents([data]);
       } else {
          setEvents(data);
+      }
+   }
+
+   const findEventByType = async(event_type : string) => {
+      const responseEvent = await fetch(`http://localhost:8000/event/find/type/${event_type}`,{
+         method: 'GET'
+      })
+      if(!responseEvent.ok) {
+         setNotification("No events to show")
+         setEvents([]);
+         return;
+      }
+      const data = await responseEvent.json();
+      if (!Array.isArray(data)) {
+         setEvents([data]);
+      } else {
+         setEvents(data);
+      }
+   }
+
+   const findEventByCategory = async(category : string) => {
+      const responseEvent = await fetch(`http://localhost:8000/event/find/category/${category}`,{
+         method: 'GET'
+      })
+      if(!responseEvent.ok) {
+         setNotification("No events to show")
+         setEvents([]);
+         return;
+      }
+      const data = await responseEvent.json();
+      if (!Array.isArray(data)) {
+         setEvents([data]);
+      } else {
+         setEvents(data);
+      }
+   }
+
+
+   const findEventByDate = async() => { 
+      if (!filter_celebration_date || !filter_end_date) {
+         findEvents()
+         return;
+      }  
+      const responseEvent = await fetch(`http://localhost:8000/event/find/date/${filter_celebration_date}/${filter_end_date}`, {
+         method: 'GET',
+         cache: 'no-store',
+      });
+      if(!responseEvent.ok) {
+         setNotification("No events to show")
+         setEvents([]);
+         return;
+      }
+      const data = await responseEvent.json();
+      if (!Array.isArray(data)) {
+         setEvents([data]);
+         return;
+      } else {
+         setEvents(data);
+         return;
+      }
+   }
+
+   const findSmallEvents = async (capacity: number) => {
+      const responseEvent = await fetch(`http://localhost:8000/event/find/small/${capacity}`, {
+         method: 'GET',
+      }) 
+      if(!responseEvent.ok){
+         setNotification("No events to show")
+         setEvents([])
+         return;
+      }
+      const data = await responseEvent.json();
+      if (!Array.isArray(data)) {
+         setEvents([data]);
+         return;
+      } else {
+         setEvents(data);
+         return;
+      }
+   }
+
+   const findMediumEvents = async (small_capacity: number, big_capacity: number) => {
+      const responseEvent = await fetch(`http://localhost:8000/event/find/medium/${small_capacity}/${big_capacity}`, {
+         method: 'GET',
+      }) 
+      if(!responseEvent.ok){
+         setNotification("No events to show")
+         setEvents([])
+         return;
+      }
+      const data = await responseEvent.json();
+      if (!Array.isArray(data)) {
+         setEvents([data]);
+         return;
+      } else {
+         setEvents(data);
+         return;
+      }
+   }
+   const findBigEvents = async (capacity: number) => {
+      const responseEvent = await fetch(`http://localhost:8000/event/find/big/${capacity}`, {
+         method: 'GET',
+      }) 
+      if(!responseEvent.ok){
+         setNotification("No events to show")
+         setEvents([])
+         return;
+      }
+      const data = await responseEvent.json();
+      if (!Array.isArray(data)) {
+         setEvents([data]);
+         return;
+      } else {
+         setEvents(data);
+         return;
       }
    }
    
-   const formatDate = (date: string) => {
-      const parsedDate = new Date(date);
-      return parsedDate.toISOString(); // Convierte la fecha al formato ISO 8601 completo
-   };
+    
 
-   const findEventByDate = async(e :React.ChangeEvent<HTMLInputElement>) => {
-      
-      const { name, value } = e.target;
 
-      if (name === "celebration_date") {
-      setCelebrationDate(value);
-      } else if (name === "end_date") {
-      setEndDate(value);
-      }
-      
-      if (!celebration_date || !end_date) {
-         setNotification("Both start date and end date are required");
-         setEvents([]);
-         return;
-      }
-
-      const formattedStartDate = formatDate(celebration_date);
-      const formattedEndDate = formatDate(end_date);    
-
-      const responseEvent = await fetch(`http://localhost:8000/event/find/${formattedStartDate}/${formattedEndDate}`, {
-         method: 'GET',
-      });
-      
-      if(!responseEvent.ok) {
-         setNotification("No events to show")
-         setEvents([]);
-         return;
-      }
-      const data = await responseEvent.json();
-      if (!Array.isArray(data)) {
-         setEvents([data]);
-         return;
-      } else {
-         setEvents(data);
-         return;
-      }
-   }
 
    const createInscription = async (event_id : number,event_name : string, event_type:string, event_edition: string, category:string, event_description:string, location:string, celebration_date:string, end_date: string, capacity: number) => {
 
@@ -439,45 +574,44 @@ export default function Events() {
                   </TextField.Root>
                </div>
                <div id = "filter-by-category" className="flex py-6 px-4">
-                  <Select.Root>
-                     <Select.Trigger className="SelectTrigger" aria-label="Food">
+                  <Select.Root onValueChange={(value) => handleSelectChange(value)}>
+                     <Select.Trigger className="SelectTrigger border-2 border-solid border-white/[.08]" aria-label="Food">
                         <Select.Value placeholder="Filter by" />
                         <Select.Icon className="SelectIcon">
                            <ChevronDownIcon />
                         </Select.Icon>
                      </Select.Trigger>
                      <Select.Portal>
-                        <Select.Content className="SelectContent">
-                           <Select.ScrollUpButton className="SelectScrollButton">
+                        <Select.Content className="SelectContent border-2 border-solid border-white/[.08]">
+                           <Select.ScrollUpButton className="SelectScrollButton border-2 border-solid border-white/[.08]">
                               <ChevronUpIcon />
                            </Select.ScrollUpButton>
                            <Select.Viewport className="SelectViewport">
                               <Select.Group>
-                                 <Select.Label className="SelectLabel">Category</Select.Label>
-                                 <SelectItem value="apple">Apple</SelectItem>
-                                 <SelectItem value="banana">Banana</SelectItem>
-                                 <SelectItem value="blueberry">Blueberry</SelectItem>
-                                 <SelectItem value="grapes">Grapes</SelectItem>
-                                 <SelectItem value="pineapple">Pineapple</SelectItem>
+                                 <Select.Label className="SelectLabel">category</Select.Label>
+                                 <SelectItem value="general">general</SelectItem>
+                                 <SelectItem value="junior">junior</SelectItem>
+                                 <SelectItem value="senior">senior</SelectItem>
+                                 <SelectItem value="alevin">alevin</SelectItem>
+                                 <SelectItem value="infantil">infantil</SelectItem>
                               </Select.Group>
                               <Select.Separator className="SelectSeparator" />
                               <Select.Group>
-                                 <Select.Label className="SelectLabel">Edition</Select.Label>
-                                 <SelectItem value="aubergine">Aubergine</SelectItem>
-                                 <SelectItem value="broccoli">Broccoli</SelectItem>
-                                 <SelectItem value="carrot" disabled>
-                                    Carrot
-                                 </SelectItem>
-                                 <SelectItem value="courgette">Courgette</SelectItem>
-                                 <SelectItem value="leek">Leek</SelectItem>
+                                 <Select.Label className="SelectLabel">Type</Select.Label>
+                                 <SelectItem value="football">football</SelectItem>
+                                 <SelectItem value="basketball">basketball</SelectItem>
+                                 <SelectItem value="triathlon">triathlon</SelectItem>
+                                 <SelectItem value="athletics">athletics</SelectItem>
+                                 <SelectItem value="swimming">swimming</SelectItem>
+                                 <SelectItem value="cycling ">cycling</SelectItem>
+                                 <SelectItem value="hockey">hockey</SelectItem>
                               </Select.Group>
                               <Select.Separator className="SelectSeparator" />
                               <Select.Group>
-                                 <Select.Label className="SelectLabel">Meat</Select.Label>
-                                 <SelectItem value="beef">Beef</SelectItem>
-                                 <SelectItem value="chicken">Chicken</SelectItem>
-                                 <SelectItem value="lamb">Lamb</SelectItem>
-                                 <SelectItem value="pork">Pork</SelectItem>
+                                 <Select.Label className="SelectLabel">Capacity</Select.Label>
+                                 <SelectItem value="small">&lt; 50</SelectItem>
+                                 <SelectItem value="medium">&gt; 50 y &lt; 200</SelectItem>
+                                 <SelectItem value="big">&gt; 200</SelectItem>
                               </Select.Group>
                            </Select.Viewport>
                            <Select.ScrollDownButton className="SelectScrollButton">
@@ -495,8 +629,8 @@ export default function Events() {
                         name = "event_date"
                         placeholder="date1"
                         type="datetime-local" 
-                        value={celebration_date}
-                        onChange={(e) => setCelebrationDate(e.target.value)}
+                        value={filter_celebration_date}
+                        onChange={(e) => setFilterCelebrationDate(e.target.value)}
                      />
                   </div>
                   <div id = "filter-by-date" className="flex flex-row gap-2 items-center px-2">
@@ -506,8 +640,8 @@ export default function Events() {
                         name = "event_date"
                         placeholder="date1"
                         type="datetime-local" 
-                        value={end_date}
-                        onChange={(e) => setEndDate(e.target.value)}
+                        value={filter_end_date}
+                        onChange={(e) => setFilterEndDate(e.target.value)}
                      />
                   </div>  
                </div>
