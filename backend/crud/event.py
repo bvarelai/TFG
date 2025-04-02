@@ -12,6 +12,21 @@ def create_event(db: Session,  event: EventCreate):
 def find_event_by_name(db: Session, event_name: str):
     return db.query(Event).filter(Event.event_name == event_name).first()
 
+def find_event_by_type(db: Session, event_type: str):
+    return db.query(Event).filter(Event.event_type == event_type).all()
+
+def find_event_by_category(db: Session, category: str):
+    return db.query(Event).filter(Event.category == category).all()
+
+def find_big_event(db:Session, capacity: int):
+    return db.query(Event).filter(Event.capacity >= capacity).all()
+
+def find_small_event(db:Session, capacity: int):
+    return db.query(Event).filter(Event.capacity <= capacity).all()
+
+def find_medium_event(db:Session, small_capacity: int, big_capacity: int):
+    return db.query(Event).filter(Event.capacity >= small_capacity, Event.capacity <= big_capacity).all()
+
 def find_event_by_eventId(db: Session, event_id: int):
     return db.query(Event).filter(Event.event_id == event_id)
 
@@ -39,7 +54,7 @@ def change_event(db: Session, event: EventUpdate, event_name: str):
     if not db_event:
         return False 
 
-    for key, value in event.dict(exclude_unset=True).items():
+    for key, value in event.model_dump(exclude_unset=True).items():
         setattr(db_event, key, value)
         
     db.commit()
