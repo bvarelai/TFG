@@ -26,10 +26,6 @@ export default function MyEvents() {
       if (storedUserID) {
         setUserID(storedUserID);
       }
-      const storedEventname = localStorage.getItem('event_name');
-      if (storedEventname) {
-         setEventname(storedEventname);
-      }
       findMyEvents();
    }, []);
 
@@ -43,11 +39,15 @@ export default function MyEvents() {
          return false;
       }
        
-      if (description.trim().split(/\s+/).length > 20) {
-         setError("Description must have at least 20 words");
+      if (description.trim().split(/\s+/).length > 30) {
+         setError("Description must not exceed 30 words.");
          return false;
       }
-      description.trim().split(/\s+/).length
+      if (celebration_date > end_date){
+         setError("End date must be after the start date");
+         return false;
+       }
+
 
       setError("");
       return true;
@@ -175,7 +175,7 @@ export default function MyEvents() {
                                        Published
                                     </Badge> :
                                  ((new Date().toISOString() >= event.celebration_date) && (new Date().toISOString() <= event.end_date)) ?  
-                                    <Badge id="badge" color="orange" variant="solid">
+                                    <Badge id="badge" color="blue" variant="solid">
                                           Ongoing
                                     </Badge> :
                                     <Badge id="badge" color="red" variant="solid">
@@ -188,7 +188,7 @@ export default function MyEvents() {
                               <div>
                                  <Dialog.Root>
                                     <Dialog.Trigger asChild>
-                                       {(new Date().toISOString() < event.celebration_date) && <Pencil1Icon id="icon-myevent"/>}
+                                       {(new Date().toISOString() < event.celebration_date) && <Pencil1Icon id="icon-myevent-update"/>}
                                     </Dialog.Trigger>   
                                     <Dialog.Portal>
                                     <Dialog.Overlay className="DialogOverlay" />
@@ -321,7 +321,7 @@ export default function MyEvents() {
                                  <AlertDialog.Root>
                                     {(new Date().toISOString() < event.celebration_date || new Date().toISOString() > event.end_date) && 
                                        <AlertDialog.Trigger>
-                                          <TrashIcon id="icon-myevent"/>
+                                          <TrashIcon id="icon-myevent-delete"/>
                                        </AlertDialog.Trigger>
                                     }
                                     <AlertDialog.Content className="AlertDialogContent">

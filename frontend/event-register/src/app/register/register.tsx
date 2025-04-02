@@ -28,11 +28,11 @@ export default function Login() {
   const validateForm = (): boolean => {
     
     if (!user_name || !password || !age || !country) {
-      setError("Los datos del usuario son requeridos");
+      setError("Data are required");
       return false;
     }
     if (isNaN(Number(age))){
-      setError("La edad debe ser númerica");
+      setError("Age must be a number");
       return false;
     }    
     setError("");
@@ -75,7 +75,7 @@ export default function Login() {
               
     if (!response.ok) {
       setLoading(false);
-      setError('Ya existe un usuario con estos datos');
+      setError('User already exist');
       return;
     }
 
@@ -90,7 +90,7 @@ export default function Login() {
                  
     if (!responselogin.ok) {
       setLoading(false);
-      setError('Usuario y/o contraseña incorrectos');
+      setError('Incorrect user or/and password');
       return;
     }
     const data = await responselogin.json();
@@ -191,12 +191,12 @@ export default function Login() {
               value={country}
               onChange={(e) => setCountry(e.target.value)}
             />
-             <div id = "check-box-register"className="flex flex-rows gap-2.5 relative top-[-95px] items-center"
+             <div id = "check-box-register" className="flex flex-rows gap-2.5 relative top-[-95px] items-center"
              onClick={() => setOrganizer(!organizer)}>
               <Text className="Label" htmlFor="c1">
                 Be organizer
               </Text>
-              {!organizer ? <Checkbox.Root className="CheckboxRoot">
+              {!organizer ? <Checkbox.Root className="CheckboxRoot" id="checkbox-root">
                 <Checkbox.Indicator className="CheckboxIndicator">
                   <CheckIcon />
                 </Checkbox.Indicator>

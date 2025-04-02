@@ -2,6 +2,7 @@
 import { Heading, Box, Button,AlertDialog,Flex} from "@radix-ui/themes";
 import { useState, useEffect} from "react";
 import { MixIcon,LapTimerIcon,ClockIcon,SewingPinFilledIcon, TrashIcon} from "@radix-ui/react-icons";
+import { Dialog } from "radix-ui";
 
 
 export default function MyInscription() {
@@ -92,58 +93,92 @@ export default function MyInscription() {
       <div id = "events_disp" className="flex flex-row">          
          {inscriptions.length > 0 ? (
             inscriptions.map((inscription) =>(
-              <Box
-                  key={inscription.event_id}
-                  id="box-myinscription"
-                  className="flex flex-col border-2 border-solid border-white/[.08]"
-                  width="64px"
-                  height="100px"
-              >
-                  <Heading className="flex items-center" id="heading-event-name">
-                     Inscription in {inscription.event_name} 
-                  </Heading>
-                  <div className="flex flex-col px-2 py-2">
-                     <div  id = "info-members-myinscription-div" className="flex flex-row items-center">
-                        <SewingPinFilledIcon/>
-                        <span id="event-date">{inscription.location}</span>   
-                     </div>
-                     <div  id = "info-date-myinscription-div"className="flex flex-row items-center">
-                        <LapTimerIcon/> 
-                        <span id="event-date">{inscription.inscription_date.split("T")[0]}</span>  
+               <Dialog.Root key={inscription.event_name}>  
+                  <Box
+                     key={inscription.event_id}
+                     id="box-myinscription"
+                     className="flex flex-col border-2 border-solid border-white/[.08]"
+                     width="64px"
+                     height="100px"
+                  >
+                     <Dialog.Trigger asChild>              
+                        <div>
+                           <Heading className="flex items-center" id="heading-event-name">
+                              Inscription in {inscription.event_name} 
+                           </Heading>
+                           <div className="flex flex-col px-2 py-2">
+                              <div  id = "info-members-myinscription-div" className="flex flex-row items-center">
+                                 <SewingPinFilledIcon/>
+                                 <span id="event-date">{inscription.location}</span>   
+                              </div>
+                              <div  id = "info-date-myinscription-div"className="flex flex-row items-center">
+                                 <LapTimerIcon/> 
+                                 <span id="event-date">{inscription.inscription_date.split("T")[0]}</span>  
+                              </div>   
+                              <div  id = "info-clock-myinscription-div"className="flex flex-row items-center">
+                                 <ClockIcon/> 
+                                 <span id="event-date">{inscription.inscription_date.split("T")[1]}</span>  
+                              </div>
+                           </div>
+                        </div>
+                     </Dialog.Trigger>    
+                     <div id="buttons-myevent" className="flex flex-row gap-2 items-center">
+                           <AlertDialog.Root>
+                              <AlertDialog.Trigger>
+                                 <TrashIcon id="icon-myinscription" />
+                              </AlertDialog.Trigger>
+                              <AlertDialog.Content className="AlertDialogContent">
+                                 <AlertDialog.Title className="AlertDialogTitle">Delete inscription</AlertDialog.Title>
+                                 <AlertDialog.Description className="AlertDialogDescription" size="2">
+                                    Are you sure? This inscription will be deleted permanently.
+                                 </AlertDialog.Description>
+                                    <Flex gap="3" mt="4" justify="end">
+                                       <AlertDialog.Cancel>
+                                          <Button  id = "cancel-button" variant="outline" color="gray">
+                                             Cancel
+                                          </Button>
+                                       </AlertDialog.Cancel>
+                                       <AlertDialog.Action>
+                                          <Button onClick={() =>deleteInscription(inscription.event_name, inscription.event_id)} variant="solid" color="red">
+                                             Delete
+                                          </Button>
+                                       </AlertDialog.Action>
+                                    </Flex>
+                                 </AlertDialog.Content>
+                           </AlertDialog.Root>
                      </div>   
-                     <div  id = "info-clock-myinscription-div"className="flex flex-row items-center">
-                        <ClockIcon/> 
-                        <span id="event-date">{inscription.inscription_date.split("T")[1]}</span>  
-                     </div>
-                  </div>
-                  <div id="buttons-myevent" className="flex flex-row gap-2 items-center">
-                        <AlertDialog.Root>
-                           <AlertDialog.Trigger>
-                              <TrashIcon id="icon-myinscription" />
-                           </AlertDialog.Trigger>
-                           <AlertDialog.Content className="AlertDialogContent">
-                              <AlertDialog.Title className="AlertDialogTitle">Delete inscription</AlertDialog.Title>
-                              <AlertDialog.Description className="AlertDialogDescription" size="2">
-                                 Are you sure? This inscription will be deleted permanently.
-                              </AlertDialog.Description>
-                                 <Flex gap="3" mt="4" justify="end">
-                                    <AlertDialog.Cancel>
-                                       <Button  id = "cancel-button" variant="outline" color="gray">
-                                          Cancel
-                                       </Button>
-                                    </AlertDialog.Cancel>
-                                    <AlertDialog.Action>
-                                       <Button onClick={() =>deleteInscription(inscription.event_name, inscription.event_id)} variant="solid" color="red">
-                                          Delete
-                                       </Button>
-                                    </AlertDialog.Action>
-                                 </Flex>
-                              </AlertDialog.Content>
-                        </AlertDialog.Root>
-                  </div>   
-              </Box> 
+               </Box>
+               <Dialog.Portal>
+               <Dialog.Overlay className="DialogOverlay" />
+                  <Dialog.Content className="DialogContentMyEvent border-2 border-solid border-white/[.08]">
+                     <Dialog.Title className="DialogTitle">Information about inscription</Dialog.Title>
+                     <Dialog.Description className="DialogDescription">
+                           Information about {inscription.event_name} inscription
+                     </Dialog.Description>
+                     <Dialog.Content>                        
+                        <div className="flex flex-col gap-3">
+                           <div className="flex flex-row gap-1 items-center">
+                              <SewingPinFilledIcon/>
+                              <span> {inscription.location}</span>  
+                           </div> 
+                           <div className="flex flex-col gap-3">
+                              Registration date
+                              <div className="flex flex-row gap-1 items-center">                                            
+                                 <LapTimerIcon/>
+                                 <span>{inscription.inscription_date.split("T")[0]}</span>   
+                              </div>
+                              <div className="flex flex-row gap-1 items-center">
+                                 <ClockIcon/>
+                                 <span>{inscription.inscription_date.split("T")[1]}</span>
+                              </div>
+                           </div>
+                        </div>
+                     </Dialog.Content>
+                  </Dialog.Content>            
+               </Dialog.Portal>
+               </Dialog.Root>    
             ))
-) : (
+         ) : (
                <Box
                   id="no-box-event"
                   className="flex flex-col gap-5 border-2 border-solid border-white/[.08]"

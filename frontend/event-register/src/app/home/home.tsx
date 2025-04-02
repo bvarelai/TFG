@@ -101,7 +101,7 @@ export default function Home() {
             type="submit"
             onClick={handleMyInscriptions}>
             <Pencil2Icon />
-          </Button><Button variant='outline' id="myinscriptions-button" className='gap-2'
+          </Button><Button variant='outline' id="myreviews-button" className='gap-2'
             type="submit"
             onClick={handleReview}>
             <ChatBubbleIcon />

@@ -55,7 +55,20 @@
     color:#9678C8
   }
   
+  #myreviews-button{
+    color: white;
+    width: 100px;
+    height: 60px;
+    border-radius: 3px;
+    font-size: 17px;
+  }
   
+  #myreviews-button:hover{
+    background-color: #282b40;
+    color:#9678C8
+  }
+
+
   #stadistics-button{
     color: white;
     width: 100px;

@@ -93,12 +93,26 @@
     margin-top: -22px;
 }
 
-#icon-myevent{
+#icon-myevent-update{
     height: 21px;
     width: 21px;
 }
 
-#icon-myevent:hover{
+#icon-myevent-update:hover{
+    background-color: #282b40;
+    color:#9678C8;
+    border-radius: 5px;
+}
+
+
+
+
+#icon-myevent-delete{
+    height: 21px;
+    width: 21px;
+}
+
+#icon-myevent-delete:hover{
     background-color: #282b40;
     color:#9678C8;
     border-radius: 5px;

@@ -77,8 +77,8 @@ export default function Events() {
          return false;
       }
        
-      if (description.trim().split(/\s+/).length > 20) {
-         setError("Description must have at least 20 words");
+      if (description.trim().split(/\s+/).length > 30) {
+         setError("Description must not exceed 30 words.");
          return false;
       }
        if (celebration_date > end_date){
@@ -226,6 +226,8 @@ export default function Events() {
       const data = await responseEvent.json();
       setNotification("")      
       setEvents(data);
+
+      
    }
 
    const findEventByName = async(e :React.ChangeEvent<HTMLInputElement>)  => {
@@ -365,11 +367,6 @@ export default function Events() {
          return;
       }
    }
-   
-    
-
-
-
    const createInscription = async (event_id : number,event_name : string, event_type:string, event_edition: string, category:string, event_description:string, location:string, celebration_date:string, end_date: string, capacity: number) => {
 
       const formDetails = 
@@ -379,7 +376,8 @@ export default function Events() {
          "event_name" : event_name,
          "inscription_date" : "2022-12-12T12:12:12",
          "location" : location
-      }  
+      }
+      
          
       const responseInscription = await fetch('http://localhost:8000/inscription/register' , {
          method: 'POST',
@@ -422,7 +420,6 @@ export default function Events() {
          setError('Can`t register');
          return;
       }
-      setRegister(true)
       findEvents()
    }
 
@@ -432,10 +429,11 @@ export default function Events() {
             <Heading id="heading-events">All events</Heading>  
          </div>
          <div id = "filter-events" className="flex flex-row gap-2"> 
-            <Dialog.Root>
+            <div id ="new-event" className="flex">
+               <Dialog.Root >
                   <Dialog.Trigger asChild>
                      {isOrganizer && 
-                        <Button id="create-event" className="flex items-center gap-3">
+                        <Button id="create-event" type = "submit" className="flex items-center gap-3">
                            <PlusIcon radius={"full"}/>
                         </Button>
                   }              
@@ -566,85 +564,86 @@ export default function Events() {
                      </Dialog.Content> 
                   </Dialog.Portal>           
                </Dialog.Root>    
-               <div id = "search-event" className="flex items-center"> 
-                  <TextField.Root id ="textfield-events"variant="soft" placeholder="Search the events…" onChange={findEventByName} value={search_event}>
-                     <TextField.Slot >
-                     <MagnifyingGlassIcon height="16" width="16" />
-                     </TextField.Slot>
-                  </TextField.Root>
-               </div>
-               <div id = "filter-by-category" className="flex py-6 px-4">
-                  <Select.Root onValueChange={(value) => handleSelectChange(value)}>
-                     <Select.Trigger className="SelectTrigger border-2 border-solid border-white/[.08]" aria-label="Food">
-                        <Select.Value placeholder="Filter by" />
-                        <Select.Icon className="SelectIcon">
+            </div>
+            <div id = "search-event" className="flex items-center"> 
+               <TextField.Root id ="textfield-events"variant="soft" placeholder="Search the events…" onChange={findEventByName} value={search_event}>
+                  <TextField.Slot >
+                  <MagnifyingGlassIcon height="16" width="16" />
+                  </TextField.Slot>
+               </TextField.Root>
+            </div>
+            <div id = "filter-by-category" className="flex py-6 px-4">
+               <Select.Root onValueChange={(value) => handleSelectChange(value)}>
+                  <Select.Trigger className="SelectTrigger border-2 border-solid border-white/[.08]" aria-label="Food">
+                     <Select.Value placeholder="Filter by" />
+                     <Select.Icon className="SelectIcon">
+                        <ChevronDownIcon />
+                     </Select.Icon>
+                  </Select.Trigger>
+                  <Select.Portal>
+                     <Select.Content className="SelectContent border-2 border-solid border-white/[.08]">
+                        <Select.ScrollUpButton className="SelectScrollButton border-2 border-solid border-white/[.08]">
+                           <ChevronUpIcon />
+                        </Select.ScrollUpButton>
+                        <Select.Viewport className="SelectViewport">
+                           <Select.Group>
+                              <Select.Label className="SelectLabel">category</Select.Label>
+                              <SelectItem  value="general">general</SelectItem>
+                              <SelectItem role="option" value="junior">junior</SelectItem>
+                              <SelectItem  value="senior">senior</SelectItem>
+                              <SelectItem  value="alevin">alevin</SelectItem>
+                              <SelectItem  value="infantil">infantil</SelectItem>
+                           </Select.Group>
+                           <Select.Separator className="SelectSeparator" />
+                           <Select.Group>
+                              <Select.Label className="SelectLabel">Type</Select.Label>
+                              <SelectItem  value="football">football</SelectItem>
+                              <SelectItem  value="basketball">basketball</SelectItem>
+                              <SelectItem  value="triathlon">triathlon</SelectItem>
+                              <SelectItem  value="athletics">athletics</SelectItem>
+                              <SelectItem  value="swimming">swimming</SelectItem>
+                              <SelectItem  value="cycling">cycling</SelectItem>
+                              <SelectItem  value="hockey">hockey</SelectItem>
+                           </Select.Group>
+                           <Select.Separator className="SelectSeparator" />
+                           <Select.Group>
+                              <Select.Label className="SelectLabel">Capacity</Select.Label>
+                              <SelectItem  value="small">&lt; 50</SelectItem>
+                              <SelectItem  value="medium">&gt; 50 y &lt; 200</SelectItem>
+                              <SelectItem  value="big">&gt; 200</SelectItem>
+                           </Select.Group>
+                        </Select.Viewport>
+                        <Select.ScrollDownButton className="SelectScrollButton">
                            <ChevronDownIcon />
-                        </Select.Icon>
-                     </Select.Trigger>
-                     <Select.Portal>
-                        <Select.Content className="SelectContent border-2 border-solid border-white/[.08]">
-                           <Select.ScrollUpButton className="SelectScrollButton border-2 border-solid border-white/[.08]">
-                              <ChevronUpIcon />
-                           </Select.ScrollUpButton>
-                           <Select.Viewport className="SelectViewport">
-                              <Select.Group>
-                                 <Select.Label className="SelectLabel">category</Select.Label>
-                                 <SelectItem value="general">general</SelectItem>
-                                 <SelectItem value="junior">junior</SelectItem>
-                                 <SelectItem value="senior">senior</SelectItem>
-                                 <SelectItem value="alevin">alevin</SelectItem>
-                                 <SelectItem value="infantil">infantil</SelectItem>
-                              </Select.Group>
-                              <Select.Separator className="SelectSeparator" />
-                              <Select.Group>
-                                 <Select.Label className="SelectLabel">Type</Select.Label>
-                                 <SelectItem value="football">football</SelectItem>
-                                 <SelectItem value="basketball">basketball</SelectItem>
-                                 <SelectItem value="triathlon">triathlon</SelectItem>
-                                 <SelectItem value="athletics">athletics</SelectItem>
-                                 <SelectItem value="swimming">swimming</SelectItem>
-                                 <SelectItem value="cycling ">cycling</SelectItem>
-                                 <SelectItem value="hockey">hockey</SelectItem>
-                              </Select.Group>
-                              <Select.Separator className="SelectSeparator" />
-                              <Select.Group>
-                                 <Select.Label className="SelectLabel">Capacity</Select.Label>
-                                 <SelectItem value="small">&lt; 50</SelectItem>
-                                 <SelectItem value="medium">&gt; 50 y &lt; 200</SelectItem>
-                                 <SelectItem value="big">&gt; 200</SelectItem>
-                              </Select.Group>
-                           </Select.Viewport>
-                           <Select.ScrollDownButton className="SelectScrollButton">
-                              <ChevronDownIcon />
-                           </Select.ScrollDownButton>
-                        </Select.Content>
-                     </Select.Portal>
-                  </Select.Root>
+                        </Select.ScrollDownButton>
+                     </Select.Content>
+                  </Select.Portal>
+               </Select.Root>
+            </div>
+            <div className = "flex flex-rows items-center"onChange={findEventByDate}>
+               <div id = "filter-by-date" className="flex flex-row gap-2 items-center px-4">
+                  <label>Start date</label>
+                  <input
+                     id = "input-date"  
+                     name = "event_date"
+                     placeholder="date1"
+                     type="datetime-local" 
+                     value={filter_celebration_date}
+                     onChange={(e) => setFilterCelebrationDate(e.target.value)}
+                  />
                </div>
-               <div className = "flex flex-rows items-center"onChange={findEventByDate}>
-                  <div id = "filter-by-date" className="flex flex-row gap-2 items-center px-4">
-                     <label>Start date</label>
-                     <input
-                        id = "input-date"  
-                        name = "event_date"
-                        placeholder="date1"
-                        type="datetime-local" 
-                        value={filter_celebration_date}
-                        onChange={(e) => setFilterCelebrationDate(e.target.value)}
-                     />
-                  </div>
-                  <div id = "filter-by-date" className="flex flex-row gap-2 items-center px-2">
-                     <label>End date</label>
-                     <input
-                        id = "input-date"  
-                        name = "event_date"
-                        placeholder="date1"
-                        type="datetime-local" 
-                        value={filter_end_date}
-                        onChange={(e) => setFilterEndDate(e.target.value)}
-                     />
-                  </div>  
-               </div>
+               <div id = "filter-by-date" className="flex flex-row gap-2 items-center px-2">
+                  <label>End date</label>
+                  <input
+                     id = "input-date"  
+                     name = "event_end_date"
+                     placeholder="date1"
+                     type="datetime-local" 
+                     value={filter_end_date}
+                     onChange={(e) => setFilterEndDate(e.target.value)}
+                  />
+               </div>  
+            </div>
          </div>          
          <div id = "events_disp" className="flex flex-wrap" onSubmit={findEvents}>           
                {events.length > 0 ? (  // Verifica si hay eventos
@@ -678,7 +677,7 @@ export default function Events() {
                                           Published
                                     </Badge> :
                                  ((new Date().toISOString() >= event.celebration_date) && (new Date().toISOString() <= event.end_date)) ?  
-                                    <Badge id="badge" color="orange" variant="solid">
+                                    <Badge id="badge" color="blue" variant="solid">
                                           Ongoing
                                     </Badge> :
                                     <Badge id="badge" color="red" variant="solid">
@@ -740,7 +739,7 @@ export default function Events() {
                                  </Button>
                               </Dialog.Close>
                               <Dialog.Close asChild>
-                              {!isOrganizer && (event.capacity > 0 ) && isRegister == false && (new Date().toISOString() < event.celebration_date) && 
+                              {!isOrganizer && (event.capacity > 0 ) && (new Date().toISOString() < event.celebration_date) && 
                                  <div id = "div-register-inscription"className="flex items-center">
                                  <Button variant="soft" color = "pink" onClick={() => createInscription(event.event_id ,event.event_name, event.event_type, event.event_edition, event.category, event.event_description, event.location, event.celebration_date, event.end_date, event.capacity)} id="button-green-inscription">Register</Button> 
                                  </div>
