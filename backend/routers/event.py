@@ -2,6 +2,9 @@
 from sqlalchemy.orm import Session
 from fastapi import APIRouter, Depends, HTTPException, Request, Response, File, UploadFile
 from crud.event import create_event, find_event_by_name, find_event_by_type, find_event_by_category, find_big_event, find_small_event, find_medium_event,  find_event_by_userId, find_all_event, find_event_by_celebration_date_and_end_date, remove_event, change_event
+from crud.event_result import create_event_result_csv,find_all_event_result_csv,find_event_result_csv,delete_event_result_csv
+from models.event_result import EventResult
+from schemas.event_result import EventResultCreate
 from database import get_db
 import csv
 import codecs
@@ -39,7 +42,7 @@ def get_event(category: str, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Events no available")
     return db_event
 
-@router.get ("/event/find/user/{user_id}")
+@router.get ("/event/find/{user_id}")
 def get_event_by_userId( user_id: int, db: Session = Depends(get_db)):
     db_event = find_event_by_userId(db, user_id)
     if not db_event:
@@ -96,10 +99,24 @@ def delete_event(event_name : str, db: Session = Depends(get_db)):
     return {"message" : "Event deleted"}
 
 
-@router.post("/event/upload")
-async def upload(file: UploadFile = File()):
-    if file.filename.endswith('.csv'):
-        contents = await file.read()
-        with open(file.filename, 'wb') as f: 
-            f.write(contents)
-        return contents;                   
+@router.post("/event/result/upload/{event_id}")
+async def register_event_result( event_id: int, edition_result:str, category_result: str, file: UploadFile = File(...), db: Session = Depends(get_db)):
+    db_event_result = await create_event_result_csv(file=file, event_id=event_id, edition_result=edition_result, category_result=category_result, db=db)
+    if not db_event_result:
+        raise HTTPException(status_code=400, detail="Error saving CSV file to the database")
+    return {"message": "CSV file uploaded successfully"}
+
+@router.get("/event/result/download/{event_id}")
+def get_event_result(event_id: int, db: Session = Depends(get_db)):
+    db_event_result = find_all_event_result_csv(db=db, event_id=event_id)
+    if not db_event_result:
+        raise HTTPException(status_code=404, detail="Event result no available")
+    return db_event_result
+
+@router.delete("/event/result/delete/{event_id}/{result_id}")
+def delete_event_result(event_id: int, result_id: int, db: Session = Depends(get_db)):
+    db_event_result = find_event_result_csv(db=db, event_id=event_id, result_id=result_id)
+    if not db_event_result:
+        raise HTTPException(status_code=404, detail="Event result no available")
+    delete_event_result_csv(db=db,event_id=event_id,result_id=result_id)
+    return {"message": "Event result deleted"}

@@ -18,5 +18,6 @@ class User(Base):
 
 inscription = relationship("Inscriptions", back_populates="Users")
 event = relationship("Events", back_populates="Users")
+review = relationship("Reviews", back_populates="Users")
 
 User.metadata.create_all(bind=engine)

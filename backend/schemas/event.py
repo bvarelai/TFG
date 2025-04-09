@@ -13,6 +13,11 @@ class EventCreate(BaseModel):
     celebration_date : datetime
     end_date : datetime
     capacity : int
+    organizer_by : str
+    duration : int
+    event_full_description : str
+    language : str
+    is_free : bool
 
 class EventUpdate(BaseModel):
     event_name: Optional[str]
@@ -25,3 +30,8 @@ class EventUpdate(BaseModel):
     celebration_date : Optional[datetime]
     end_date : Optional[datetime]
     capacity : Optional[int]
+    organizer_by : Optional[str]
+    duration : Optional[int]
+    event_full_description : Optional[str]
+    language : Optional[str]
+    is_free : Optional[bool]

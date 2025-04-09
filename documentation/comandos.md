@@ -43,4 +43,5 @@ https://juannunezblasco.es/autenticacion-nextjs/ (Blog que consulte)
 - INstalar para radix-ui : 
 npm install @radix-ui/react-icons  
 
+Hacer npm install papaparse (Haber si funciona)
 
