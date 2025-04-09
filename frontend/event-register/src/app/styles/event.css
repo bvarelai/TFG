@@ -221,8 +221,8 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 550px; 
-  height: 640px;
+  width: 480px; 
+  height: 870px;
   max-width: 670px;
   padding: 25px;
   animation: contentShow 150ms cubic-bezier(0.16, 1, 0.3, 1);
@@ -249,8 +249,8 @@
   outline-color: var(--green-7);
   border: 1px solid #333;
   border-radius: 15px; 
-  margin-top: 10px;
-  margin-left: 180px;  
+  margin-top: 20px;
+  margin-left: 140px;  
   padding: 0 15px;
   font-size: 18px;
   line-height: 1;
@@ -284,7 +284,7 @@
 }
 
 
-#button-green-inscription{
+#button-more-details{
   color: white;
   border: 1px solid #333;
   border-radius: 15px; 
@@ -294,16 +294,16 @@
   line-height: 1;
   font-weight: 500;
   height: 30px;
-  width: 110px;
+  width: 130px;
   user-select: none;
 }
 
-#button-green-inscription:hover {
+#button-more-details:hover {
   border-color: #9678C8;
 }
 
 #div-register-inscription{
-  margin-top: 25px;
+  margin-top: 35px;
   
 }
 
@@ -321,6 +321,40 @@
 #input-event:hover{
   border-color: #9678C8;
 }
+
+#input-event-large{
+  background-color: rgba(15, 17, 26, 0.8);
+  border: 1px solid #333;
+  color: white; 
+  width: 420px;
+  height: 30px;
+}
+#input-event-large:hover{
+  border-color: #9678C8;
+}
+
+
+#input-event-big{
+  background-color: rgba(15, 17, 26, 0.8);
+  border: 1px solid #333;
+  color: white; 
+  width: 420px;
+  height: 80px;
+}
+
+#input-event-big::placeholder{
+color: grey;
+}
+
+#input-event-big:hover{
+  border-color: #9678C8;
+}
+
+#is-free-event{
+  margin-top: 25px;
+  margin-left: 50px ;
+}
+
   
 #box-event{
   border-radius: 15px;
@@ -429,10 +463,11 @@
 #callout-root-event-register
 {
   margin-top: 20px;
-  margin-left: 120px;
+  margin-left: 90px;
   width: 200px;
   align-items: center;
   justify-content: center;
+  border-radius: 10px;
 
 }
 .callout-text-event-register {

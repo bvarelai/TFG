@@ -1,11 +1,13 @@
 "use client"
+import * as React from "react";
 import { useState, useEffect} from "react";
+import classnames from "classnames";
 import { Heading, Flex,Box,Badge, AlertDialog, Button,Callout} from "@radix-ui/themes";
-import {MixIcon,LapTimerIcon, PersonIcon,ClockIcon,TrashIcon,Pencil1Icon,Cross2Icon,FileIcon, ExclamationTriangleIcon, DrawingPinFilledIcon, SewingPinFilledIcon} from "@radix-ui/react-icons";
-import { Dialog } from "radix-ui";
+import {MixIcon,LapTimerIcon, PersonIcon,ClockIcon,TrashIcon,Pencil1Icon,Cross2Icon,FileIcon, ExclamationTriangleIcon, DrawingPinFilledIcon, SewingPinFilledIcon,CheckIcon, ChevronDownIcon, ChevronUpIcon} from "@radix-ui/react-icons";
+import { Dialog, Select } from "radix-ui";
 
 
-export default function MyEvents() {   
+export default function MyEvents({ onGoToReview, setSelectedEvent }: { onGoToReview: () => void; setSelectedEvent: (event: any) => void }) {   
    const [events, setEvents] = useState<any[]>([]);
    const [user_id, setUserID] = useState<string>("");
    const [notification, setNotification] = useState<string>("");
@@ -20,7 +22,9 @@ export default function MyEvents() {
    const [end_date, setEndDate] = useState<string>("");
    const [capacity, setcapacity] = useState<number>(0);   
    const [csvData, setCsvData] = useState<string>("");
-   
+   const [category_result, setCategoryResult] = useState<string>("");
+   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
    useEffect(() => {
       const storedUserID = localStorage.getItem('user_id');
       if (storedUserID) {
@@ -29,6 +33,56 @@ export default function MyEvents() {
       findMyEvents();
    }, []);
 
+   const handleSelectChange = (value: string) => {
+      if(value == "general"){
+         setCategoryResult("general")
+      }
+      if(value == "junior"){
+         setCategoryResult("junior")
+      } 
+      if(value == "senior"){
+         setCategoryResult("senior")
+      } 
+      if(value == "alevin"){
+         setCategoryResult("alevin")
+      }
+      if(value == "infantil"){
+         setCategoryResult("infantil")
+      }
+   };
+   
+   
+   const SelectItem = React.forwardRef<HTMLDivElement, React.ComponentPropsWithoutRef<typeof Select.Item>>(
+         ({ children, className, ...props }, forwardedRef) => {
+            return (
+               <Select.Item
+                  className={classnames("SelectItem", className)}
+                  {...props}
+                  ref={forwardedRef}
+               >
+                  <Select.ItemText>{children}</Select.ItemText>
+                  <Select.ItemIndicator className="SelectItemIndicator">
+                     <CheckIcon />
+                  </Select.ItemIndicator>
+               </Select.Item>
+            );
+         },
+   );
+   
+   const handleFileChange = async (file: File, event_id: number, event_edition: string) => {
+      if (!file) return;
+      const formData = new FormData();
+      formData.append("file", file);      
+
+      const responseEvent = await fetch(`http://localhost:8000/event/result/upload/${event_id}?edition_result=${event_edition}&category_result=${category_result}`, {     
+         method: 'POST',
+         body: formData, 
+      }) 
+      if(!responseEvent.ok){
+         return;
+      }
+   };
+   
    const validateForm = (): boolean => {
       if (!event_name || !event_type || !event_edition || !category || !location || !celebration_date || !capacity) {
         setError("Data are required");
@@ -53,30 +107,6 @@ export default function MyEvents() {
       return true;
     };
 
-    const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-      const file = e.target.files?.[0];
-      if (!file) return;
-  
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        const text = event.target?.result;
-        if (typeof text === "string") {
-          setCsvData(text); // Aquí tienes el CSV como string
-        }
-      };
-      reader.readAsText(file);
-      
-      const responseEvent = await fetch(`http://localhost:8000/event/upload`, {     
-         method: 'POST',
-         body: file
-      }) 
-
-      if(!responseEvent.ok){
-         setError(".csv no upload")
-      }
-   };
-
-   
    const findMyEvents = async () => {
 
         const responseEvent = await fetch(`http://localhost:8000/event/find/${user_id}`, {     
@@ -142,7 +172,6 @@ export default function MyEvents() {
          <Heading id="heading-events">Your events</Heading>  
       </div>
       <div id = "events_disp" className="flex flex-wrap">        
-        
             {events.length > 0 ? (  // Verifica si hay eventos
                events.map((event) => (
                   <Dialog.Root key={event.event_name}>                    
@@ -305,7 +334,7 @@ export default function MyEvents() {
                                              <Button className="IconButton" aria-label="Close">
                                                 <Cross2Icon />
                                              </Button>
-                                          </Dialog.Close>   
+                                          </Dialog.Close>                                            
                                           {error && 
                                              <Callout.Root id = "callout-root-event-register-inscription" color="red" size="2" variant="outline" className="flex items-center ">
                                                 <Callout.Icon className="callout-icon-event-register-inscription" >
@@ -351,22 +380,74 @@ export default function MyEvents() {
                                  </Dialog.Trigger>   
                                  <Dialog.Portal>
                                     <Dialog.Overlay className="DialogOverlay" />
-                                    <Dialog.Content className="DialogContent border-2 border-solid border-white/[.08]">
-                                          <Dialog.Title className="DialogTitle">Event Result</Dialog.Title>
-                                          <Dialog.Description  className="DialogDescription">
-                                             Upload event result
-                                          </Dialog.Description>  
-                                          <div className="flex flex-row items-center gap-3">
-                                             <label htmlFor="event_name">.csv File</label>
-                                             <input
-                                                id = "input-event"  
-                                                name = "event_name"
-                                                type="file"
-                                                onChange={handleFileChange}
-                                             />
-                                             {error && <span>{error}</span>}
-                                             <pre>{csvData}</pre>
+                                    <Dialog.Content className="DialogContentUpload border-2 border-solid border-white/[.08]">
+                                       <Dialog.Title className="DialogTitle">Event Result</Dialog.Title>
+                                       <Dialog.Description  className="DialogDescription">
+                                          Upload event result
+                                       </Dialog.Description>  
+                                       <div className="flex flex-col items-center gap-4">
+                                          <div className="flex flex-row items-center gap-2 items-center">
+                                             <label htmlFor="event_name">CSV file</label>
+                                             <div className="border-2 border-solid border-white/[.08]">
+                                                <input
+                                                   id = "input-upload"  
+                                                   name = "event_name"
+                                                   type="file"
+                                                   placeholder="Select the file..."
+                                                   onChange={(e) => {
+                                                      const file = e.target.files?.[0];
+                                                      if (file) {
+                                                         setSelectedFile(file); 
+                                                      }
+                                                   }}
+                                                />
+                                             </div>
                                           </div>
+                                          <div className="flex flex-row items-center gap-2 items-center">
+                                             <label htmlFor="event_name">Event category</label>
+                                                <Select.Root onValueChange={(value) => handleSelectChange(value)}>
+                                                   <Select.Trigger className="SelectTrigger border-2 border-solid border-white/[.08]" aria-label="Food">
+                                                      <Select.Value placeholder="Select category" />
+                                                      <Select.Icon className="SelectIcon">
+                                                         <ChevronDownIcon />
+                                                      </Select.Icon>
+                                                   </Select.Trigger>
+                                                   <Select.Portal>
+                                                      <Select.Content className="SelectContent border-2 border-solid border-white/[.08]">
+                                                         <Select.ScrollUpButton className="SelectScrollButton border-2 border-solid border-white/[.08]">
+                                                            <ChevronUpIcon />
+                                                         </Select.ScrollUpButton>
+                                                         <Select.Viewport className="SelectViewport">
+                                                            <Select.Group>
+                                                               <Select.Label className="SelectLabel">Category</Select.Label>
+                                                               <SelectItem  value="general">general</SelectItem>
+                                                               <SelectItem  value="junior">junior</SelectItem>
+                                                               <SelectItem  value="senior">senior</SelectItem>
+                                                               <SelectItem  value="alevin">alevin</SelectItem>
+                                                               <SelectItem  value="infantil">infantil</SelectItem>
+                                                            </Select.Group>
+                                                         </Select.Viewport>
+                                                         <Select.ScrollDownButton className="SelectScrollButton">
+                                                            <ChevronDownIcon />
+                                                         </Select.ScrollDownButton>
+                                                      </Select.Content>
+                                                   </Select.Portal>
+                                                </Select.Root>
+                                          </div>
+                                          <Button id = "button-upload" onClick={() => {
+                                             if (selectedFile && category_result) {
+                                                handleFileChange(selectedFile, event.event_id, event.event_edition);
+                                             }
+                                             else setError('A CSV file and a category are required.')
+                                          }}>Upload</Button>
+                                          {error && 
+                                             <Callout.Root id = "callout-root-upload" color="red" size="2" variant="soft" className="flex items-center ">
+                                                <Callout.Icon className="callout-icon-upload" >
+                                                   <ExclamationTriangleIcon  />
+                                                </Callout.Icon>
+                                                <Callout.Text className="callout-text-upload"> {error} </Callout.Text> 
+                                             </Callout.Root>}
+                                       </div>
                                     </Dialog.Content>  
                                  </Dialog.Portal>         
                               </Dialog.Root>      
@@ -420,6 +501,20 @@ export default function MyEvents() {
                                  <p id="event-description">{event.event_description}</p>
                               </div>
                            </Dialog.Content>   
+                           <Dialog.Close asChild>
+                              <div id = "div-register-inscription"className="flex items-center">
+                                 <Button
+                                    variant="soft" color = "pink"
+                                    onClick={() => {
+                                       setSelectedEvent(event); // Guarda los datos del evento seleccionado
+                                       onGoToReview(); // Navega a la sección "review"
+                                    }}
+                                    id="button-more-details"
+                                 >
+                                    Show details       
+                                 </Button>
+                              </div>
+                           </Dialog.Close>
                         </Dialog.Content>    
                      </Dialog.Portal>
                   </Dialog.Root>   

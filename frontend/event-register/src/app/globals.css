@@ -6,6 +6,7 @@
 @import "styles/event.css";
 @import "styles/myinscriptions.css";
 @import "styles/myevents.css";
+@import "styles/review.css";
 
 @tailwind base;
 @tailwind components;

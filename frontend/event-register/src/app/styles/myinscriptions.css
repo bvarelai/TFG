@@ -1,3 +1,14 @@
+
+#inscriptions_disp{
+  width: 100%;
+  height: 100%;
+  color:white;
+  flex-wrap: wrap;
+  display: flex;
+  justify-content: flex-start;
+}
+
+
 #box-myinscription{
   border-radius: 15px;
   background-color: #1a1c2c;

@@ -44,7 +44,7 @@ export default function MyInscription() {
          return;
       }
       
-      const reponseFindEvent = await fetch(`http://localhost:8000/event/find/${event_name}`,{
+      const reponseFindEvent = await fetch(`http://localhost:8000/event/find/name/${event_name}`,{
          method: 'GET',
       });
       
@@ -90,7 +90,7 @@ export default function MyInscription() {
       <div id = "title-events" className="flex flex-col relative border-2 border-solid border-white/[.08]">
             <Heading id="heading-events">Your inscriptions</Heading>  
       </div>
-      <div id = "events_disp" className="flex flex-row">          
+      <div id = "inscriptions_disp" className="flex flex-wrap">          
          {inscriptions.length > 0 ? (
             inscriptions.map((inscription) =>(
                <Dialog.Root key={inscription.event_name}>  

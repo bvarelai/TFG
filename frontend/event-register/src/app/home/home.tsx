@@ -16,6 +16,7 @@ export default function Home() {
   const [username, setUsername] = useState<string | null>(null);
   const [isOrganizer, setOrganizer] = useState<boolean>(false);
   const [currentContent, setCurrentContent] = useState<string>('home');
+  const [selectedEvent, setSelectedEvent] = useState<any>(null);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -73,19 +74,19 @@ export default function Home() {
   const renderContent = () => {
     switch (currentContent) {
       case 'events':
-        return <Events/>;
+        return <Events onGoToReview={handleReview} setSelectedEvent={setSelectedEvent}  />;
       case 'my_events':
-        return <MyEvents/>;
+        return <MyEvents onGoToReview={handleReview} setSelectedEvent={setSelectedEvent} />;
       case 'my_inscriptions':
         return <MyInscription />;
       case 'stadistics':
         return <Stadistics />;
       case 'review':
-        return <Review/>;
+        return <Review event={selectedEvent}/>;
       case 'logout' :
         return <Logout/>
         default:
-        return <Events/>;
+        return <Events onGoToReview={handleReview} setSelectedEvent={setSelectedEvent}  />;
     }
   }
   return (
@@ -101,11 +102,8 @@ export default function Home() {
             type="submit"
             onClick={handleMyInscriptions}>
             <Pencil2Icon />
-          </Button><Button variant='outline' id="myreviews-button" className='gap-2'
-            type="submit"
-            onClick={handleReview}>
-            <ChatBubbleIcon />
-          </Button></> :
+          </Button>
+          </> :
           <Button variant='outline' id="myevents-button" className='gap-2'
             type="submit"
             onClick={handleMyEvents}>
