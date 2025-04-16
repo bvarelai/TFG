@@ -2,7 +2,6 @@ from pydantic import BaseModel
 from typing import Optional
 
 class ReviewCreate(BaseModel):
-    review_id : int
     event_id  : int
     user_id : int
     user_name: str
@@ -10,7 +9,6 @@ class ReviewCreate(BaseModel):
     review_rating : float
 
 class ReviewUpdate(BaseModel):
-    review_id : Optional[int]
     event_id: Optional[int]
     user_id : Optional[int]
     user_name : Optional[str]

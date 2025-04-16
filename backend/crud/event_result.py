@@ -38,6 +38,19 @@ def find_all_event_result_csv(event_id: int, db: Session):
     except Exception as e:
         print(f"An error occurred: {e}")    
 
+def find_event_result_csv_by_edition_and_category(event_id: int, edition_result:str, category_result: str, db: Session):
+    try:
+        event_result = db.query(EventResult).filter_by(event_id=event_id, edition_result=edition_result, category_result=category_result).first()
+        if not event_result :
+            print("No CSV file found for the given event and result IDs.")
+            return
+    
+        return event_result
+
+    except Exception as e:
+        print(f"An error occurred: {e}")    
+
+
 def find_event_result_csv(event_id: int,result_id : int, db: Session):
     try:
         event_result = db.query(EventResult).filter_by(event_id=event_id, result_id=result_id).first()

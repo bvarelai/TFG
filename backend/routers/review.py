@@ -35,14 +35,14 @@ def get_review(user_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Review no available")
     return db_event
 
-@router.put("/event/update/")
+@router.put("/review/update/")
 def update_event(review: ReviewUpdate, db: Session= Depends(get_db)):
     db_event = change_review(db=db, review=review)
     if not db_event:
         raise HTTPException(status_code=404, detail="Can't update the rewiew")
     return db_event
 
-@router.delete("/event/delete/{review_id}")
+@router.delete("/review/delete/{review_id}")
 def delete_event(review_id : int, db: Session = Depends(get_db)):
     db_event = remove_review(db,review_id=review_id)
     if not db_event:

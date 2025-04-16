@@ -2,7 +2,7 @@
 from sqlalchemy.orm import Session
 from fastapi import APIRouter, Depends, HTTPException, Request, Response, File, UploadFile
 from crud.event import create_event, find_event_by_name, find_event_by_type, find_event_by_category, find_big_event, find_small_event, find_medium_event,  find_event_by_userId, find_all_event, find_event_by_celebration_date_and_end_date, remove_event, change_event
-from crud.event_result import create_event_result_csv,find_all_event_result_csv,find_event_result_csv,delete_event_result_csv
+from crud.event_result import create_event_result_csv, find_event_result_csv_by_edition_and_category, find_all_event_result_csv,find_event_result_csv,delete_event_result_csv
 from models.event_result import EventResult
 from schemas.event_result import EventResultCreate
 from database import get_db
@@ -112,6 +112,14 @@ def get_event_result(event_id: int, db: Session = Depends(get_db)):
     if not db_event_result:
         raise HTTPException(status_code=404, detail="Event result no available")
     return db_event_result
+
+@router.get("/event/result/find/{event_id}/{edition_result}/{category_result}")
+def get_event_result(event_id: int, edition_result: str, category_result:str, db: Session = Depends(get_db)):
+    db_event_result = find_event_result_csv_by_edition_and_category(db=db, event_id=event_id, edition_result=edition_result, category_result=category_result)
+    if not db_event_result:
+        raise HTTPException(status_code=404, detail="Event result no available")
+    return db_event_result
+
 
 @router.delete("/event/result/delete/{event_id}/{result_id}")
 def delete_event_result(event_id: int, result_id: int, db: Session = Depends(get_db)):
