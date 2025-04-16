@@ -217,8 +217,6 @@ export default function Events({ onGoToReview, setSelectedEvent }: { onGoToRevie
       const data = await responseEvent.json();
       setNotification("")      
       setEvents(data);
-
-      
    }
 
    const findEventByName = async(e :React.ChangeEvent<HTMLInputElement>)  => {

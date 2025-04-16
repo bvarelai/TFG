@@ -26,7 +26,12 @@
     background-color: #282b40;
     color:#9678C8;
   }
-  
+
+  #home-button[data-state="on"] {
+    background-color: #1f2133; /* Color de fondo para el botón seleccionado */
+    color: #9678C8; /* Color del texto */
+  }
+
   
   #myevents-button{
     color: white;
@@ -41,6 +46,10 @@
     color:#9678C8
   }
   
+  #myevents-button[data-state="on"] {
+    background-color: #1f2133; /* Color de fondo para el botón seleccionado */
+    color: #9678C8; /* Color del texto */
+  }
   
   #myinscriptions-button{
     color: white;
@@ -55,6 +64,11 @@
     color:#9678C8
   }
   
+  #myinscriptions-button[data-state="on"] {
+    background-color: #1f2133; /* Color de fondo para el botón seleccionado */
+    color: #9678C8; /* Color del texto */
+  }   
+
   #myreviews-button{
     color: white;
     width: 100px;
@@ -67,6 +81,11 @@
     background-color: #282b40;
     color:#9678C8
   }
+
+  #myreviews-button[data-state="on"] {
+    background-color: #1f2133; /* Color de fondo para el botón seleccionado */
+    color: #9678C8; /* Color del texto */
+  }   
 
 
   #stadistics-button{
@@ -81,7 +100,12 @@
     background-color: #282b40;
     color:#9678C8
   }
-  
+
+  #stadistics-button[data-state="on"] {
+    background-color: #1f2133; /* Color de fondo para el botón seleccionado */
+    color: #9678C8; /* Color del texto */
+  }   
+
   #profile-button{
     color: white;
     width: 100px;
@@ -95,6 +119,11 @@
     color:#9678C8
   }
   
+  #profile-button[data-state="on"] {
+    background-color: #1f2133; /* Color de fondo para el botón seleccionado */
+    color: #9678C8; /* Color del texto */
+  }   
+
   #logout-button{
     color: white;
     width: 100px;
@@ -107,3 +136,8 @@
     background-color: #282b40;
     color:#9678C8
   }
+
+  #logout-button[data-state="on"] {
+    background-color: #1f2133; /* Color de fondo para el botón seleccionado */
+    color: #9678C8; /* Color del texto */
+  }   

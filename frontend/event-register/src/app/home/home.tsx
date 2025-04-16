@@ -17,6 +17,7 @@ export default function Home() {
   const [isOrganizer, setOrganizer] = useState<boolean>(false);
   const [currentContent, setCurrentContent] = useState<string>('home');
   const [selectedEvent, setSelectedEvent] = useState<any>(null);
+  const [selectedButton, setSelectedButton] = useState<string>("");
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -94,30 +95,40 @@ export default function Home() {
       <div id= "events-menu-div" className='flex flex-col border-2 border-solid border-white/[.08]'>
         <Button variant='outline' id="home-button" className='gap-2'
           type="submit"
-          onClick={handleEvents}>
+          onClick= {() => {handleEvents(); setSelectedButton("home-button")}}
+          data-state={selectedButton === "home-button" ? "on" : "off"}
+          >
           <HomeIcon/>
         </Button>  
         {!isOrganizer ?  
           <><Button variant='outline' id="myinscriptions-button" className='gap-2'
             type="submit"
-            onClick={handleMyInscriptions}>
+            onClick= {() => {handleMyInscriptions(); setSelectedButton("myinscriptions-button")}}
+            data-state={selectedButton === "myinscriptions-button" ? "on" : "off"}
+            >  
             <Pencil2Icon />
           </Button>
           </> :
           <Button variant='outline' id="myevents-button" className='gap-2'
             type="submit"
-            onClick={handleMyEvents}>
+            onClick= {() => {handleMyEvents(); setSelectedButton("myevents-button")}}
+            data-state={selectedButton === "myevents-button" ? "on" : "off"}
+            >
             <CalendarIcon />
           </Button>
         }   
         <Button variant='outline' id="stadistics-button" className='gap-2'
           type="submit"
-          onClick={handleStadistics}>
+          onClick= {() => {handleStadistics(); setSelectedButton("stadistics-button")}}
+          data-state={selectedButton === "stadistics-button" ? "on" : "off"}
+          >
           <ShuffleIcon/>
         </Button>  
         <Button variant='outline' id="logout-button" className='gap-2'
-          onClick={handleLogout}
-          type="submit">
+          onClick= {() => {handleLogout(); setSelectedButton("logout-button")}}
+          data-state={selectedButton === "logout-button" ? "on" : "off"}
+          type="submit"
+          >
           <ExitIcon/>
         </Button>
       </div>

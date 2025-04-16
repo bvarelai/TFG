@@ -66,6 +66,11 @@ export default function MyInscription() {
          celebration_date: data.celebration_date,
          end_date: data.end_date,
          capacity: data.capacity + 1,
+         organizer_by : data.organizer_by,
+         duration : data.duration,
+         event_full_description: data.event_full_description,
+         language : data.language,
+         is_free : data.is_free
       };
       const responseEvent = await fetch(`http://localhost:8000/event/update/${data.event_name}`, {
          method: 'PUT',
