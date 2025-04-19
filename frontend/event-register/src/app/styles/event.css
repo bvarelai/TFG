@@ -480,22 +480,4 @@ color: grey;
   margin-right: 15px; 
 }
 
-#callout-root-event-register-inscription
-{
-  margin-top: 10px;
-  margin-left: 90px;
-  width: 360px;
-  align-items: center;
-  justify-content: center;
-
-}
-.callout-text-event-register-inscription {
-  font-size: 17px;
-}
-
-.callout-icon-event-register-inscription svg{
-  width: 23px;
-  height: 35px;
-  margin-right: 15px; 
-}
 

@@ -109,51 +109,32 @@ export default function Events({ onGoToReview, setSelectedEvent }: { onGoToRevie
     };
 
     const handleSelectChange = (value: string) => {
-      if(value == "small"){
-         findSmallEvents(50)
-      }
-      if (value=="medium"){
-         findMediumEvents(50,200)
-      }
-      if(value == "big"){
-         findBigEvents(200)
-      }
-      if(value == "general"){
-         findEventByCategory("general")
-      }
-      if(value == "junior"){
-         findEventByCategory("junior")
-      } 
-      if(value == "senior"){
-         findEventByCategory("senior")
-      } 
-      if(value == "alevin"){
-         findEventByCategory("alevin")
-      }
-      if(value == "infantil"){
-         findEventByCategory("infantil")
-      }
-      if(value == "football"){
-         findEventByType("football")
-      }
-      if(value == "basketball"){
-         findEventByType("basketball")
-      }
-      if(value == "triathlon"){
-         findEventByType("triathlon")
-      }
-      if(value == "athletics"){
-         findEventByType("athletics")
-      }
-      if(value == "swimming"){
-         findEventByType("swimming")
-      }
-      if(value == "cycling"){
-         findEventByType("cycling")
-      }
-      if(value == "hockey"){
-         findEventByType("hockey")
-      }
+      const actions: { [key: string]: () => void } = {
+         small: () => findSmallEvents(50),
+         medium: () => findMediumEvents(50, 200),
+         big: () => findBigEvents(200),
+         general: () => findEventByCategory(value),
+         junior: () => findEventByCategory(value),
+         senior: () => findEventByCategory(value),
+         alevin: () => findEventByCategory(value),
+         infantil: () => findEventByCategory(value),
+         football: () => findEventByType(value),
+         basketball: () => findEventByType(value),
+         triathlon: () => findEventByType(value),
+         athletics: () => findEventByType(value),
+         swimming: () => findEventByType(value),
+         cycling: () => findEventByType(value),
+         hockey: () => findEventByType(value),
+      };
+   
+      const categories = value.split(",").map((category) => category.trim());
+      categories.forEach((category) => {
+         if (actions[category]) {
+            actions[category]();
+         } else {
+            console.warn(`No action found for category: ${category}`);
+         }
+      });
    };
    
     const createEvent = async (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -259,20 +240,33 @@ export default function Events({ onGoToReview, setSelectedEvent }: { onGoToRevie
       }
    }
 
-   const findEventByCategory = async(category : string) => {
-      const responseEvent = await fetch(`http://localhost:8000/event/find/category/${category}`,{
-         method: 'GET'
-      })
-      if(!responseEvent.ok) {
-         setNotification("No events to show")
+   const findEventByCategory = async(categories : string) => {
+      const categoryList = categories.split(",").map((category) => category.trim());
+
+      const responseEvent = await fetch('http://localhost:8000/event/find', {
+         method: 'GET',
+      });
+
+      if (!responseEvent.ok) {
+         setNotification("No events to show");
          setEvents([]);
          return;
       }
+
       const data = await responseEvent.json();
-      if (!Array.isArray(data)) {
-         setEvents([data]);
+
+      // Filtrar eventos que contengan al menos una de las categorías seleccionadas
+      const filteredEvents = data.filter((event: any) => {
+         const eventCategories = event.category.split(",").map((cat: string) => cat.trim());
+         return categoryList.some((category) => eventCategories.includes(category));
+      });
+
+      if (filteredEvents.length === 0) {
+         setNotification("No events to show");
+         setEvents([]);
       } else {
-         setEvents(data);
+         setNotification("");
+         setEvents(filteredEvents);
       }
    }
 

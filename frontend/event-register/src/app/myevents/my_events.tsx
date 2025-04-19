@@ -2,9 +2,9 @@
 import * as React from "react";
 import { useState, useEffect} from "react";
 import classnames from "classnames";
-import { Heading, Flex,Box,Badge, AlertDialog, Button,Callout} from "@radix-ui/themes";
+import { Heading, Flex,Box,Badge, AlertDialog, Button,Callout, TextArea} from "@radix-ui/themes";
 import {MixIcon,LapTimerIcon, PersonIcon,ClockIcon,TrashIcon,Pencil1Icon,Cross2Icon,FileIcon, ExclamationTriangleIcon, DrawingPinFilledIcon, SewingPinFilledIcon,CheckIcon, ChevronDownIcon, ChevronUpIcon} from "@radix-ui/react-icons";
-import { Dialog, Select } from "radix-ui";
+import { Dialog, Select,Checkbox } from "radix-ui";
 
 
 export default function MyEvents({ onGoToReview, setSelectedEvent }: { onGoToReview: () => void; setSelectedEvent: (event: any) => void }) {   
@@ -21,6 +21,11 @@ export default function MyEvents({ onGoToReview, setSelectedEvent }: { onGoToRev
    const [celebration_date, setCelebrationDate] = useState<string>("");
    const [end_date, setEndDate] = useState<string>("");
    const [capacity, setcapacity] = useState<number>(0);   
+   const [organizer_by, setOrganizerBy] = useState<string>("");
+   const [event_full_description, setEventDescription] = useState<string>("");
+   const [duration, setDuration] = useState<number>(0);
+   const [event_language, setEventLanguage] = useState<string>("");
+   const [is_free, setIsFree] = useState<boolean>(false);
    const [csvData, setCsvData] = useState<string>("");
    const [category_result, setCategoryResult] = useState<string>("");
    const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -137,7 +142,12 @@ export default function MyEvents({ onGoToReview, setSelectedEvent }: { onGoToRev
          "location"  : location,
          "celebration_date"  : celebration_date,
          "end_date" : end_date,
-         "capacity" : capacity
+         "capacity" : capacity,
+         "organizer_by" : organizer_by,
+         "duration" : duration,
+         "event_full_description" : event_full_description,
+         "language" : event_language,
+         "is_free" : is_free,
       } 
 
       const responseEvent = await fetch(`http://localhost:8000/event/update/${event_name}`, {
@@ -226,88 +236,107 @@ export default function MyEvents({ onGoToReview, setSelectedEvent }: { onGoToRev
                                           <Dialog.Description  className="DialogDescription">
                                              Change the event data
                                           </Dialog.Description>  
-                                          <div className="flex flex-col items-center gap-3 py-4"> 
-                                             <div className="flex flex-row items-center gap-3">
-                                                <label htmlFor="event_name">Name</label>
-                                                <input
-                                                   id = "input-event"  
-                                                   name = "event_name"
-                                                   placeholder={event.event_name}
-                                                   type="text"
-                                                   value={event_name}
-                                                   onChange={(e) => setEventname(e.target.value)}
-                                             />
-                                             </div>
-                                             <div className="flex flex-row items-center gap-3">
-                                                <label htmlFor="event-type">Type</label>
-                                                <input
-                                                   id = "input-event"  
-                                                   name = "event_type"
-                                                   placeholder={event.event_type}
-                                                   type="text"
-                                                   value={event_type}
-                                                   onChange={(e) => setEventType(e.target.value)}
-                                                />
-                                             </div>
-                                             <div className="flex flex-row items-center gap-3">                        
-                                                   <label htmlFor="event-edition">Edition</label>
+                                          <div className="flex flex-col gap-3 py-2"> 
+                                             <div className="flex flex-row items-center gap-5">
+                                                <div className="flex flex-col gap-1">
+                                                   <label htmlFor="event_name">Name</label>
                                                    <input
                                                       id = "input-event"  
-                                                      name = "event_edition"
-                                                      placeholder={event.event_edition}
+                                                      name = "event_name"
+                                                      placeholder={event.event_name}
                                                       type="text"
-                                                      value={event_edition}
-                                                      onChange={(e) => setEventEdition(e.target.value)}
-                                                   />
-                                             </div>
-                                             <div className="flex flex-row items-center gap-3">                        
-                                                      <label htmlFor="event-category">Category</label>
-                                                      <input
-                                                         id = "input-event"  
-                                                         name = "event_category"
-                                                         placeholder={event.category}
-                                                         type="text"
-                                                         value={category}
-                                                         onChange={(e) => setCategory(e.target.value)}
-                                                      />
-                                             </div>
-                                             <div className="flex flex-row items-center gap-3">                        
-                                                   <label htmlFor="event-date">Start date</label>
+                                                      value={event_name}
+                                                      onChange={(e) => setEventname(e.target.value)}
+                                                />
+                                                </div>
+                                                <div className="fflex flex-col gap-1">
+                                                   <label htmlFor="event-type">Type</label>
                                                    <input
                                                       id = "input-event"  
-                                                      name = "event_date"
-                                                      placeholder="date1"
-                                                      type="datetime-local" 
-                                                      value={celebration_date}
-                                                      onChange={(e) => setCelebrationDate(e.target.value)}
-                                                      />
+                                                      name = "event_type"
+                                                      placeholder={event.event_type}
+                                                      type="text"
+                                                      value={event_type}
+                                                      onChange={(e) => setEventType(e.target.value)}
+                                                   />
+                                                </div>
                                              </div>
-                                             <div className="flex flex-row items-center gap-3">                        
-                                                   <label htmlFor="event-end-date">End date</label>
+                                             <div className="flex flex-row items-center gap-5">
+                                                <div className="flex flex-col gap-1">                        
+                                                      <label htmlFor="event-edition">Edition</label>
                                                       <input
                                                          id = "input-event"  
-                                                         name = "event_end_date"
+                                                         name = "event_edition"
+                                                         placeholder={event.event_edition}
+                                                         type="text"
+                                                         value={event_edition}
+                                                         onChange={(e) => setEventEdition(e.target.value)}
+                                                      />
+                                                </div>
+                                                <div className="flex flex-col gap-1">                        
+                                                         <label htmlFor="event-category">Category</label>
+                                                         <input
+                                                            id = "input-event"  
+                                                            name = "event_category"
+                                                            placeholder={event.category}
+                                                            type="text"
+                                                            value={category}
+                                                            onChange={(e) => setCategory(e.target.value)}
+                                                         />
+                                                </div>
+                                             </div>
+                                             <div className="flex flex-row items-center gap-5">
+                                                <div className="flex flex-col gap-1">                        
+                                                      <label htmlFor="event-date">Start date</label>
+                                                      <input
+                                                         id = "input-event"  
+                                                         name = "event_date"
                                                          placeholder="date1"
                                                          type="datetime-local" 
-                                                         value={end_date}
-                                                         onChange={(e) => setEndDate(e.target.value)}
-                                                      />
+                                                         value={celebration_date}
+                                                         onChange={(e) => setCelebrationDate(e.target.value)}
+                                                         />
+                                                </div>
+                                                <div className="flex flex-col gap-1">                        
+                                                      <label htmlFor="event-end-date">End date</label>
+                                                         <input
+                                                            id = "input-event"  
+                                                            name = "event_end_date"
+                                                            placeholder="date1"
+                                                            type="datetime-local" 
+                                                            value={end_date}
+                                                            onChange={(e) => setEndDate(e.target.value)}
+                                                         />
+                                                </div>
                                              </div>
-                                             <div className="flex flex-row items-center gap-3">                        
-                                                      <label htmlFor="event-location">Location</label>
-                                                      <input
-                                                         id = "input-event"  
-                                                         name = "event_location"
-                                                         placeholder={event.location}
-                                                         type="text"
-                                                         value = {location}
-                                                         onChange={(e) => setLocation(e.target.value)}
-                                                      />
+                                             <div className="flex flex-row items-center gap-5">
+                                                <div className="flex flex-col gap-1">                        
+                                                         <label htmlFor="event-location">Location</label>
+                                                         <input
+                                                            id = "input-event"  
+                                                            name = "event_location"
+                                                            placeholder={event.location}
+                                                            type="text"
+                                                            value = {location}
+                                                            onChange={(e) => setLocation(e.target.value)}
+                                                         />
+                                                </div>
+                                                <div className="flex flex-col gap-1">                        
+                                                         <label htmlFor="event-capacity">Capacity</label>
+                                                         <input
+                                                            id = "input-event"  
+                                                            name = "event_capacity"
+                                                            placeholder={event.capacity}
+                                                            type="number"
+                                                            value={capacity}
+                                                            onChange={(e) => setcapacity(parseInt(e.target.value))}
+                                                         />
+                                                </div>
                                              </div>
-                                             <div className="flex flex-row items-center gap-3">                        
-                                                   <label htmlFor="event-description">Description</label>
+                                             <div className="flex flex-col gap-1">                        
+                                                   <label htmlFor="event-description">Event resume</label>
                                                       <input
-                                                         id = "input-event"  
+                                                         id = "input-event-large"  
                                                          name = "event_description"
                                                          placeholder={event.event_description}
                                                          type="text"
@@ -315,16 +344,64 @@ export default function MyEvents({ onGoToReview, setSelectedEvent }: { onGoToRev
                                                          onChange={(e) => setDescription(e.target.value)}
                                                       />
                                              </div>
-                                             <div className="flex flex-row items-center gap-3">                        
-                                                      <label htmlFor="event-capacity">Capacity</label>
-                                                      <input
-                                                         id = "input-event"  
-                                                         name = "event_capacity"
-                                                         placeholder={event.capacity}
-                                                         type="number"
-                                                         value={capacity}
-                                                         onChange={(e) => setcapacity(parseInt(e.target.value))}
-                                                      />
+                                             <div className="flex flex-row items-center gap-5">
+                                                <div className="flex flex-col gap-1">                        
+                                                      <label htmlFor="organizer-by">Organizer by</label>
+                                                         <input
+                                                            id = "input-event"  
+                                                            name = "organizer-by"
+                                                            placeholder="organizer1"
+                                                            type="text"
+                                                            value={organizer_by}
+                                                            onChange={(e) => setOrganizerBy(e.target.value)}
+                                                         />
+                                                </div>
+                                                <div className="flex flex-col gap-1">                        
+                                                      <label htmlFor="organizer-by">Duration</label>
+                                                         <input
+                                                            id = "input-event"  
+                                                            name = "duration"
+                                                            placeholder="1 hour"
+                                                            type="number"
+                                                            value={duration}
+                                                            onChange={(e) => setDuration(e.target.valueAsNumber)}
+                                                         />
+                                                </div>
+                                             </div>
+                                             <div className="flex flex-row items-center gap-5">
+                                                <div className="flex flex-col gap-1">                        
+                                                      <label htmlFor="Language">Language</label>
+                                                         <input
+                                                            id = "input-event"  
+                                                            name = "language"
+                                                            placeholder="language"
+                                                            type="text"
+                                                            value={event_language}
+                                                            onChange={(e) => setEventLanguage(e.target.value)}
+                                                         />
+                                                </div>
+                                                <div id = "is-free-event" className="flex flex-row gap-2 items-center"  onClick={() => setIsFree(!is_free)}>                        
+                                                      {!is_free ? <Checkbox.Root className="CheckboxRoot" id="checkbox-root">
+                                                      <Checkbox.Indicator className="CheckboxIndicator">
+                                                         <CheckIcon />
+                                                      </Checkbox.Indicator>
+                                                   </Checkbox.Root> : <Checkbox.Root className="CheckboxRoot" defaultChecked>
+                                                      <Checkbox.Indicator className="CheckboxIndicator">
+                                                         <CheckIcon />
+                                                      </Checkbox.Indicator>
+                                                   </Checkbox.Root>}  
+                                                   <label htmlFor="organizer-by">Is free?</label>
+                                                </div>
+                                             </div>
+                                             <div className="flex flex-col gap-1">
+                                                <label htmlFor="Event Description">Event Description</label>
+                                                   <TextArea 
+                                                   id= "input-event-big"
+                                                   placeholder="My event is about..." 
+                                                   value = {event_full_description} 
+                                                   onChange = {(e) => setEventDescription(e.target.value)} 
+                                                   typeof="text"
+                                                />
                                              </div>
                                           </div>
                                           <Dialog.Close asChild >
@@ -336,11 +413,11 @@ export default function MyEvents({ onGoToReview, setSelectedEvent }: { onGoToRev
                                              </Button>
                                           </Dialog.Close>                                            
                                           {error && 
-                                             <Callout.Root id = "callout-root-event-register-inscription" color="red" size="2" variant="outline" className="flex items-center ">
-                                                <Callout.Icon className="callout-icon-event-register-inscription" >
+                                             <Callout.Root id = "callout-root-event-update" color="red" size="2" variant="soft" className="flex items-center ">
+                                                <Callout.Icon className="callout-icon-event-update" >
                                                    <ExclamationTriangleIcon  />
                                                 </Callout.Icon>
-                                                <Callout.Text className="callout-text-event-register-inscription"> {error} </Callout.Text> 
+                                                <Callout.Text className="callout-text-event-update"> {error} </Callout.Text> 
                                              </Callout.Root> }
                                        </Dialog.Content> 
                                     </Dialog.Portal>           

@@ -3,6 +3,7 @@ import * as React from "react";
 import { Heading,Box, Button,TextArea,Badge,SegmentedControl}  from "@radix-ui/themes";
 import { useState, useEffect, Key} from "react";
 import classnames from "classnames";
+import {DrawingPinFilledIcon,  SewingPinFilledIcon,PersonIcon} from "@radix-ui/react-icons"
 
 import { MixIcon,StarFilledIcon,StarIcon, CheckIcon,Cross2Icon,ArrowUpIcon,ArrowDownIcon, ChevronDownIcon, ChevronUpIcon} from "@radix-ui/react-icons";
 import { Dialog, Select } from "radix-ui";
@@ -24,7 +25,7 @@ export default function Review({ event }: { event: any }) {
    const [edition_result, setEditionResult] = useState<string>("");
    const [category_result, setCategoryResult] = useState<string>("")
    const [notification,setNotification] = useState<string>("");
-   const [visibleResult, setVisibleResult] = useState<boolean>(false);
+   const [visibleResult, setVisibleResult] = useState<boolean>(true);
    const [selectedSegment, setSelectedSegment] = useState<string>("");
    const [selectedSelect, setSelectedSelect] = useState<string>("");
 
@@ -240,7 +241,7 @@ export default function Review({ event }: { event: any }) {
          method: 'GET',
       })   
       if (!responseResult.ok){
-         setVisibleResult(true)
+         setVisibleResult(false)
          return;
       }
       const data = await responseResult.json();
@@ -249,7 +250,11 @@ export default function Review({ event }: { event: any }) {
          const { headers, dataRows } = processCsvData(csvData); // Procesa el CSV
          setEventResultsHeaders(headers); // Actualiza las cabeceras
          setEventResultsData(dataRows); // Actualiza las filas de datos
+         setVisibleResult(true);
       }      
+      else{
+         setVisibleResult(false);
+      }
    }
 
    const showMoreReviews = () => {
@@ -271,8 +276,8 @@ export default function Review({ event }: { event: any }) {
       <div id = "title-events" className="flex flex-col relative border-2 border-solid border-white/[.08]">
             <Heading id="heading-events">Events results and reviews</Heading>  
       </div>
-      <div id = "filter-events" className="flex flex-row gap-2 justify-between"> 
-         <div id="event-info-comments" className="flex flex-col gap-2">
+      <div id = "filter-info" className="flex flex-row gap-2 justify-between"> 
+         <div id="event-info-comments" className="flex flex-col gap-2 h-full">
             <div id = "even-information" className="flex flex-col p-5 border-2 border-solid border-white/[.08]">
                   <div className="flex flex-row justify-between items-center">
                      <Heading id = "event-info-heading" className="text-3xl font-bold mb-4"> {event.event_name} Information</Heading>
@@ -291,9 +296,9 @@ export default function Review({ event }: { event: any }) {
                   </div>
                   <div id ="div-all-info" className="grid grid-cols-2 gap-2 text-sm">
                      <div id="first-info-col"><strong>Type:</strong> {event.event_type}</div>
-                     <div id="second-info-col"><strong>Category:</strong> {event.category}</div>
-                     <div id="first-info-col"><strong>Location:</strong> {event.location}</div>
-                     <div id="second-info-col"><strong>Capacity:</strong> {event.capacity} places</div>
+                     <div className="flex flex-row gap-1" id="second-info-col"><strong className="flex flex-row gap-1"> <DrawingPinFilledIcon/> Category:</strong> {event.category}</div>
+                     <div  className="flex flex-row gap-1" id="first-info-col"><strong className="flex flex-row gap-1"> <SewingPinFilledIcon/> Location:</strong> {event.location}</div>
+                     <div className="flex flex-row gap-1" id="second-info-col"><strong className="flex flex-row gap-1" > <PersonIcon/> Capacity:</strong> {event.capacity} places</div>
                      <div id="first-info-col"><strong>Start date:</strong> {event.celebration_date.split("T")[0]} {event.celebration_date.split("T")[1]}</div>
                      <div id="second-info-col"><strong>End date:</strong> {event.end_date.split("T")[0]} {event.end_date.split("T")[1]}</div>
                      <div id="first-info-col"><strong>Organizer by:</strong> {event.organizer_by}</div>
@@ -301,7 +306,7 @@ export default function Review({ event }: { event: any }) {
                      <div id="first-info-col"> <strong>Language:</strong> {event.language}</div>
                      <div id="second-info-col"><strong>Free:</strong> {event.is_free == true ? "Yes": "No"}</div>
                      <div className="flex flex-row items-center gap-1">
-                     {!isOrganizer &&(new Date().toISOString() < event.celebration_date) && (
+                     {!isOrganizer && (
                         <>
                            <strong id="first-info-col">Status:</strong>
                            {!isRegister ? (
@@ -320,12 +325,12 @@ export default function Review({ event }: { event: any }) {
 
                   </div>
                   <div id="description-full-event">
-                     <p className="mt-4 text-gray-600">{event.event_full_description}</p>
+                     <p className="mt-4">{event.event_full_description}</p>
                   </div>
             </div>
             <Dialog.Root>
                <Dialog.Trigger>
-                  <div id= "event-comments" className="p-6 flex flex-col border-2 border-solid border-white/[.08]">
+                  <div id= "event-comments" className="p-6 flex flex-col border-2 border-solid border-white/[.08] flex-grow">
                      <Heading id = "comments-heading" className="text-3xl font-bold mb-1">Comments and Reviews</Heading> 
                         {reviews.length > 0 ? (  
                            reviews.slice(0,3).map((review,index) => (
@@ -347,7 +352,7 @@ export default function Review({ event }: { event: any }) {
 
                               </Box>    
                            ))) : (
-                              <Box id = "no-box-review" className="flex flex-col gap-5 ">
+                              <Box id = "no-box-review" className="flex flex-col gap-2 border-2 border-solid border-white/[.08] ">
                                  <label id= "label-no-data">No reviews to show</label>
                                  <MixIcon id = "no-data-icon"/>
                               </Box>    
@@ -362,168 +367,189 @@ export default function Review({ event }: { event: any }) {
                         <Dialog.Description className="DialogDescription">
                            Create and view comments and reviews
                         </Dialog.Description>
-                        <div className="flex flex-row">
-                           <div id ="div-title-and-reviews" className="flex flex-col border-2 border-solid border-white/[.08]">
-                              <Heading  id="heading-review">Reviews</Heading>
-                              <div id="div-reviews">
-                                 {reviews.length > 0 ? (  
-                                    reviews.slice(review_index,visibleReviews).map((review,index) => (
-                                       <Box id ="box-review-view" key={event.review_id || index} className="flex flex-col border-2 border-solid border-white/[.08]">
-                                          <div id = "rating-review-view" className="flex flex-row items-center gap-2">
-                                                <div  className="flex flex-row">
-                                                   {Array.from({ length: review.review_rating }).map((_, index) => (
-                                                      <StarFilledIcon key={`filled-${index}`} />
-                                                   ))}
-                                                   {Array.from({ length: 5 - review.review_rating }).map((_, index) => (
-                                                      <StarIcon key={`empty-${index}`} />
-                                                   ))}
-                                                </div>
-                                                <span id="text-review">{review.review_text}</span>
-                                          </div>
-                                          <div id="name-review" className="flex flex-row items-center gap-2">
-                                                <span> {review.user_name}</span>
-                                          </div>
+                        {(new Date().toISOString() > event.end_date) ? (                        
+                           <div className="flex flex-row">
+                              <div id ="div-title-and-reviews" className="flex flex-col border-2 border-solid border-white/[.08]">
+                                 <Heading  id="heading-review">Reviews</Heading>
+                                 <div id="div-reviews">
+                                    {reviews.length > 0 ? (  
+                                       reviews.slice(review_index,visibleReviews).map((review,index) => (
+                                          <Box id ="box-review-view" key={event.review_id || index} className="flex flex-col border-2 border-solid border-white/[.08]">
+                                             <div id = "rating-review-view" className="flex flex-row items-center gap-2">
+                                                   <div  className="flex flex-row">
+                                                      {Array.from({ length: review.review_rating }).map((_, index) => (
+                                                         <StarFilledIcon key={`filled-${index}`} />
+                                                      ))}
+                                                      {Array.from({ length: 5 - review.review_rating }).map((_, index) => (
+                                                         <StarIcon key={`empty-${index}`} />
+                                                      ))}
+                                                   </div>
+                                                   <span id="text-review">{review.review_text}</span>
+                                             </div>
+                                             <div id="name-review" className="flex flex-row items-center gap-2">
+                                                   <span> {review.user_name}</span>
+                                             </div>
 
-                                       </Box>    
-                                    ))) : (
-                                       <Box id = "no-box-review" className="flex flex-col gap-5 ">
-                                          <label id= "label-no-data">No reviews to show</label>
-                                          <MixIcon id = "no-data-icon"/>
-                                       </Box>    
-                                    )
-                                 }
-                                 {(review_index == 0) ? 
-                                    <ArrowUpIcon id="arrow-up" onClick={showLessReviews} color='#808080' />:
-                                    <ArrowUpIcon id="arrow-up" onClick={showLessReviews}/>  
-                                 }  
-                                 {visibleReviews >= reviews.length ? 
-                                   <ArrowDownIcon id="arrow-down" onClick={showMoreReviews} color='#808080'/> :
-                                   <ArrowDownIcon id="arrow-down" onClick={showMoreReviews}/>
-                                 }                               
+                                          </Box>    
+                                       ))) : (
+                                          <Box id = "no-box-review-view" className="flex flex-col gap-5 ">
+                                             <label id= "label-no-data">No reviews to show</label>
+                                             <MixIcon id = "no-data-icon"/>
+                                          </Box>    
+                                       )
+                                    }
+                                    {(review_index == 0) ? 
+                                       <ArrowUpIcon id="arrow-up" onClick={showLessReviews} color='#808080' />:
+                                       <ArrowUpIcon id="arrow-up" onClick={showLessReviews}/>  
+                                    }  
+                                    {visibleReviews >= reviews.length ? 
+                                    <ArrowDownIcon id="arrow-down" onClick={showMoreReviews} color='#808080'/> :
+                                    <ArrowDownIcon id="arrow-down" onClick={showMoreReviews}/>
+                                    }                               
+                                 </div>
                               </div>
-                           </div>
-                           <div id="div-create-review" className="flex flex-col py-4 border-2 border-solid border-white/[.08]"> 
-                              <div className="flex flex-col">
-                                 <Heading id="label-review">Leave a review</Heading>
-                                 <div id="div-star" className="flex flex-row py-3">
-                                    {Array.from({ length: 5 }).map((_, index) => (
-                                       <div key={index} onClick={() => setRating(index + 1)}>
-                                       {index < rating ? (
-                                       <StarFilledIcon id="star-filled-review" />
-                                       ) : (
-                                       <StarIcon id="star-review" />
-                                       )}
+                              {!isOrganizer && isRegister && (
+                                 <div id="div-create-review" className="flex flex-col py-4 border-2 border-solid border-white/[.08]"> 
+                                    <div className="flex flex-col">
+                                       <Heading id="label-review">Leave a review</Heading>
+                                       <div id="div-star" className="flex flex-row py-3">
+                                          {Array.from({ length: 5 }).map((_, index) => (
+                                             <div key={index} onClick={() => setRating(index + 1)}>
+                                             {index < rating ? (
+                                             <StarFilledIcon id="star-filled-review" />
+                                             ) : (
+                                             <StarIcon id="star-review" />
+                                             )}
+                                          </div>
+                                          ))}  
+                                       </div> 
+                                       <TextArea 
+                                          id= "input-create-review"
+                                          placeholder="Write you review here..." 
+                                          value = {reviewContent} 
+                                          onChange = {(e) => setReviewsContent(e.target.value)} 
+                                          typeof="text"
+                                          className="flex flex-col"
+                                       />
+
                                     </div>
-                                    ))}  
-                                 </div> 
-                                 <TextArea 
-                                    id= "input-create-review"
-                                    placeholder="Write you review here..." 
-                                    value = {reviewContent} 
-                                    onChange = {(e) => setReviewsContent(e.target.value)} 
-                                    typeof="text"
-                                    className="flex flex-col"
-                                 />
-
-                              </div>
-                              <div className="flex flex-row">
-                                 {reviewContent=='' && rating==0 ? 
-                                   <Button id="button-create-review" color="violet" onClick={createReview} disabled={true}>Submit</Button> :
-                                   <Button id="button-create-review" color="violet" onClick={createReview}>Submit</Button>
-                                 }
-                              </div>
+                                    <div className="flex flex-row">
+                                       {reviewContent=='' || rating==0 ? 
+                                       <Button id="button-create-review" color="violet" onClick={createReview} disabled={true}>Submit</Button> :
+                                       <Button id="button-create-review" color="violet" onClick={createReview}>Submit</Button>
+                                       }
+                                    </div>
+                                 </div>
+                              )}
                            </div>
-                        </div>
+                        ) : (
+                           <Box id = "no-box-review-event-no-finish" className="flex flex-col gap-5  border-2 border-solid border-white/[.08] ">
+                              <label id= "label-no-data">The event didn`t end</label>
+                              <MixIcon id = "no-data-icon"/>
+                           </Box>    
+                        ) }
                      </Dialog.Content>                                  
                   </Dialog.Portal>
             </Dialog.Root>
          </div>
          <div id="event-results" className = "flex flex-col border-2 border-solid border-white/[.08] p-6 gap-4 ">
             <Heading className="text-3xl font-bold mb-4">Results</Heading>
-            <SegmentedControl.Root onValueChange={(value) => handleSelectCategory(value)} variant= "surface" id="segment-root" defaultValue="inbox" >
-               {!event.category.includes(",") && <SegmentedControl.Item id="segment-item" value={event.category} className="border-2 border-solid border-white/[.08]"
-                   data-state={selectedSegment === event.category ? "on" : "off"}
-                   onClick={() => setSelectedSegment(event.category)}
-                   >{event.category}</SegmentedControl.Item>}
-               {event.category.split(",").length >= 2 ? (
-               event.category.split(",").map((Item: string, index: Key | null | undefined) => (
-                  <SegmentedControl.Item
-                     key={index}
-                     id="segment-item"
-                     data-state={selectedSegment === Item.trim() ? "on" : "off"}
-                     onClick={() => setSelectedSegment(Item.trim())}
-                     value={Item.trim()}
-                     className="border-2 border-solid border-white/[.08]"
-                  >
-                     {Item.trim()}
-                  </SegmentedControl.Item>
-               ))
-               ) : null}
-            </SegmentedControl.Root>
-            <Select.Root onValueChange={(value) => {handleSelectCategory(value)}}>
-               <Select.Trigger className="SelectTrigger border-2 border-solid border-white/[.08]" aria-label="Food">
-                  <Select.Value placeholder="Select edition..." />
-                  <Select.Icon className="SelectIcon">
-                     <ChevronDownIcon />
-                  </Select.Icon>
-               </Select.Trigger>
-               <Select.Portal>
-                  <Select.Content className="SelectContent border-2 border-solid border-white/[.08]">
-                     <Select.ScrollUpButton className="SelectScrollButton border-2 border-solid border-white/[.08]">
-                        <ChevronUpIcon />
-                     </Select.ScrollUpButton>
-                     <Select.Viewport className="SelectViewport">
-                        <Select.Group>
-                           <Select.Label className="SelectLabel">Edition</Select.Label>
-                           <SelectItem id="select-item"  value="2024-2025"
-                              data-state={selectedSelect === "2024-2025" ? "on" : "off"}
-                              onClick={() => setSelectedSelect("2024-2025")}
-                              >2024-2025</SelectItem>
-                           <SelectItem id="select-item"  value="2023-2024"
-                              data-state={selectedSelect === "2023-2024" ? "on" : "off"}
-                              onClick={() => setSelectedSelect("2023-2024")}
-                             >2023-2024</SelectItem>
-                        </Select.Group>
-                     </Select.Viewport>
-                     <Select.ScrollDownButton className="SelectScrollButton">
-                        <ChevronDownIcon />
-                     </Select.ScrollDownButton>
-                  </Select.Content>
-               </Select.Portal>
-            </Select.Root>
-            {eventResultsData.length > 0 ? (
-               <table id="table-result" className="border border-gray-300">
-                  <thead className="bg-purple-100">    
-                     <tr id="table-head">
-                     {eventResultsHeaders.map((header,index) => (
-                        <th key={index} className="border p-2">{header}</th>
-                     ))}
-                     </tr>
-                  </thead>
-                  <tbody>
-                  {eventResultsData.map((data, index) => (
-                  <tr id="table-data" key={index} className="border border-gray-300">
-                     <td className="border border-gray-300 p-2">{data.participant_name}</td>
-                     <td className="border border-gray-300 p-2">{data.category}</td>
-                     <td className="border border-gray-300 p-2">{data.position}</td>
-                     <td className="border border-gray-300 p-2">{data.time}</td>
-                     <td className="border border-gray-300 p-2">{data.score}</td>
-                  </tr>
-                  ))}
-                  </tbody>
-               </table>      
-            ) : (
-               <Box id = "no-box-result" className="flex flex-col gap-5 ">
-                  <label id= "label-no-data">No reviews to show</label>
-                  <MixIcon id = "no-data-icon"/>
-               </Box>    
+            
+            {(new Date().toISOString() > event.end_date) ? (
+               <><SegmentedControl.Root onValueChange={(value) => handleSelectCategory(value)} variant="surface" id="segment-root" defaultValue="inbox">
+                     {!event.category.includes(",") && <SegmentedControl.Item id="segment-item" value={event.category} className="border-2 border-solid border-white/[.08]"
+                        data-state={selectedSegment === event.category ? "on" : "off"}
+                        onClick={() => setSelectedSegment(event.category)}
+                     >{event.category}</SegmentedControl.Item>}
+                     {event.category.split(",").length >= 2 ? (
+                        event.category.split(",").map((Item: string, index: Key | null | undefined) => (
+                           <SegmentedControl.Item
+                              key={index}
+                              id="segment-item"
+                              data-state={selectedSegment === Item.trim() ? "on" : "off"}
+                              onClick={() => setSelectedSegment(Item.trim())}
+                              value={Item.trim()}
+                              className="border-2 border-solid border-white/[.08]"
+
+                           >
+                              {Item.trim()}
+                           </SegmentedControl.Item>
+                        ))
+                     ) : null}
+                  </SegmentedControl.Root><Select.Root onValueChange={(value) => { handleSelectCategory(value); } }>
+                        <Select.Trigger className="SelectTrigger border-2 border-solid border-white/[.08]" aria-label="Food">
+                           <Select.Value placeholder="Select edition..." />
+                           <Select.Icon className="SelectIcon">
+                              <ChevronDownIcon />
+                           </Select.Icon>
+                        </Select.Trigger>
+                        <Select.Portal>
+                           <Select.Content className="SelectContent border-2 border-solid border-white/[.08]">
+                              <Select.ScrollUpButton className="SelectScrollButton border-2 border-solid border-white/[.08]">
+                                 <ChevronUpIcon />
+                              </Select.ScrollUpButton>
+                              <Select.Viewport className="SelectViewport">
+                                 <Select.Group>
+                                    <Select.Label className="SelectLabel">Edition</Select.Label>
+                                    <SelectItem id="select-item" value="2024-2025"
+                                       data-state={selectedSelect === "2024-2025" ? "on" : "off"}
+                                       onClick={() => setSelectedSelect("2024-2025")}
+                                    >2024-2025</SelectItem>
+                                    <SelectItem id="select-item" value="2023-2024"
+                                       data-state={selectedSelect === "2023-2024" ? "on" : "off"}
+                                       onClick={() => setSelectedSelect("2023-2024")}
+                                    >2023-2024</SelectItem>
+                                 </Select.Group>
+                              </Select.Viewport>
+                              <Select.ScrollDownButton className="SelectScrollButton">
+                                 <ChevronDownIcon />
+                              </Select.ScrollDownButton>
+                           </Select.Content>
+                        </Select.Portal>
+                     </Select.Root><div id="div-table-result" className="flex justify-center overflow-y-auto custom-scroll">
+                        {eventResultsData.length > 0 && visibleResult ? (
+                           <table id="table-result" className="border border-gray-300">
+                              <thead className="bg-purple-100">
+                                 <tr id="table-head">
+                                    {eventResultsHeaders.map((header, index) => (
+                                       <th key={index} className="border p-2">{header}</th>
+                                    ))}
+                                 </tr>
+                              </thead>
+                              <tbody>
+                                 {eventResultsData.map((data, index) => (
+                                    <tr id="table-data" key={index} className="border border-gray-300">
+                                       <td className="border border-gray-300 p-2">{data.participant_name}</td>
+                                       <td className="border border-gray-300 p-2">{data.category}</td>
+                                       <td className="border border-gray-300 p-2">{data.position}</td>
+                                       <td className="border border-gray-300 p-2">{data.time}</td>
+                                       <td className="border border-gray-300 p-2">{data.score}</td>
+                                    </tr>
+                                 ))}
+                              </tbody>
+                           </table>
+                        ) : (
+                           <Box id="no-box-result" className="flex flex-col gap-5  border-2 border-solid border-white/[.08]">
+                              <label id="label-no-data">No results to show</label>
+                              <MixIcon id="no-data-icon" />
+                           </Box>
+                        )}
+                     </div><Button id="button-upload" onClick={() => {
+                        if (edition_result && category_result) {
+                           findEventResults(event.event_id, edition_result, category_result);
+                        }
+                        else setNotification('No CSV');
+                     } }>Upload</Button>
+                     {notification && <p>{notification}</p>}
+                     </> 
+            ):(
+               <Box id="no-box-result-event-no-finish" className="flex flex-col gap-3  border-2 border-solid border-white/[.08] ">
+                  <label id="label-no-data">No results to show</label>
+                  <MixIcon id="no-data-icon" />
+               </Box>
             )}
-              <Button id = "button-upload" onClick={() => {
-                  if (edition_result && category_result) {
-                     findEventResults(event.event_id, edition_result, category_result);}
-                  else setNotification('No CSV')
-               }}>Upload</Button> 
-               {notification && <p>{notification}</p>}
+            
+         
          </div>
        {/* {(new Date().toISOString() >= event.end_date) ? 
        //    <div>
