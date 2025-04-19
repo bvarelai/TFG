@@ -17,7 +17,7 @@ export default function Login() {
   const validateForm = (): boolean => {
     
     if (!user_name || !password) {
-      setError("Usuario y/o contraseña requeridos");
+      setError("Username and password are required");
       return false;
     }
 
@@ -35,31 +35,47 @@ export default function Login() {
     const formDetails = new URLSearchParams();
     formDetails.append("username", user_name);
     formDetails.append("password", password);
+    try{
+      const response = await fetch('http://localhost:8000/user/login', {
+          method: 'POST',
+          headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: formDetails,
+          credentials : "include",
+      });
+                  
+      if (!response.ok) {
+        setLoading(false);
+        setError('User and password incorrects');
+        return;
+      }
+      let data;
+      try {
+        data = await response.json(); 
+      } catch (jsonError) {
+        setLoading(false);
+        setError('Error parsing server response');
+        return;
+      }
+      localStorage.setItem('user_id',  data.user_id.toString());
+      localStorage.setItem('user_name', user_name);  
+      localStorage.setItem('organizer', data.organizer);
 
-    
-    const response = await fetch('http://localhost:8000/user/login', {
-        method: 'POST',
-        headers: {
-         'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: formDetails,
-        credentials : "include",
-    });
-                 
-    if (!response.ok) {
-      setLoading(false);
-      setError('Usuario y/o contraseña incorrectos');
-      return;
-    }
-    const data = await response.json();
-    localStorage.setItem('user_id',  data.user_id.toString());
-    localStorage.setItem('user_name', user_name);  
-    localStorage.setItem('organizer', data.organizer);
-
-    setLoading(true);
-    setError('');
-    setToken(true);
-    redirect('/home');   
+      setLoading(true);
+      setError('');
+      setToken(true);
+      redirect('/home');   
+    } catch (error) {
+        setLoading(false);
+        if (error instanceof TypeError && error.message === "Failed to fetch") {
+          setError('The server is down, please try again later.');
+        }
+        else {
+          setLoading(true);
+          redirect('/home');   
+        } 
+      }
     }
 
     const goToRegister = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -124,7 +140,7 @@ export default function Login() {
                 > Create a new account </Button>
                 {error &&
                  <div id = "p-red" data-testid="error-message">
-                    <Callout.Root color="red" size="2" variant="outline" className="flex items-center ">
+                    <Callout.Root id= "callout-root-login" color="red" size="2" variant="soft" className="flex items-center ">
                       <Callout.Icon className="callout-icon-large" >
                         <ExclamationTriangleIcon  />
                       </Callout.Icon>

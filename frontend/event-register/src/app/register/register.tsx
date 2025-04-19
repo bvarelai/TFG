@@ -64,44 +64,55 @@ export default function Login() {
     formDetailsLogin.append("username", user_name);
     formDetailsLogin.append("password", password);
 
-    
-    let response = await fetch('http://localhost:8000/user/register', {
-      method: 'POST',
-      headers: {
-       'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(formDetails)
-    });
-              
-    if (!response.ok) {
-      setLoading(false);
-      setError('User already exist');
-      return;
-    }
+    try{
+      let response = await fetch('http://localhost:8000/user/register', {
+        method: 'POST',
+        headers: {
+        'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formDetails)
+      });
+                
+      if (!response.ok) {
+        setLoading(false);
+        setError('User already exist');
+        return;
+      }
 
-    const responselogin = await fetch('http://localhost:8000/user/login', {
-      method: 'POST',
-      headers: {
-       'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: formDetailsLogin,
-      credentials : "include",
-    });
-                 
-    if (!responselogin.ok) {
-      setLoading(false);
-      setError('Incorrect user or/and password');
-      return;
+      const responselogin = await fetch('http://localhost:8000/user/login', {
+        method: 'POST',
+        headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: formDetailsLogin,
+        credentials : "include",
+      });
+                  
+      if (!responselogin.ok) {
+        setLoading(false);
+        setError('Incorrect user or/and password');
+        return;
+      }
+      const data = await responselogin.json();
+      localStorage.setItem('user_id', data.user_id);
+      localStorage.setItem('user_name', user_name);
+      localStorage.setItem('organizer', data.organizer);
+        
+      setLoading(true);
+      setError("");
+      setSucess(true);
+      redirect('/home'); 
     }
-    const data = await responselogin.json();
-    localStorage.setItem('user_id', data.user_id);
-    localStorage.setItem('user_name', user_name);
-    localStorage.setItem('organizer', data.organizer);
-      
-    setLoading(true);
-    setError("");
-    setSucess(true);
-    redirect('/home'); 
+    catch (error) {
+      setLoading(false);
+      if (error instanceof TypeError && error.message === "Failed to fetch") {
+        setError('The server is down, please try again later.');
+      }
+      else {
+        setLoading(true);
+        redirect('/home');   
+      } 
+    }
   }
   return (
     <form 
@@ -111,7 +122,7 @@ export default function Login() {
       <div 
         id = "register-div"
         className="flex flex-col gap-10 row-start-2 items-center border-2 border-solid border-white/[.08]">                                
-          <Image className="relative top-[+45px]"
+          <Image className="relative top-[+35px]"
                 src="/logo.png"
                 width={300}
                 height={300}
@@ -119,7 +130,7 @@ export default function Login() {
                 id = "image-login"  
           />   
           <div className="flex flex-col gap-6 items-center relative"> 
-            <input className="relative top-[+10px]"
+            <input className="relative top-[+0px]"
               id = "input_register"  
               name = "user_name"
               placeholder="Name"
@@ -127,7 +138,7 @@ export default function Login() {
               value={user_name}
               onChange={(e) => setUserName(e.target.value)}
             />
-             <input className="relative top-[+0px]"
+             <input className="relative top-[-10px]"
               id = "input_register"  
               name = "user_surname"
               placeholder="Surname"
@@ -135,7 +146,7 @@ export default function Login() {
               value={user_surname}
               onChange={(e) => setUserSurname(e.target.value)}
             />
-            <input className="relative top-[-10px]"
+            <input className="relative top-[-20px]"
               id = "input_register"
               name= "password"
               placeholder="Password"
@@ -143,7 +154,7 @@ export default function Login() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
-            <input className="relative top-[-20px]"
+            <input className="relative top-[-30px]"
               id = "input_register"
               name= "age"
               placeholder="Age"
@@ -151,7 +162,7 @@ export default function Login() {
               value={age}
               onChange={(e) => setAge(e.target.value)}
             />
-            <input className="relative top-[-30px]"
+            <input className="relative top-[-40px]"
               id = "input_register"
               name= "email"
               placeholder="Email"
@@ -159,7 +170,7 @@ export default function Login() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             /> 
-             <input className="relative top-[-40px]"
+             <input className="relative top-[-50px]"
               id = "input_register"
               name= "phone"
               placeholder="Ej: +34 600 123 456"
@@ -167,7 +178,7 @@ export default function Login() {
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
             />  
-            <input className="relative top-[-50px]"
+            <input className="relative top-[-60px]"
               id = "input_register"
               name= "age"
               placeholder="City *"
@@ -175,7 +186,7 @@ export default function Login() {
               value={city}
               onChange={(e) => setCity(e.target.value)}
             />
-            <input className="relative top-[-60px]"
+            <input className="relative top-[-70px]"
               id = "input_register"
               name= "autonomous_community"
               placeholder="Autonomous Community *"
@@ -183,7 +194,7 @@ export default function Login() {
               value={autonomous_community}
               onChange={(e) => setAutonomousCommunity(e.target.value)}
             />
-            <input className="relative top-[-70px]"
+            <input className="relative top-[-80px]"
               id = "input_register"
               name= "country"
               placeholder="Country"
@@ -191,7 +202,7 @@ export default function Login() {
               value={country}
               onChange={(e) => setCountry(e.target.value)}
             />
-             <div id = "check-box-register" className="flex flex-rows gap-2.5 relative top-[-95px] items-center"
+             <div id = "check-box-register" className="flex flex-rows gap-2.5 relative top-[-110px] items-center"
              onClick={() => setOrganizer(!organizer)}>
               <Text className="Label" htmlFor="c1">
                 Be organizer
@@ -212,13 +223,13 @@ export default function Login() {
             <Button
             id = "register-button"
             type = "submit"  
-            className=" relative top-[-100px] rounded-full flex items-center justify-center hover:border-transparent text-sm sm:text-base h-10 sm:h-10 px-4 sm:px-5 sm:min-w-40"   
+            className=" relative top-[-110px] rounded-full flex items-center justify-center hover:border-transparent text-sm sm:text-base h-10 sm:h-10 px-4 sm:px-5 sm:min-w-40"   
             disabled={loading}>  
               {loading ? "..." : "SignUp"} 
             </Button>
             {error &&
               <div id = "p-red" data-testid="error-message">
-                  <Callout.Root color="red" size="2" variant="outline" className="flex items-center ">
+                  <Callout.Root id="callout-root-register" color="red" size="2" variant="soft" className="flex items-center ">
                     <Callout.Icon className="callout-icon-large" >
                       <ExclamationTriangleIcon  />
                     </Callout.Icon>

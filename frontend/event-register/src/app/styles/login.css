@@ -64,3 +64,8 @@
     border-bottom: px solid #ffffff;
     margin: 0 10px; 
   }
+
+#callout-root-login{
+  margin-top: -30px;
+  border-radius: 10px;
+}
