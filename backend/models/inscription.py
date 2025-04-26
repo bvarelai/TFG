@@ -7,7 +7,9 @@ class Inscription(Base):
     event_id = Column(Integer, ForeignKey("Events.event_id"), primary_key=True,  index=True) 
     user_id = Column(Integer, ForeignKey("Users.user_id"), primary_key=True, index=True) 
     event_name = Column(String, nullable=None, index=True)
-    inscription_date = Column(DateTime)                 
+    inscription_date = Column(DateTime)
+    start_date = Column(DateTime, nullable=None)
+    end_date = Column(DateTime, nullable=None)                 
     location = Column(String, nullable=None)
 
 event = relationship("Events", back_populates="Inscriptions")
