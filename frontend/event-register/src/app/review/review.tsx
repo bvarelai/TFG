@@ -15,7 +15,7 @@ export default function Review({ event }: { event: any }) {
    const [isOrganizer, setOrganizer] = useState<boolean>(false);
    const [isRegister, setRegister] = useState<boolean>(false);
    const [reviews, setReviews] = useState<any[]>([]);
-   const [eventResults, setEventResults]  = useState<any>("");
+   const [index, setIndex]  = useState<number>(0);
    const [eventResultsHeaders, setEventResultsHeaders]  = useState<String[]>([]);
    const [eventResultsData, setEventResultsData]  = useState<{ participant_name: string; position: string; time: string; score: string; category: string; }[]>([]);
    const [reviewContent, setReviewsContent] = useState<string>("");
@@ -58,6 +58,35 @@ export default function Review({ event }: { event: any }) {
          findReviews(event.event_id);
       }
    },[event.event_id])
+
+   useEffect(() => {
+      const updateVisibleReviews = () => {
+         if (window.matchMedia("(max-width: 707px)").matches) {
+            setVisibleReviews(3);
+            setIndex(3)
+         } else if (window.matchMedia("(max-width: 1024px)").matches) {
+            setVisibleReviews(4);
+            setIndex(4)
+         } else {
+            setVisibleReviews(6);
+            setIndex(6)
+         }
+      };
+
+      updateVisibleReviews();
+
+      window.addEventListener("resize", updateVisibleReviews);
+
+      return () => {
+         window.removeEventListener("resize", updateVisibleReviews);
+      };
+   }, []);
+
+   useEffect(() => {
+    if (edition_result && category_result) {
+      findEventResults(event.event_id, edition_result, category_result);
+    }
+   } ,[edition_result, category_result]);
 
    const SelectItem = React.forwardRef<HTMLDivElement, React.ComponentPropsWithoutRef<typeof Select.Item>>(
       ({ children, className, ...props }, forwardedRef) => {
@@ -129,6 +158,8 @@ export default function Review({ event }: { event: any }) {
          "user_id" : user_id,
          "event_name" : event_name,
          "inscription_date" : "2022-12-12T12:12:12",
+         "start_date" : celebration_date,
+         "end_date" : end_date,
          "location" : location
       }
       
@@ -259,15 +290,15 @@ export default function Review({ event }: { event: any }) {
 
    const showMoreReviews = () => {
       if (visibleReviews < reviews.length) {
-        setVisibleReviews(visibleReviews + 4); // Muestra 5 más
-        setReviewIndex(review_index+1); 
+        setVisibleReviews(visibleReviews + index); // Muestra 5 más
+        setReviewIndex(review_index+index); 
       }
     };
     
     const showLessReviews = () => {
       if (visibleReviews > 4) {
-        setVisibleReviews(visibleReviews - 4); // Muestra 5 menos
-        setReviewIndex(review_index-1)
+        setVisibleReviews(visibleReviews - index); // Muestra 5 menos
+        setReviewIndex(review_index-index)
       }
     };
 
@@ -282,14 +313,14 @@ export default function Review({ event }: { event: any }) {
                   <div className="flex flex-row justify-between items-center">
                      <Heading id = "event-info-heading" className="text-3xl font-bold mb-4"> {event.event_name} Information</Heading>
                       {(new Date().toISOString() < event.celebration_date) ? 
-                        <Badge id="badge-review" color="green" variant="solid">
+                        <Badge id="badge-review-green" color="green" variant="solid">
                               Published
                         </Badge> :
                      ((new Date().toISOString() >= event.celebration_date) && (new Date().toISOString() <= event.end_date)) ?  
-                        <Badge id="badge-review" color="blue" variant="solid">
+                        <Badge id="badge-review-blue" color="blue" variant="solid">
                               Ongoing
                         </Badge> :
-                        <Badge id="badge-review" color="red" variant="solid">
+                        <Badge id="badge-review-red" color="red" variant="solid">
                               Finished  
                         </Badge>                          
                      }
@@ -299,8 +330,8 @@ export default function Review({ event }: { event: any }) {
                      <div className="flex flex-row gap-1" id="second-info-col"><strong className="flex flex-row gap-1"> <DrawingPinFilledIcon/> Category:</strong> {event.category}</div>
                      <div  className="flex flex-row gap-1" id="first-info-col"><strong className="flex flex-row gap-1"> <SewingPinFilledIcon/> Location:</strong> {event.location}</div>
                      <div className="flex flex-row gap-1" id="second-info-col"><strong className="flex flex-row gap-1" > <PersonIcon/> Capacity:</strong> {event.capacity} places</div>
-                     <div id="first-info-col"><strong>Start date:</strong> {event.celebration_date.split("T")[0]} {event.celebration_date.split("T")[1]}</div>
-                     <div id="second-info-col"><strong>End date:</strong> {event.end_date.split("T")[0]} {event.end_date.split("T")[1]}</div>
+                     <div id="first-info-col"><strong>Start date:</strong> {event.celebration_date ? event.celebration_date.split("T")[0]: "N/A"} {event.celebration_date ? event.celebration_date.split("T")[1]: "N/A"}</div>
+                     <div id="second-info-col"><strong>End date:</strong> {event.end_date ? event.end_date.split("T")[0]: "N/A"} {event.end_date ? event.end_date.split("T")[1]: "N/A"}</div>
                      <div id="first-info-col"><strong>Organizer by:</strong> {event.organizer_by}</div>
                      <div id="second-info-col"><strong>Duration:</strong> {event.duration} days </div>
                      <div id="first-info-col"> <strong>Language:</strong> {event.language}</div>
@@ -330,10 +361,10 @@ export default function Review({ event }: { event: any }) {
             </div>
             <Dialog.Root>
                <Dialog.Trigger>
-                  <div id= "event-comments" className="p-6 flex flex-col border-2 border-solid border-white/[.08] flex-grow">
+                  <div id= "event-comments" className="p-6 flex flex-col border-2 border-solid border-white/[.08]">
                      <Heading id = "comments-heading" className="text-3xl font-bold mb-1">Comments and Reviews</Heading> 
                         {reviews.length > 0 ? (  
-                           reviews.slice(0,3).map((review,index) => (
+                           reviews.slice(0,4).map((review,index) => (
                               <Box id ="box-review" key={event.review_id || index} className="flex flex-col border-2 border-solid border-white/[.08]">
                                  <div id = "rating-review" className="flex flex-row items-center gap-2">
                                        <div  className="flex flex-row">
@@ -368,10 +399,10 @@ export default function Review({ event }: { event: any }) {
                            Create and view comments and reviews
                         </Dialog.Description>
                         {(new Date().toISOString() > event.end_date) ? (                        
-                           <div className="flex flex-row">
+                           <div id= "div-create-and-view-reviews"className="flex flex-row">
                               <div id ="div-title-and-reviews" className="flex flex-col border-2 border-solid border-white/[.08]">
                                  <Heading  id="heading-review">Reviews</Heading>
-                                 <div id="div-reviews">
+                                 <div id="div-reviews" className="flex flex-wrap">
                                     {reviews.length > 0 ? (  
                                        reviews.slice(review_index,visibleReviews).map((review,index) => (
                                           <Box id ="box-review-view" key={event.review_id || index} className="flex flex-col border-2 border-solid border-white/[.08]">
@@ -386,29 +417,25 @@ export default function Review({ event }: { event: any }) {
                                                    </div>
                                                    <span id="text-review">{review.review_text}</span>
                                              </div>
-                                             <div id="name-review" className="flex flex-row items-center gap-2">
-                                                   <span> {review.user_name}</span>
-                                             </div>
-
+                                             <span id="name-review" className="flex flex-row" > {review.user_name}</span>
                                           </Box>    
                                        ))) : (
-                                          <Box id = "no-box-review-view" className="flex flex-col gap-5 ">
+                                          <Box id = "no-box-review-view" className="flex flex-col gap-5 border-2 border-solid border-white/[.08] ">
                                              <label id= "label-no-data">No reviews to show</label>
                                              <MixIcon id = "no-data-icon"/>
                                           </Box>    
                                        )
                                     }
-                                    {(review_index == 0) ? 
-                                       <ArrowUpIcon id="arrow-up" onClick={showLessReviews} color='#808080' />:
-                                       <ArrowUpIcon id="arrow-up" onClick={showLessReviews}/>  
+                                    {!(review_index == 0) && 
+                                      <Button id="arrow-up" color="violet" onClick={showLessReviews}>Less</Button> 
                                     }  
-                                    {visibleReviews >= reviews.length ? 
-                                    <ArrowDownIcon id="arrow-down" onClick={showMoreReviews} color='#808080'/> :
-                                    <ArrowDownIcon id="arrow-down" onClick={showMoreReviews}/>
+                                    {!(visibleReviews >= reviews.length) && 
+                                       <Button id="arrow-down" color="violet" onClick={showMoreReviews} > More </Button>
+
                                     }                               
                                  </div>
                               </div>
-                              {!isOrganizer && isRegister && (
+                              {!isOrganizer && isRegister &&(
                                  <div id="div-create-review" className="flex flex-col py-4 border-2 border-solid border-white/[.08]"> 
                                     <div className="flex flex-col">
                                        <Heading id="label-review">Leave a review</Heading>
@@ -534,13 +561,7 @@ export default function Review({ event }: { event: any }) {
                               <MixIcon id="no-data-icon" />
                            </Box>
                         )}
-                     </div><Button id="button-upload" onClick={() => {
-                        if (edition_result && category_result) {
-                           findEventResults(event.event_id, edition_result, category_result);
-                        }
-                        else setNotification('No CSV');
-                     } }>Upload</Button>
-                     {notification && <p>{notification}</p>}
+                     </div>
                      </> 
             ):(
                <Box id="no-box-result-event-no-finish" className="flex flex-col gap-3  border-2 border-solid border-white/[.08] ">

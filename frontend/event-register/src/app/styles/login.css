@@ -1,71 +1,410 @@
 @import "@radix-ui/themes/styles.css";
 
-/*Diseño escritorio*/
-
-#login-form {
-  backdrop-filter: blur(10px);
-  background-color: #1a1c2c;
-  display: flex;
-  justify-content: center; 
-  padding: 115px; 
-  
-}
-#login-div{
-  background-color: rgba(15, 17, 26, 0.8);
-  width: 25%;
-  border-radius: 10px;
-  justify-content: center;
-  height: 500px;
-  box-shadow:  0 0 20px 2px black;
-  margin-top: 70px;
-}
-
-
-#label-login{
-  font-style:geist-sans;
-  font-size: 35px;
-  padding-block-end: 40%;
-}
-
-  #input-login{
-  background-color: rgba(15, 17, 26, 0.8);
-  border: 1px solid #333;
-  color: white; 
-  width: 250px;
-  height: 30px;
-}
-  
-  #input-login:hover{
-    border-color: #9678C8;
+@media only screen and (max-width: 767px) { 
+  /*Diseño movil*/  
+    
+  @media screen and (orientation: portrait) { 
+    #login-form {
+      backdrop-filter: blur(10px);
+      background-color: #1a1c2c;
+      display: flex;
+      justify-content: center; 
+      align-items: center;
+      height: 100vh;
+      padding: 115px; 
+      
+    }
+    #login-div{
+      background-color: rgba(15, 17, 26, 0.8);
+      width: 450px;
+      border-radius: 10px;
+      justify-content: center;
+      height: 440px;
+      box-shadow:  0 0 20px 2px black;
+    }
+    
+    
+    #label-login{
+      font-style:geist-sans;
+      font-size: 35px;
+      padding-block-end: 40%;
+    }
+    
+      #input-login{
+      background-color: rgba(15, 17, 26, 0.8);
+      border: 1px solid #333;
+      color: white; 
+      width: 200px;
+      height: 30px;
+    }
+      
+      #input-login:hover{
+        border-color: #9678C8;
+      }
+      
+      
+      #login-button{
+        color: white;
+        border: 1px solid #333;
+        width: 180px;
+      }
+      
+      #login-button:hover{
+        border-color: #9678C8;
+      }
+      
+      #span-or {
+        display: flex;
+        align-items: center;
+        text-align: center;
+        color: white; 
+      }
+      
+      #span-or::before,
+      #span-or::after {
+        content: "────────";
+        flex: 1;
+        border-bottom: px solid #ffffff;
+        margin: 0 10px; 
+      }
+    
+    #callout-root-login{
+      margin-top: -30px;
+      border-radius: 10px;
+    }
   }
-  
-  
-  #login-button{
-    color: white;
-    border: 1px solid #333;
-    width: 250px;
-  }
-  
-  #login-button:hover{
-    border-color: #9678C8;
-  }
-  
-  #span-or {
-    display: flex;
-    align-items: center;
-    text-align: center;
-    color: white; 
-  }
-  
-  #span-or::before,
-  #span-or::after {
-    content: "─────────";
-    flex: 1;
-    border-bottom: px solid #ffffff;
-    margin: 0 10px; 
-  }
 
-#callout-root-login{
-  margin-top: -30px;
-  border-radius: 10px;
+  @media screen and (orientation: landscape) {
+ 
+    #login-form {
+      backdrop-filter: blur(10px);
+      background-color: #1a1c2c;
+      display: flex;
+      justify-content: center; 
+      align-items: center;
+      height: 120vh;
+      padding: 115px; 
+      
+    }
+
+    #login-div{
+      background-color: rgba(15, 17, 26, 0.8);
+      width: 380px;
+      border-radius: 10px;
+      justify-content: center;
+      height: 360px;
+      box-shadow:  0 0 20px 2px black;
+    }
+    
+    #logo-login{
+      margin-top: 20px;
+    }
+
+    #label-login{
+      font-style:geist-sans;
+      font-size: 35px;
+      padding-block-end: 40%;
+    }
+    
+      #input-login{
+      background-color: rgba(15, 17, 26, 0.8);
+      border: 1px solid #333;
+      color: white; 
+      width: 200px;
+      height: 30px;
+    }
+      
+      #input-login:hover{
+        border-color: #9678C8;
+      }
+      
+      .input-primary{
+        margin-top: -20px;
+      }
+
+      #eye-open{
+        margin-top: -20px;
+      }
+
+      #eye-close{
+        margin-top: -20px;
+      }
+
+      
+      #login-button{
+        color: white;
+        border: 1px solid #333;
+        width: 250px;
+        height: 38px;
+        margin-top: -10px;
+      }
+      
+      #login-button:hover{
+        border-color: #9678C8;
+      }
+
+      
+      #span-or {
+        display: flex;
+        align-items: center;
+        text-align: center;
+        color: white;
+        margin-top: -15px; 
+      }
+      
+      #span-or::before,
+      #span-or::after {
+        content: "────────";
+        flex: 1;
+        border-bottom: px solid #ffffff;
+        margin: 0 10px; 
+      }
+    
+    #callout-root-login{
+      margin-top: -30px;
+      border-radius: 10px;
+    }
+
+  }
 }
+
+@media only screen and (min-width: 767px) and (max-width: 1025px) { 
+  /*Diseño tablet*/  
+   
+    #login-form {
+      backdrop-filter: blur(10px);
+      background-color: #1a1c2c;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;  
+      padding: 115px; 
+      
+    }
+    #login-div{
+      background-color: rgba(15, 17, 26, 0.8);
+      width: 420px;
+      border-radius: 10px;
+      justify-content: center;
+      height: 540px;
+      box-shadow:  0 0 20px 2px black;
+    }
+    
+    
+    #label-login{
+      font-style:geist-sans;
+      font-size: 35px;
+      padding-block-end: 40%;
+    }
+    
+      #input-login{
+      background-color: rgba(15, 17, 26, 0.8);
+      border: 1px solid #333;
+      color: white; 
+      width: 250px;
+      height: 30px;
+    }
+      
+      #input-login:hover{
+        border-color: #9678C8;
+      }
+      
+      
+      #login-button{
+        color: white;
+        border: 1px solid #333;
+        width: 250px;
+      }
+      
+      #login-button:hover{
+        border-color: #9678C8;
+      }
+      
+      #span-or {
+        display: flex;
+        align-items: center;
+        text-align: center;
+        color: white; 
+      }
+      
+      #span-or::before,
+      #span-or::after {
+        content: "─────────";
+        flex: 1;
+        border-bottom: px solid #ffffff;
+        margin: 0 10px; 
+      }
+    
+    #callout-root-login{
+      margin-top: -30px;
+      border-radius: 10px;
+    }
+
+    @media screen and (orientation: landscape) {
+ 
+      #login-form {
+        backdrop-filter: blur(10px);
+        background-color: #1a1c2c;
+        display: flex;
+        justify-content: center; 
+        align-items: center;
+        height: 120vh;
+        padding: 115px; 
+        
+      }
+  
+      #login-div{
+        background-color: rgba(15, 17, 26, 0.8);
+        width: 380px;
+        border-radius: 10px;
+        justify-content: center;
+        height: 400px;
+        box-shadow:  0 0 20px 2px black;
+      }
+      
+      #logo-login{
+        margin-top: 20px;
+      }
+  
+      #label-login{
+        font-style:geist-sans;
+        font-size: 35px;
+        padding-block-end: 40%;
+      }
+      
+        #input-login{
+        background-color: rgba(15, 17, 26, 0.8);
+        border: 1px solid #333;
+        color: white; 
+        width: 200px;
+        height: 30px;
+      }
+        
+        #input-login:hover{
+          border-color: #9678C8;
+        }
+        
+        .input-primary{
+          margin-top: -20px;
+        }
+  
+        #eye-open{
+          margin-top: -20px;
+        }
+  
+        #eye-close{
+          margin-top: -20px;
+        }
+  
+        
+        #login-button{
+          color: white;
+          border: 1px solid #333;
+          width: 250px;
+          height: 38px;
+          margin-top: -10px;
+        }
+        
+        #login-button:hover{
+          border-color: #9678C8;
+        }
+  
+        
+        #span-or {
+          display: flex;
+          align-items: center;
+          text-align: center;
+          color: white;
+          margin-top: -15px; 
+        }
+        
+        #span-or::before,
+        #span-or::after {
+          content: "────────";
+          flex: 1;
+          border-bottom: px solid #ffffff;
+          margin: 0 10px; 
+        }
+      
+      #callout-root-login{
+        margin-top: -30px;
+        border-radius: 10px;
+      }
+  
+    }
+}
+
+@media only screen and (min-width: 1025px) { 
+  
+  /*Diseño escritorio*/
+    #login-form {
+      backdrop-filter: blur(10px);
+      background-color: #1a1c2c;
+      display: flex;
+      justify-content: center; 
+      padding: 115px; 
+      
+    }
+    #login-div{
+      background-color: rgba(15, 17, 26, 0.8);
+      width: 25%;
+      border-radius: 10px;
+      justify-content: center;
+      height: 500px;
+      box-shadow:  0 0 20px 2px black;
+      margin-top: 70px;
+    }
+    
+    
+    #label-login{
+      font-style:geist-sans;
+      font-size: 35px;
+      padding-block-end: 40%;
+    }
+    
+      #input-login{
+      background-color: rgba(15, 17, 26, 0.8);
+      border: 1px solid #333;
+      color: white; 
+      width: 250px;
+      height: 30px;
+    }
+      
+      #input-login:hover{
+        border-color: #9678C8;
+      }
+      
+      
+      #login-button{
+        color: white;
+        border: 1px solid #333;
+        width: 250px;
+      }
+      
+      #login-button:hover{
+        border-color: #9678C8;
+      }
+      
+      #span-or {
+        display: flex;
+        align-items: center;
+        text-align: center;
+        color: white; 
+      }
+      
+      #span-or::before,
+      #span-or::after {
+        content: "─────────";
+        flex: 1;
+        border-bottom: px solid #ffffff;
+        margin: 0 10px; 
+      }
+    
+    #callout-root-login{
+      margin-top: -30px;
+      border-radius: 10px;
+    }
+}
+
+
+

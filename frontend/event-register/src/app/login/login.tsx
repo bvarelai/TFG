@@ -98,9 +98,10 @@ export default function Login() {
               width={300}
               height={300}
               alt="Application`s Logo"
+              id="logo-login"
            />  
           <div className="flex flex-col gap-6 items-center relative"> 
-            <input className="relative top-[-50px] transparent"
+            <input className="relative top-[-50px] transparent input-primary"
               id = "input-login"  
               name = "user_name"
               placeholder="Username"
@@ -108,7 +109,7 @@ export default function Login() {
               value={user_name}
               onChange={(e) => setUsername(e.target.value)}
             />
-            <input className="relative top-[-60px]"
+            <input className="relative top-[-60px] input-secondary"
               id = "input-login"
               name= "password"
               placeholder="Password"
@@ -118,14 +119,14 @@ export default function Login() {
             />     
             <span className="absolute top-[+2px] right-0 mr-1 cursor-pointer"            
             onClick={() => setVisible(!visible)}>
-              {visible ? <EyeOpenIcon color="plum" /> : <EyeClosedIcon color="plum"/>}
+              {visible ? <EyeOpenIcon id="eye-open" color="plum" /> : <EyeClosedIcon id="eye-close" color="plum"/>}
             </span>              
           </div>        
           <div id = "login-div-2" className="flex flex-col items-center gap-3 relative ">
                 <Button variant="solid"
                 id = "login-button"
                 type = "submit"  
-                className="relative top-[-40px] rounded-full flex items-center justify-center hover:border-transparent text-sm sm:text-base h-10 sm:h-10 px-4 sm:px-5 sm:min-w-40"   
+                className="relative top-[-40px] rounded-full flex items-center justify-center hover:border-transparent text-sm sm:text-base h-10 sm:h-10 px-4 sm:px-5 sm:min-w-40 button-primary"   
                 disabled={loading}>  
                   {loading ? "..." : "Login"} 
                 </Button>
@@ -135,7 +136,7 @@ export default function Login() {
                 <Button variant="soft" color = "pink"
                 id ="login-button"
                 type = "submit"
-                className="relative top-[-40px] rounded-full flex items-center justify-center hover:border-transparent text-sm sm:text-base h-10 sm:h-10 px-4 sm:px-5 sm:min-w-40"   
+                className="relative top-[-40px] rounded-full flex items-center justify-center hover:border-transparent text-sm sm:text-base h-10 sm:h-10 px-4 sm:px-5 sm:min-w-40 button-secondary"   
                 onClick={goToRegister}
                 > Create a new account </Button>
                 {error &&
