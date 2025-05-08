@@ -49,8 +49,10 @@ test.describe("Testing Register", () => {
         await page.locator('#checkbox-root').check();
         await page.locator('#register-button').click();
         const errorMessage = page.locator('#p-red');
+        await page.waitForTimeout(2000);
         await expect(errorMessage).toContainText('User already exist'); 
-        await expect(errorMessage).toBeVisible();
+        await expect(errorMessage).not.toBeVisible();
+        
     })
     test('Register fail when user data are empty', async({page}) => {
         await page.goto('/register');
@@ -67,7 +69,9 @@ test.describe("Testing Register", () => {
         await page.locator('#register-button').click();
         const errorMessage = page.locator('#p-red');
         await expect(errorMessage).toContainText('Data are required'); 
-        await expect(errorMessage).toBeVisible();
+        await page.waitForTimeout(2000);
+        await expect(errorMessage).not.toBeVisible();
+
     })
     test('Register fail when age are not valid', async({page}) => {
         await page.goto('/register');
@@ -83,8 +87,10 @@ test.describe("Testing Register", () => {
         await page.locator('#checkbox-root').check();
         await page.locator('#register-button').click();
         const errorMessage = page.locator('#p-red');
-        await expect(errorMessage).toContainText('Age must be a number'); 
-        await expect(errorMessage).toBeVisible();
+        await expect(errorMessage).toContainText('Age value is not valid'); 
+        await page.waitForTimeout(2000);
+        await expect(errorMessage).not.toBeVisible();
+       
     })
 });
 
@@ -109,17 +115,19 @@ test.describe("Testing Login", () => {
         await page.getByPlaceholder('Username',{exact: true}).fill('usuario3');
         await page.getByPlaceholder('Password', {exact: true}).fill('password3');
         await page.getByRole('button',{name: 'Login'}).click();;
-        const element = page.locator('#p-red');
-        await expect(element).toBeVisible();
+        const element = page.locator('#p-red');        
+        await expect(element).toContainText('User and password incorrects'); 
+        await page.waitForTimeout(2000);
+        await expect(element).not.toBeVisible();
     })
     
     test('Login failed when data is empty', async({page}) => {
         await page.goto('/login');
-        await page.getByPlaceholder('Username',{exact: true}).fill(' ');
-        await page.getByPlaceholder('Password', {exact: true}).fill(' ');
         await page.getByRole('button',{name: 'Login'}).click();
         const element = page.locator('#p-red');
-        await expect(element).toBeVisible();
+        await expect(element).toContainText('Username and password are required'); 
+        await page.waitForTimeout(2000);
+        await expect(element).not.toBeVisible();
     })    
 });
   
