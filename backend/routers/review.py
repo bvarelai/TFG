@@ -18,14 +18,14 @@ def register_event(review: ReviewCreate, db: Session = Depends(get_db)):
 def get_review(user_id: int, event_id: int, db: Session = Depends(get_db)):
     db_event = find_review_by_userId_and_eventId(db, user_id=user_id, event_id=event_id)
     if not db_event:
-        raise HTTPException(status_code=404, detail="Rewiew no available")
+        raise HTTPException(status_code=404, detail="Review no available")
     return db_event
 
 @router.get("/review/find/{event_id}")
 def get_review(event_id: int, db: Session = Depends(get_db)):
     db_event = find_review_by_eventId(db, event_id=event_id)
     if not db_event:
-        raise HTTPException(status_code=404, detail="Rewiew no available")
+        raise HTTPException(status_code=404, detail="Review no available")
     return db_event
 
 @router.get("/review/find/{user_id}")
@@ -47,4 +47,4 @@ def delete_event(review_id : int, db: Session = Depends(get_db)):
     db_event = remove_review(db,review_id=review_id)
     if not db_event:
         raise HTTPException(status_code=404, detail="Can't remove the rewiew")
-    return {"message" : "Event deleted"}
+    return {"message" : "Review deleted"}

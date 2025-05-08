@@ -10,14 +10,14 @@ client = TestClient(app)
 
 def test_register_inscription():
 
-    event_data = {"event_id": 1, "user_id": 2, "event_name": "event1", "inscription_date": "2025-04-02T19:20:57", "location": "location"}
+    event_data = {"event_id": 1, "user_id": 2, "event_name": "event1", "inscription_date": datetime.now().replace(microsecond=0).isoformat(), "start_date" : "2025-06-02T19:20:57", "end_date" : "2025-06-08T19:20:57", "location": "location"}
     response = client.post("/inscription/register", json=event_data)
     assert response.status_code == 200
     assert response.json() == "Inscription created"
 
 def test_register_existing_inscription():
     
-    event_data = {"event_id": 1, "user_id": 2, "event_name": "event1", "inscription_date": "2025-04-02T19:20:57", "location": "location"}
+    event_data = {"event_id": 1, "user_id": 2, "event_name": "event1", "inscription_date": datetime.now().replace(microsecond=0).isoformat(), "start_date" : "2025-06-02T19:20:57", "end_date" : "2025-06-08T19:20:57", "location": "location"}
     response = client.post("/inscription/register", json=event_data)
     assert response.status_code == 400
     assert response.json() == {"detail": "Inscription name already register"}
@@ -29,6 +29,8 @@ def test_get_all_inscriptions_by_user():
     assert response.json() == [
     {
         "inscription_date": datetime.now().replace(microsecond=0).isoformat(),
+        "start_date": "2025-06-02T19:20:57",
+        "end_date": "2025-06-08T19:20:57",
         "event_id": 1,
         "location": "location",
         "user_id": 2,
@@ -40,6 +42,8 @@ def test_get_inscription_by_user_and_event():
     assert response.status_code == 200
     assert response.json() == {
         "inscription_date": datetime.now().replace(microsecond=0).isoformat(),
+        "start_date": "2025-06-02T19:20:57",
+        "end_date": "2025-06-08T19:20:57",
         "event_id": 1,
         "location": "location",
         "user_id": 2,

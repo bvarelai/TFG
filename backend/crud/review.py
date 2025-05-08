@@ -20,7 +20,7 @@ def find_review_by_eventId(db: Session, event_id: int):
     return db.query(Reviews).filter(Reviews.event_id == event_id).all()
 
 def find_review_by_userId_and_eventId(db: Session, user_id: int, event_id: int):
-    return db.query(Reviews).filter(Reviews.user_id == user_id, Reviews.event_id == event_id).all()
+    return db.query(Reviews).filter(Reviews.user_id == user_id, Reviews.event_id == event_id).first()
 
 def remove_review(db: Session, review_id: int):
     db_review = find_review_by_reviewId(db=db, review_id=review_id)
@@ -33,7 +33,7 @@ def remove_review(db: Session, review_id: int):
 
 def change_review(db: Session, review: ReviewUpdate):
    
-    db_review = find_review_by_reviewId(db=db, review_id=review.review_id)
+    db_review = find_review_by_userId_and_eventId(db=db, user_id=review.user_id, event_id=review.event_id)
     if not db_review:
         return False 
 
