@@ -360,7 +360,7 @@ color: grey;
   border-radius: 15px;
   background-color: #1a1c2c;
   margin-left: 40px;
-  margin-top: 30px;
+  margin-top: 20px;
   height: 220px;
   width: 250px;
   flex-direction: column;
@@ -368,9 +368,6 @@ color: grey;
   display: flex;
 }
 
-#box-event:nth-child(n+7) {
-  margin-top: -10px; /* Reduce el margen superior para los elementos de la segunda fila */
-}
 
 #box-event:hover{
   border-color: #9678C8;
@@ -441,7 +438,10 @@ color: grey;
 
 }
 
-#badge{
+#badge-green-event{
+  filter: brightness(1.7); /* Incrementa el brillo en un 20% */
+  background-color: rgba(40, 167, 69, 0.15);  
+  color: #2ecc71;  
   margin-top: 20px;
   margin-left: 80px;
   width: 90px;
@@ -449,6 +449,31 @@ color: grey;
   justify-content: center;
   border-radius: 15px;
 }
+
+#badge-blue-event{
+  filter: brightness(1.7); /* Incrementa el brillo en un 20% */
+  background-color: rgba(52, 152, 219, 0.15);  /* Fondo translúcido */
+  color: #3498db;  
+  margin-top: 20px;
+  margin-left: 80px;
+  width: 90px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 15px;
+}
+
+#badge-red-event{
+  filter: brightness(1.7); /* Incrementa el brillo en un 20% */
+  background-color: rgba(231, 76, 60, 0.15);   /* Fondo translúcido */
+  color: #e74c3c;    
+  margin-top: 20px;
+  margin-left: 80px;
+  width: 90px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 15px;
+}
+
 
 #no-box-event-result{
   border-radius: 15px;

@@ -35,7 +35,7 @@
     border-radius: 15px;
     background-color: #1a1c2c;
     margin-left: 40px;
-    margin-top: 40px;
+    margin-top: 30px;
     height: 210px;
     width: 250px;
 }
@@ -147,6 +147,7 @@
 
 
 #input-upload{
+    content: "Select File";
     background-color: #1a1c2c;
     border-radius: 5px;
     color: white; 
@@ -185,10 +186,17 @@
 
 #callout-root-upload {
   margin-top: 10px;
-  width: 360px;
+  width: 250px;
   align-items: center;
   justify-content: center;
-  border-radius: 5px;
+  border-radius: 15px;
+}
+
+#callout-root-upload-error{
+  margin-top: 10px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 15px;
 }
 
 .callout-text-upload {
@@ -198,7 +206,7 @@
 .callout-icon-upload svg{
   width: 20px;
   height: 33px;
-  margin-right: 15px; 
+  margin-right: 10px; 
 }
 
 

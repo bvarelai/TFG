@@ -79,7 +79,7 @@ export default function Home() {
       case 'my_events':
         return <MyEvents onGoToReview={handleReview} setSelectedEvent={setSelectedEvent} />;
       case 'my_inscriptions':
-        return <MyInscription />;
+        return <MyInscription onGoToReview={handleReview} setSelectedEvent={setSelectedEvent} />;
       case 'stadistics':
         return <Stadistics />;
       case 'review':

@@ -27,14 +27,37 @@ export default function Login() {
   
   const validateForm = (): boolean => {
     
-    if (!user_name || !password || !age || !country) {
+    if (!user_name ||!user_surname || !password || !age || !email || !phone || !city || !autonomous_community || !country) {
       setError("Data are required");
+      setTimeout(() => {
+        setError("");
+     },2000)
       return false;
     }
-    if (isNaN(Number(age))){
-      setError("Age must be a number");
+    if (isNaN(Number(age)) || Number(age) < 0 || Number(age) > 80){
+      setError("Age value is not valid");
+      setTimeout(() => {
+        setError("");
+      },2000)
       return false;
-    }    
+    }
+  
+    if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email)) {
+      setError("Email is not valid");
+      setTimeout(() => {
+        setError("");
+      },2000)
+      return false;
+    }
+
+    if (!/^\+34[6-9]\d{8}$/.test(phone)) {
+      setError("Phone number is not valid");
+      setTimeout(() => {
+        setError("");
+      },2000)
+      return false;
+    }
+
     setError("");
     return true;
   };
@@ -76,6 +99,9 @@ export default function Login() {
       if (!response.ok) {
         setLoading(false);
         setError('User already exist');
+        setTimeout(() => {
+          setError("");
+        },2000)
         return;
       }
 
@@ -91,6 +117,9 @@ export default function Login() {
       if (!responselogin.ok) {
         setLoading(false);
         setError('Incorrect user or/and password');
+        setTimeout(() => {
+          setError("");
+        },2000)
         return;
       }
       const data = await responselogin.json();
@@ -107,6 +136,9 @@ export default function Login() {
       setLoading(false);
       if (error instanceof TypeError && error.message === "Failed to fetch") {
         setError('The server is down, please try again later.');
+        setTimeout(() => {
+          setError("");
+        },2000)
       }
       else {
         setLoading(true);

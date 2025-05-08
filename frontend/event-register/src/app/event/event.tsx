@@ -35,6 +35,8 @@ export default function Events({ onGoToReview, setSelectedEvent }: { onGoToRevie
    const [search_event, setSearchEvent] = useState('')
    const [filter_celebration_date, setFilterCelebrationDate] = useState<string>("");
    const [filter_end_date, setFilterEndDate] = useState<string>("");
+   const [isMoreThan12, setIsMoreThan12] = useState(false);
+
    
    useEffect(() => {
       const storedUserID = localStorage.getItem('user_id');
@@ -55,6 +57,9 @@ export default function Events({ onGoToReview, setSelectedEvent }: { onGoToRevie
       }
    }, [filter_celebration_date, filter_end_date]);
 
+   useEffect(() => {
+         setIsMoreThan12(events.length > 12);
+   }, [events]);
 
     const SelectItem = React.forwardRef<HTMLDivElement, React.ComponentPropsWithoutRef<typeof Select.Item>>(
       ({ children, className, ...props }, forwardedRef) => {
@@ -74,21 +79,55 @@ export default function Events({ onGoToReview, setSelectedEvent }: { onGoToRevie
    );
   
    const validateForm = (): boolean => {
+      const validCategories = ["general", "alevin", "junior", "senior", "infantil"];
+     
+      const categories = category.split(",").map((cat) => cat.trim());
+      const isValidCategory = categories.filter(cat => !validCategories.includes(cat)); 
+      
       if (!event_name || !event_type || !event_edition || !category || !location || !celebration_date || !capacity) {
-        setError("Data are required");
+         setError("Data are required");
+         setTimeout(() => {
+            setError("");
+         },2000)
         return false;
       }
+
+      if (isValidCategory.length > 0) {
+         setError("Invalid category");
+         setTimeout(() => {
+            setError("");
+         },2000)
+         return false;
+      } 
+
       if (capacity <= 0) {
          setError("The capacity is not valid")
+         setTimeout(() => {
+            setError("");
+         },2000)
+         return false;
+      }
+
+      if(duration <= 0) {
+         setError("The duration is not valid")
+         setTimeout(() => {
+            setError("");
+         },2000)
          return false;
       }
        
       if (description.trim().split(/\s+/).length > 30) {
          setError("Description must not exceed 30 words.");
+         setTimeout(() => {
+            setError("");
+         },2000)
          return false;
       }
        if (celebration_date > end_date){
          setError("End date must be after the start date");
+         setTimeout(() => {
+            setError("");
+         },2000)
          return false;
        }
 
@@ -169,7 +208,10 @@ export default function Events({ onGoToReview, setSelectedEvent }: { onGoToRevie
          body: JSON.stringify(formDetails)
       });
       if (!responseEvent.ok) {
-         setError('Error al crear el evento');
+         setError('Error creating event');
+         setTimeout(() => {
+            setError("");
+         },2000)
          return;
       }
       const data = await responseEvent.json()
@@ -372,6 +414,9 @@ export default function Events({ onGoToReview, setSelectedEvent }: { onGoToRevie
     
       if(!responseInscription.ok){
        setError('You are already register in this event')
+       setTimeout(() => {
+         setError("");
+      },2000)
        return;
       }
       setError('')
@@ -401,6 +446,9 @@ export default function Events({ onGoToReview, setSelectedEvent }: { onGoToRevie
 
       if (!responseEvent.ok) {
          setError('Can`t register');
+         setTimeout(() => {
+            setError("");
+         },2000)
          return;
       }
       findEvents()
@@ -549,7 +597,7 @@ export default function Events({ onGoToReview, setSelectedEvent }: { onGoToRevie
                                        />
                               </div>
                               <div className="flex flex-col gap-1">                        
-                                    <label htmlFor="organizer-by">Duration</label>
+                                    <label htmlFor="duration">Duration</label>
                                        <input
                                           id = "input-event"  
                                           name = "duration"
@@ -589,6 +637,7 @@ export default function Events({ onGoToReview, setSelectedEvent }: { onGoToRevie
                               <label htmlFor="Event Description">Event Description</label>
                                  <TextArea 
                                  id= "input-event-big"
+                                 name = "description"
                                  placeholder="My event is about..." 
                                  value = {event_full_description} 
                                  onChange = {(e) => setEventDescription(e.target.value)} 
@@ -675,7 +724,7 @@ export default function Events({ onGoToReview, setSelectedEvent }: { onGoToRevie
                   <label>Start date</label>
                   <input
                      id = "input-date"  
-                     name = "event_date"
+                     name = "event_date_search"
                      placeholder="date1"
                      type="datetime-local" 
                      value={filter_celebration_date}
@@ -686,7 +735,7 @@ export default function Events({ onGoToReview, setSelectedEvent }: { onGoToRevie
                   <label>End date</label>
                   <input
                      id = "input-date"  
-                     name = "event_end_date"
+                     name = "event_end_date_search"
                      placeholder="date1"
                      type="datetime-local" 
                      value={filter_end_date}
@@ -702,7 +751,7 @@ export default function Events({ onGoToReview, setSelectedEvent }: { onGoToRevie
                         <Dialog.Trigger asChild>
                            <Box
                               id="box-event"
-                              className="flex flex-col border-2 border-solid border-white/[.08]"
+                              className={`flex flex-col border-2 border-solid border-white/[.08]  ${isMoreThan12 ? "large-box" : "small-box"}`}
                               width="64px"
                               height="100px"
                            >
@@ -723,14 +772,14 @@ export default function Events({ onGoToReview, setSelectedEvent }: { onGoToRevie
                               </div>
                               <div className="flex items-center py-3">
                                  {(new Date().toISOString() < event.celebration_date) ? 
-                                    <Badge id="badge" color="green" variant="solid">
+                                    <Badge id="badge-green-event" color="green" variant="soft">
                                           Published
                                     </Badge> :
                                  ((new Date().toISOString() >= event.celebration_date) && (new Date().toISOString() <= event.end_date)) ?  
-                                    <Badge id="badge" color="blue" variant="solid">
+                                    <Badge id="badge-blue-event" color="blue" variant="soft">
                                           Ongoing
                                     </Badge> :
-                                    <Badge id="badge" color="red" variant="solid">
+                                    <Badge id="badge-red-event" color="red" variant="soft">
                                           Finished  
                                     </Badge>                          
                                  }

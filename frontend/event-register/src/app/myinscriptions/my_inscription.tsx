@@ -1,20 +1,43 @@
 "use client"
-import { Heading, Box, Button,AlertDialog,Flex} from "@radix-ui/themes";
+import { Heading, Box, Button,AlertDialog,Flex, Badge} from "@radix-ui/themes";
 import { useState, useEffect} from "react";
 import { MixIcon,LapTimerIcon,ClockIcon,SewingPinFilledIcon, TrashIcon} from "@radix-ui/react-icons";
 import { Dialog } from "radix-ui";
 
 
-export default function MyInscription() {
+export default function MyInscription({ onGoToReview, setSelectedEvent }: { onGoToReview: () => void; setSelectedEvent: (event: any) => void }) {
    
    const [inscriptions, setInscriptions] = useState<any[]>([]);
    const [notification, setNotification] = useState<string>("");
+   const [events, setEvents] = useState<any>([]);
 
-   useEffect(()  => {
+   useEffect(() => {
       findMyInscription();
+   }, []);
 
-   },[])
-   
+   useEffect(() => {
+      const updateInscriptionAutomatically = async () => {
+         const user_id = localStorage.getItem('user_id');
+         if(inscriptions != null) {
+            for (const inscription of inscriptions) {
+               const eventDetails = await findEventInscription(inscription.event_name);
+               if (eventDetails) {
+                  await updateInscription(
+                     eventDetails.event_id,
+                     Number(user_id),
+                     eventDetails.celebration_date, // Replace with the user's name if available
+                     eventDetails.end_date, // Replace with the review text if necessary
+                  );
+               }
+               else if (!eventDetails) {
+                  deleteInscription(inscription.event_name, inscription.event_id);
+               }
+            }
+        }
+      };
+      updateInscriptionAutomatically();
+   }, [inscriptions]);
+
    const findMyInscription = async () => { 
       
       const user_id = localStorage.getItem('user_id');
@@ -25,12 +48,69 @@ export default function MyInscription() {
 
       if (!responseInscription.ok){
          setNotification("No inscriptions to show")
+         setInscriptions([])
       }
 
       const data = await responseInscription.json();
-      setInscriptions(data) 
+      if (Array.isArray(data)) {
+         setInscriptions(data);
+      } else {
+         setInscriptions([]); // Si no es un array, establece un array vacío
+         setNotification("No inscriptions to show");
+      }
    }
 
+   const findEventInscription = async (event_name: string) => {
+      const responseFindEvent = await fetch(`http://localhost:8000/event/find/name/${event_name}`,{
+         method: 'GET',
+      });
+      
+      if(!responseFindEvent.ok){
+         setNotification('Error finding event')
+         return null;
+      }
+      const data = await responseFindEvent.json();
+      setEvents(data)
+      return data;
+      
+   }
+
+   const updateInscription = async (event_id: number, user_id: number, start_date : string, end_date : string) => {
+      
+      const responsefindInscription = await fetch(`http://localhost:8000/inscription/find/${user_id}/${event_id}`, {
+         method: 'GET',
+      });
+
+      if (!responsefindInscription.ok){
+         setNotification("Error finding inscription")
+      }
+
+      const data = await responsefindInscription.json()       
+      
+         const formDetailsInscription = {
+         event_id: event_id,
+         user_id: user_id,
+         event_name: data.event_name,
+         inscription_date: data.inscription_date,
+         start_date: start_date,
+         end_date: end_date,
+         location: data.location
+      };
+      const responseInscription = await fetch(`http://localhost:8000/inscription/update`, {
+         method: 'PUT',
+         headers: {
+            'Content-Type': 'application/json',
+         },
+         body: JSON.stringify(formDetailsInscription)
+      });   
+      
+      if(!responseInscription.ok){
+         setNotification("Event cant update")
+         return;
+      }
+   }
+
+   
    const deleteInscription = async (event_name: string, event_id: string) => {
       
       const user_id = localStorage.getItem('user_id');
@@ -109,29 +189,45 @@ export default function MyInscription() {
                      <Dialog.Trigger asChild>              
                         <div>
                            <Heading className="flex items-center" id="heading-event-name">
-                              Inscription in {inscription.event_name} 
+                              {inscription.event_name} 
                            </Heading>
-                           <div className="flex flex-col px-2 py-2">
+                           <div className="flex flex-col py-2 gap-1">
                               <div  id = "info-members-myinscription-div" className="flex flex-row items-center">
                                  <SewingPinFilledIcon/>
                                  <span id="event-date">{inscription.location}</span>   
                               </div>
                               <div  id = "info-date-myinscription-div"className="flex flex-row items-center">
                                  <LapTimerIcon/> 
-                                 <span id="event-date">{inscription.inscription_date.split("T")[0]}</span>  
+                                 <span id="event-date">{inscription.inscription_date ? inscription.inscription_date.split("T")[0] : "N/A"}</span>  
                               </div>   
                               <div  id = "info-clock-myinscription-div"className="flex flex-row items-center">
                                  <ClockIcon/> 
-                                 <span id="event-date">{inscription.inscription_date.split("T")[1]}</span>  
+                                 <span id="event-date">{inscription.inscription_date ? inscription.inscription_date.split("T")[1] : "N/A"}</span>  
+                              </div>
+                              <div className="flex items-center py-3">
+                              {(new Date().toISOString() < inscription.start_date) ? 
+                                 <Badge id="badge-green-myinscriptions" color="green" variant="soft" >
+                                       Pending
+                                 </Badge> :
+                              ((new Date().toISOString() >= inscription.start_date) && (new Date().toISOString() <= inscription.end_date)) ?  
+                                 <Badge id="badge-blue-myinscriptions" color="blue" variant="solid">
+                                       In Progress
+                                 </Badge> :
+                                 <Badge id="badge-red-myinscriptions" color="red" variant="solid">
+                                       Completed  
+                                 </Badge>                          
+                              } 
                               </div>
                            </div>
                         </div>
                      </Dialog.Trigger>    
                      <div id="buttons-myevent" className="flex flex-row gap-2 items-center">
                            <AlertDialog.Root>
-                              <AlertDialog.Trigger>
-                                 <TrashIcon id="icon-myinscription" />
-                              </AlertDialog.Trigger>
+                              { ((new Date().toISOString() < inscription.start_date) ||  (new Date().toISOString() > inscription.end_date) ) &&  
+                                 <AlertDialog.Trigger>
+                                    <TrashIcon id="icon-myinscription" />                               
+                                 </AlertDialog.Trigger>
+                              }
                               <AlertDialog.Content className="AlertDialogContent">
                                  <AlertDialog.Title className="AlertDialogTitle">Delete inscription</AlertDialog.Title>
                                  <AlertDialog.Description className="AlertDialogDescription" size="2">
@@ -155,7 +251,7 @@ export default function MyInscription() {
                </Box>
                <Dialog.Portal>
                <Dialog.Overlay className="DialogOverlay" />
-                  <Dialog.Content className="DialogContentMyEvent border-2 border-solid border-white/[.08]">
+                  <Dialog.Content className="DialogContentMyInscription border-2 border-solid border-white/[.08]">
                      <Dialog.Title className="DialogTitle">Information about inscription</Dialog.Title>
                      <Dialog.Description className="DialogDescription">
                            Information about {inscription.event_name} inscription
@@ -166,19 +262,63 @@ export default function MyInscription() {
                               <SewingPinFilledIcon/>
                               <span> {inscription.location}</span>  
                            </div> 
-                           <div className="flex flex-col gap-3">
-                              Registration date
-                              <div className="flex flex-row gap-1 items-center">                                            
-                                 <LapTimerIcon/>
-                                 <span>{inscription.inscription_date.split("T")[0]}</span>   
+                           <div className="grid grid-cols-3 gap-14">
+                              <div className="flex flex-col gap-3">
+                                 Register date
+                                 <div className="flex flex-row gap-1 items-center">                                            
+                                    <LapTimerIcon/>
+                                    <span>{inscription.inscription_date ? inscription.inscription_date.split("T")[0] : "N/A"}</span>   
+                                 </div>
+                                 <div className="flex flex-row gap-1 items-center">
+                                    <ClockIcon/>
+                                    <span>{inscription.inscription_date ? inscription.inscription_date.split("T")[1] : "N/A"}</span>
+                                 </div>
                               </div>
-                              <div className="flex flex-row gap-1 items-center">
-                                 <ClockIcon/>
-                                 <span>{inscription.inscription_date.split("T")[1]}</span>
+                              <div className="flex flex-col gap-3">
+                                 Start date
+                                 <div className="flex flex-row gap-1 items-center">                                            
+                                    <LapTimerIcon/>
+                                    <span>{inscription.start_date ? inscription.start_date.split("T")[0] : "N/A"}</span>   
+                                 </div>
+                                 <div className="flex flex-row gap-1 items-center">
+                                    <ClockIcon/>
+                                    <span>{inscription.start_date ? inscription.start_date.split("T")[1] : "N/A"}</span>
+                                 </div>
                               </div>
+                              <div className="flex flex-col gap-3">
+                                 End date
+                                 <div className="flex flex-row gap-1 items-center">                                            
+                                    <LapTimerIcon/>
+                                    <span>{inscription.end_date ? inscription.end_date.split("T")[0] : "N/A"}</span>   
+                                 </div>
+                                 <div className="flex flex-row gap-1 items-center">
+                                    <ClockIcon/>
+                                    <span>{inscription.end_date ? inscription.end_date.split("T")[1] : "N/A"}</span>
+                                 </div>
+                              </div>
+                              {notification}
                            </div>
                         </div>
                      </Dialog.Content>
+                     <Dialog.Close asChild>
+                        <div id = "div-register-inscription"className="flex items-center">
+                              <Button
+                                 variant="soft" color = "pink"
+                                 onClick={async () => {
+                                    const eventDetails = await findEventInscription(inscription.event_name); // Busca los datos del evento
+                                    if (eventDetails) {
+                                       setSelectedEvent(eventDetails); // Pasa los datos completos del evento
+                                       onGoToReview(); // Navega a la sección "review"
+                                    } else {
+                                      setNotification("Error finding event details");
+                                    }
+                                  }}
+                                  id="button-more-details"
+                              >
+                                 Show details       
+                              </Button>
+                       </div>
+                     </Dialog.Close>
                   </Dialog.Content>            
                </Dialog.Portal>
                </Dialog.Root>    

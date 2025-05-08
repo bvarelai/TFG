@@ -29,7 +29,12 @@ export default function Review({ event }: { event: any }) {
    const [selectedSegment, setSelectedSegment] = useState<string>("");
    const [selectedSelect, setSelectedSelect] = useState<string>("");
 
+   const startDate = new Date(event.celebration_date).toISOString().split("T")[0];
+   const endDate = new Date(event.end_date).toISOString().split("T")[0];
    
+   const formattedStartDate = new Date(startDate).toLocaleDateString('en-US',{year: 'numeric', month: 'long', day: 'numeric'});
+   const formattedEndDate = new Date(endDate).toLocaleDateString('en-US', {year: 'numeric', month: 'long', day: 'numeric'});
+
    useEffect(() => {  
       const storedUserID = localStorage.getItem('user_id');
       if (storedUserID) {
@@ -327,37 +332,36 @@ export default function Review({ event }: { event: any }) {
                   </div>
                   <div id ="div-all-info" className="grid grid-cols-2 gap-2 text-sm">
                      <div id="first-info-col"><strong>Type:</strong> {event.event_type}</div>
-                     <div className="flex flex-row gap-1" id="second-info-col"><strong className="flex flex-row gap-1"> <DrawingPinFilledIcon/> Category:</strong> {event.category}</div>
-                     <div  className="flex flex-row gap-1" id="first-info-col"><strong className="flex flex-row gap-1"> <SewingPinFilledIcon/> Location:</strong> {event.location}</div>
-                     <div className="flex flex-row gap-1" id="second-info-col"><strong className="flex flex-row gap-1" > <PersonIcon/> Capacity:</strong> {event.capacity} places</div>
-                     <div id="first-info-col"><strong>Start date:</strong> {event.celebration_date ? event.celebration_date.split("T")[0]: "N/A"} {event.celebration_date ? event.celebration_date.split("T")[1]: "N/A"}</div>
-                     <div id="second-info-col"><strong>End date:</strong> {event.end_date ? event.end_date.split("T")[0]: "N/A"} {event.end_date ? event.end_date.split("T")[1]: "N/A"}</div>
+                     <div className="flex flex-row gap-1" id="second-info-col"><strong className="flex flex-row gap-1"> Category:</strong> {event.category}</div>
+                     <div  className="flex flex-row gap-1" id="first-info-col"><strong className="flex flex-row gap-1"> Location:</strong> {event.location}</div>
+                     <div className="flex flex-row gap-1" id="second-info-col"><strong className="flex flex-row gap-1" > Capacity:</strong> {event.capacity} places</div>
+                     <div id="first-info-col"><strong>From:</strong> {event.celebration_date ? formattedStartDate: "N/A"} {event.celebration_date ? event.celebration_date.split("T")[1]: "N/A"}</div>
+                     <div id="second-info-col"><strong>To:</strong> {event.end_date ? formattedEndDate: "N/A"} {event.end_date ? event.end_date.split("T")[1]: "N/A"}</div>
                      <div id="first-info-col"><strong>Organizer by:</strong> {event.organizer_by}</div>
                      <div id="second-info-col"><strong>Duration:</strong> {event.duration} days </div>
-                     <div id="first-info-col"> <strong>Language:</strong> {event.language}</div>
-                     <div id="second-info-col"><strong>Free:</strong> {event.is_free == true ? "Yes": "No"}</div>
+                     <div id="first-info-col"><strong>Price:</strong> {event.is_free == true ? "Free": "Paid"}</div>
+                     <div id="second-info-col"> <strong>Language:</strong> {event.language}</div>
                      <div className="flex flex-row items-center gap-1">
                      {!isOrganizer && (
                         <>
                            <strong id="first-info-col">Status:</strong>
                            {!isRegister ? (
-                           <span className="flex flex-row items-center gap-1 text-red-600">
+                           <span id="register-status" className="flex flex-row items-center gap-1 text-red-600">
                               Not Registered <Cross2Icon />
                            </span>
                            ) : (
-                           <span className="flex flex-row items-center gap-1 text-green-600">
+                           <span id="register-status" className="flex flex-row items-center gap-1 text-green-600">
                               Registered <CheckIcon />
                            </span>
                            )}
                         </>
                      )}
                      </div>
-                     <div> { !isOrganizer && (new Date().toISOString() < event.celebration_date) && !isRegister && <Button id = "button-inscription" onClick={()=> createInscription(event.event_id,event.event_name, event.event_type,event.event_edition, event.category, event.event_description, event.location, event.celebration_date, event.end_date, event.capacity, event.organizer_by, event.duration, event.event_full_description, event.language, event.is_free)}>Register</Button>}</div>  
-
                   </div>
                   <div id="description-full-event">
                      <p className="mt-4">{event.event_full_description}</p>
                   </div>
+                  <div> { !isOrganizer && (new Date().toISOString() < event.celebration_date) && !isRegister && <Button id = "button-inscription" color="pink" variant="soft" onClick={()=> createInscription(event.event_id,event.event_name, event.event_type,event.event_edition, event.category, event.event_description, event.location, event.celebration_date, event.end_date, event.capacity, event.organizer_by, event.duration, event.event_full_description, event.language, event.is_free)}>Register</Button>}</div>  
             </div>
             <Dialog.Root>
                <Dialog.Trigger>
@@ -441,7 +445,7 @@ export default function Review({ event }: { event: any }) {
                                        <Heading id="label-review">Leave a review</Heading>
                                        <div id="div-star" className="flex flex-row py-3">
                                           {Array.from({ length: 5 }).map((_, index) => (
-                                             <div key={index} onClick={() => setRating(index + 1)}>
+                                          <div id="div-select-starts" key={index} onClick={() => setRating(index + 1)}>
                                              {index < rating ? (
                                              <StarFilledIcon id="star-filled-review" />
                                              ) : (
@@ -452,7 +456,7 @@ export default function Review({ event }: { event: any }) {
                                        </div> 
                                        <TextArea 
                                           id= "input-create-review"
-                                          placeholder="Write you review here..." 
+                                          placeholder="Write your review here..." 
                                           value = {reviewContent} 
                                           onChange = {(e) => setReviewsContent(e.target.value)} 
                                           typeof="text"
@@ -480,7 +484,7 @@ export default function Review({ event }: { event: any }) {
             </Dialog.Root>
          </div>
          <div id="event-results" className = "flex flex-col border-2 border-solid border-white/[.08] p-6 gap-4 ">
-            <Heading className="text-3xl font-bold mb-4">Results</Heading>
+            <Heading id="result-heading" className="text-3xl font-bold mb-4">Results</Heading>
             
             {(new Date().toISOString() > event.end_date) ? (
                <><SegmentedControl.Root onValueChange={(value) => handleSelectCategory(value)} variant="surface" id="segment-root" defaultValue="inbox">
@@ -503,37 +507,41 @@ export default function Review({ event }: { event: any }) {
                            </SegmentedControl.Item>
                         ))
                      ) : null}
-                  </SegmentedControl.Root><Select.Root onValueChange={(value) => { handleSelectCategory(value); } }>
-                        <Select.Trigger className="SelectTrigger border-2 border-solid border-white/[.08]" aria-label="Food">
-                           <Select.Value placeholder="Select edition..." />
-                           <Select.Icon className="SelectIcon">
-                              <ChevronDownIcon />
-                           </Select.Icon>
-                        </Select.Trigger>
-                        <Select.Portal>
-                           <Select.Content className="SelectContent border-2 border-solid border-white/[.08]">
-                              <Select.ScrollUpButton className="SelectScrollButton border-2 border-solid border-white/[.08]">
-                                 <ChevronUpIcon />
-                              </Select.ScrollUpButton>
-                              <Select.Viewport className="SelectViewport">
-                                 <Select.Group>
-                                    <Select.Label className="SelectLabel">Edition</Select.Label>
-                                    <SelectItem id="select-item" value="2024-2025"
-                                       data-state={selectedSelect === "2024-2025" ? "on" : "off"}
-                                       onClick={() => setSelectedSelect("2024-2025")}
-                                    >2024-2025</SelectItem>
-                                    <SelectItem id="select-item" value="2023-2024"
-                                       data-state={selectedSelect === "2023-2024" ? "on" : "off"}
-                                       onClick={() => setSelectedSelect("2023-2024")}
-                                    >2023-2024</SelectItem>
-                                 </Select.Group>
-                              </Select.Viewport>
-                              <Select.ScrollDownButton className="SelectScrollButton">
+                  </SegmentedControl.Root>
+                  <div id="filter-by-edition" className="flex flex-col">
+                     <Select.Root onValueChange={(value) => { handleSelectCategory(value); } }>
+                           <Select.Trigger className="SelectTrigger border-2 border-solid border-white/[.08]" aria-label="Food">
+                              <Select.Value placeholder="Select edition..." />
+                              <Select.Icon className="SelectIcon">
                                  <ChevronDownIcon />
-                              </Select.ScrollDownButton>
-                           </Select.Content>
-                        </Select.Portal>
-                     </Select.Root><div id="div-table-result" className="flex justify-center overflow-y-auto custom-scroll">
+                              </Select.Icon>
+                           </Select.Trigger>
+                           <Select.Portal>
+                              <Select.Content className="SelectContent border-2 border-solid border-white/[.08]">
+                                 <Select.ScrollUpButton className="SelectScrollButton border-2 border-solid border-white/[.08]">
+                                    <ChevronUpIcon />
+                                 </Select.ScrollUpButton>
+                                 <Select.Viewport className="SelectViewport">
+                                    <Select.Group>
+                                       <Select.Label className="SelectLabel">Edition</Select.Label>
+                                       <SelectItem id="select-item" value="2024-2025"
+                                          data-state={selectedSelect === "2024-2025" ? "on" : "off"}
+                                          onClick={() => setSelectedSelect("2024-2025")}
+                                       >2024-2025</SelectItem>
+                                       <SelectItem id="select-item" value="2023-2024"
+                                          data-state={selectedSelect === "2023-2024" ? "on" : "off"}
+                                          onClick={() => setSelectedSelect("2023-2024")}
+                                       >2023-2024</SelectItem>
+                                    </Select.Group>
+                                 </Select.Viewport>
+                                 <Select.ScrollDownButton className="SelectScrollButton">
+                                    <ChevronDownIcon />
+                                 </Select.ScrollDownButton>
+                              </Select.Content>
+                           </Select.Portal>
+                        </Select.Root>
+                  </div>
+                     <div id="div-table-result" className="flex justify-center overflow-y-auto custom-scroll">
                         {eventResultsData.length > 0 && visibleResult ? (
                            <table id="table-result" className="border border-gray-300">
                               <thead className="bg-purple-100">
@@ -545,7 +553,7 @@ export default function Review({ event }: { event: any }) {
                               </thead>
                               <tbody>
                                  {eventResultsData.map((data, index) => (
-                                    <tr id="table-data" key={index} className="border border-gray-300">
+                                    <tr id="table-data" key={index} className="border border-gray-300 items-center">
                                        <td className="border border-gray-300 p-2">{data.participant_name}</td>
                                        <td className="border border-gray-300 p-2">{data.category}</td>
                                        <td className="border border-gray-300 p-2">{data.position}</td>

@@ -3,7 +3,7 @@ import * as React from "react";
 import { useState, useEffect} from "react";
 import classnames from "classnames";
 import { Heading, Flex,Box,Badge, AlertDialog, Button,Callout, TextArea} from "@radix-ui/themes";
-import {MixIcon,LapTimerIcon, PersonIcon,ClockIcon,TrashIcon,Pencil1Icon,Cross2Icon,FileIcon, ExclamationTriangleIcon, DrawingPinFilledIcon, SewingPinFilledIcon,CheckIcon, ChevronDownIcon, ChevronUpIcon} from "@radix-ui/react-icons";
+import {MixIcon,LapTimerIcon, PersonIcon,ClockIcon,TrashIcon,Pencil1Icon,Cross2Icon,FileIcon, ExclamationTriangleIcon, DrawingPinFilledIcon, SewingPinFilledIcon,CheckIcon, ChevronDownIcon, ChevronUpIcon, InfoCircledIcon} from "@radix-ui/react-icons";
 import { Dialog, Select,Checkbox } from "radix-ui";
 
 
@@ -26,9 +26,11 @@ export default function MyEvents({ onGoToReview, setSelectedEvent }: { onGoToRev
    const [duration, setDuration] = useState<number>(0);
    const [event_language, setEventLanguage] = useState<string>("");
    const [is_free, setIsFree] = useState<boolean>(false);
-   const [csvData, setCsvData] = useState<string>("");
    const [category_result, setCategoryResult] = useState<string>("");
    const [selectedFile, setSelectedFile] = useState<File | null>(null);
+   const [uploadSUcess, setUploadSuccess] = useState<boolean>(false);
+   const [Sucess, setSuccess] = useState<boolean>(false);
+
 
    useEffect(() => {
       const storedUserID = localStorage.getItem('user_id');
@@ -75,7 +77,22 @@ export default function MyEvents({ onGoToReview, setSelectedEvent }: { onGoToRev
    );
    
    const handleFileChange = async (file: File, event_id: number, event_edition: string) => {
-      if (!file) return;
+      if (!file){
+         setError("File is required");
+         setTimeout(() => {
+            setError("");
+         },2000)
+            return;
+      } 
+      
+      if (file.type !== "text/csv") {
+         setError("Only CSV files are allowed");
+         setTimeout(() => {
+            setError("");
+         },2000)
+         return;
+       }
+      
       const formData = new FormData();
       formData.append("file", file);      
 
@@ -84,26 +101,73 @@ export default function MyEvents({ onGoToReview, setSelectedEvent }: { onGoToRev
          body: formData, 
       }) 
       if(!responseEvent.ok){
+         setError("Error uploading file")
+         setTimeout(() => { 
+           setError("")
+         },2000)
          return;
       }
+      setUploadSuccess(true)
+      setError("")
+      setSelectedFile(null); 
+      setCategoryResult("");
+
+      setTimeout(() => {
+         setUploadSuccess(false);
+      }, 2000); // 3000 ms = 3 segundos
+      
    };
    
    const validateForm = (): boolean => {
+      const validCategories = ["general", "alevin", "junior", "senior", "infantil"];
+     
+      const categories = category.split(",").map((cat) => cat.trim());
+      const isValidCategory = categories.filter(cat => !validCategories.includes(cat)); 
+      
       if (!event_name || !event_type || !event_edition || !category || !location || !celebration_date || !capacity) {
         setError("Data are required");
+        setTimeout(() => { 
+         setError("")
+        },2000)
         return false;
       }
+
+      if (isValidCategory.length > 0) {
+         setError("Invalid category");
+         setTimeout(() => { 
+            setError("")
+         },2000)
+         return false;
+      } 
+
       if (capacity <= 0) {
          setError("The capacity is not valid")
+         setTimeout(() => { 
+            setError("")
+         },2000)
+         return false;
+      }
+
+      if(duration <= 0) {
+         setError("The duration is not valid")
+         setTimeout(() => {
+            setError("");
+         },2000)
          return false;
       }
        
       if (description.trim().split(/\s+/).length > 30) {
          setError("Description must not exceed 30 words.");
+         setTimeout(() => { 
+            setError("")
+         },2000)
          return false;
       }
       if (celebration_date > end_date){
          setError("End date must be after the start date");
+         setTimeout(() => { 
+            setError("")
+         },2000)
          return false;
        }
 
@@ -161,6 +225,11 @@ export default function MyEvents({ onGoToReview, setSelectedEvent }: { onGoToRev
          setError('Event cant be updated');
          return;
       }
+      findMyEvents();
+      setSuccess(true)
+      setTimeout(() => {
+         setSuccess(false);
+      }, 2000); // 3000 ms = 3 segundos
       setError("")
    }
 
@@ -173,7 +242,6 @@ export default function MyEvents({ onGoToReview, setSelectedEvent }: { onGoToRev
           return
       }     
       setEvents((prevEvents) => prevEvents.filter((event) => event.event_name !== event_name));
-      findMyEvents();    
    }
    
    return (
@@ -188,6 +256,7 @@ export default function MyEvents({ onGoToReview, setSelectedEvent }: { onGoToRev
                         <Box
                            key={event.event_id}
                            id="box-myevent"
+                           data-event-id={event.event_id}
                            className="flex flex-col border-2 border-solid border-white/[.08]"
                            width="64px"
                            height="100px"
@@ -199,7 +268,7 @@ export default function MyEvents({ onGoToReview, setSelectedEvent }: { onGoToRev
                                  </Heading>
                                  <div  id = "info-date-myevent-div"className="flex flex-row items-center">
                                     <DrawingPinFilledIcon/>
-                                    <span id="event-date">{event.category}</span>    
+                                    <span title = "category" id="event-date">{event.category}</span>    
                                  </div>   
                                  <div  id = "info-clock-myevent-div"className="flex flex-row items-center">
                                     <SewingPinFilledIcon/> 
@@ -210,14 +279,14 @@ export default function MyEvents({ onGoToReview, setSelectedEvent }: { onGoToRev
                                     <span id="event-date">{event.capacity}</span>   
                                  </div>
                                  {(new Date().toISOString() < event.celebration_date) ? 
-                                    <Badge id="badge" color="green" variant="solid">
+                                    <Badge id="badge-green-event" color="green" variant="solid">
                                        Published
                                     </Badge> :
                                  ((new Date().toISOString() >= event.celebration_date) && (new Date().toISOString() <= event.end_date)) ?  
-                                    <Badge id="badge" color="blue" variant="solid">
+                                    <Badge id="badge-blue-event" color="blue" variant="solid">
                                           Ongoing
                                     </Badge> :
-                                    <Badge id="badge" color="red" variant="solid">
+                                    <Badge id="badge-red-event" color="red" variant="solid">
                                           Finished 
                                     </Badge>                          
                                  } 
@@ -227,7 +296,7 @@ export default function MyEvents({ onGoToReview, setSelectedEvent }: { onGoToRev
                               <div>
                                  <Dialog.Root>
                                     <Dialog.Trigger asChild>
-                                       {(new Date().toISOString() < event.celebration_date) && <Pencil1Icon id="icon-myevent-update"/>}
+                                       {(new Date().toISOString() < event.celebration_date) && <Pencil1Icon  data-event-id={event.event_id} id="icon-myevent-update"/>}
                                     </Dialog.Trigger>   
                                     <Dialog.Portal>
                                     <Dialog.Overlay className="DialogOverlay" />
@@ -397,6 +466,7 @@ export default function MyEvents({ onGoToReview, setSelectedEvent }: { onGoToRev
                                                 <label htmlFor="Event Description">Event Description</label>
                                                    <TextArea 
                                                    id= "input-event-big"
+                                                   name = "description"
                                                    placeholder="My event is about..." 
                                                    value = {event_full_description} 
                                                    onChange = {(e) => setEventDescription(e.target.value)} 
@@ -419,6 +489,13 @@ export default function MyEvents({ onGoToReview, setSelectedEvent }: { onGoToRev
                                                 </Callout.Icon>
                                                 <Callout.Text className="callout-text-event-update"> {error} </Callout.Text> 
                                              </Callout.Root> }
+                                          {Sucess && 
+                                             <Callout.Root id = "callout-root-event-update" color="green" size="2" variant="soft" className="flex items-center ">
+                                                <Callout.Icon className="callout-icon-event-update" >
+                                                   <InfoCircledIcon  />
+                                                </Callout.Icon>
+                                                <Callout.Text className="callout-text-event-update"> Event updated success </Callout.Text> 
+                                             </Callout.Root> }   
                                        </Dialog.Content> 
                                     </Dialog.Portal>           
                                  </Dialog.Root>    
@@ -427,7 +504,7 @@ export default function MyEvents({ onGoToReview, setSelectedEvent }: { onGoToRev
                                  <AlertDialog.Root>
                                     {(new Date().toISOString() < event.celebration_date || new Date().toISOString() > event.end_date) && 
                                        <AlertDialog.Trigger>
-                                          <TrashIcon id="icon-myevent-delete"/>
+                                          <TrashIcon data-event-id={event.event_id} id="icon-myevent-delete"/>
                                        </AlertDialog.Trigger>
                                     }
                                     <AlertDialog.Content className="AlertDialogContent">
@@ -453,7 +530,7 @@ export default function MyEvents({ onGoToReview, setSelectedEvent }: { onGoToRev
                               <div>
                               <Dialog.Root>
                                  <Dialog.Trigger asChild>
-                                    {(new Date().toISOString() > event.end_date) && <FileIcon id="file-myevent"/>}
+                                    {(new Date().toISOString() > event.end_date) && <FileIcon data-event-id={event.event_id} id="file-myevent"/>}
                                  </Dialog.Trigger>   
                                  <Dialog.Portal>
                                     <Dialog.Overlay className="DialogOverlay" />
@@ -482,48 +559,62 @@ export default function MyEvents({ onGoToReview, setSelectedEvent }: { onGoToRev
                                           </div>
                                           <div className="flex flex-row items-center gap-2 items-center">
                                              <label htmlFor="event_name">Event category</label>
-                                                <Select.Root onValueChange={(value) => handleSelectChange(value)}>
-                                                   <Select.Trigger className="SelectTrigger border-2 border-solid border-white/[.08]" aria-label="Food">
-                                                      <Select.Value placeholder="Select category" />
-                                                      <Select.Icon className="SelectIcon">
-                                                         <ChevronDownIcon />
-                                                      </Select.Icon>
-                                                   </Select.Trigger>
-                                                   <Select.Portal>
-                                                      <Select.Content className="SelectContent border-2 border-solid border-white/[.08]">
-                                                         <Select.ScrollUpButton className="SelectScrollButton border-2 border-solid border-white/[.08]">
-                                                            <ChevronUpIcon />
-                                                         </Select.ScrollUpButton>
-                                                         <Select.Viewport className="SelectViewport">
-                                                            <Select.Group>
-                                                               <Select.Label className="SelectLabel">Category</Select.Label>
-                                                               <SelectItem  value="general">general</SelectItem>
-                                                               <SelectItem  value="junior">junior</SelectItem>
-                                                               <SelectItem  value="senior">senior</SelectItem>
-                                                               <SelectItem  value="alevin">alevin</SelectItem>
-                                                               <SelectItem  value="infantil">infantil</SelectItem>
-                                                            </Select.Group>
-                                                         </Select.Viewport>
-                                                         <Select.ScrollDownButton className="SelectScrollButton">
+                                                <div id="filter-by-edition-event">
+                                                   <Select.Root onValueChange={(value) => handleSelectChange(value)}>
+                                                      <Select.Trigger className="SelectTrigger border-2 border-solid border-white/[.08]" aria-label="Food">
+                                                         <Select.Value placeholder="Select category" />
+                                                         <Select.Icon className="SelectIcon">
                                                             <ChevronDownIcon />
-                                                         </Select.ScrollDownButton>
-                                                      </Select.Content>
-                                                   </Select.Portal>
-                                                </Select.Root>
+                                                         </Select.Icon>
+                                                      </Select.Trigger>
+                                                      <Select.Portal>
+                                                         <Select.Content className="SelectContent border-2 border-solid border-white/[.08]">
+                                                            <Select.ScrollUpButton className="SelectScrollButton border-2 border-solid border-white/[.08]">
+                                                               <ChevronUpIcon />
+                                                            </Select.ScrollUpButton>
+                                                            <Select.Viewport className="SelectViewport">
+                                                               <Select.Group>
+                                                                  <Select.Label className="SelectLabel">Category</Select.Label>
+                                                                  {event.category.split(",").map((category : any, index : any) => (
+                                                                     <SelectItem key={index} value={category.trim()}>
+                                                                        {category.trim()}
+                                                                     </SelectItem>
+                                                                  ))}
+                                                               </Select.Group>
+                                                            </Select.Viewport>
+                                                            <Select.ScrollDownButton className="SelectScrollButton">
+                                                               <ChevronDownIcon />
+                                                            </Select.ScrollDownButton>
+                                                         </Select.Content>
+                                                      </Select.Portal>
+                                                   </Select.Root>
+                                                </div>
                                           </div>
                                           <Button id = "button-upload" onClick={() => {
                                              if (selectedFile && category_result) {
                                                 handleFileChange(selectedFile, event.event_id, event.event_edition);
                                              }
-                                             else setError('A CSV file and a category are required.')
+                                             else{
+                                                setError('A CSV file and a category are required.')
+                                                setTimeout(() => {
+                                                   setError('')
+                                                },2000)
+                                             } 
                                           }}>Upload</Button>
                                           {error && 
-                                             <Callout.Root id = "callout-root-upload" color="red" size="2" variant="soft" className="flex items-center ">
+                                             <Callout.Root id = "callout-root-upload-error" color="red" size="2" variant="soft" className="flex items-center ">
                                                 <Callout.Icon className="callout-icon-upload" >
                                                    <ExclamationTriangleIcon  />
                                                 </Callout.Icon>
                                                 <Callout.Text className="callout-text-upload"> {error} </Callout.Text> 
                                              </Callout.Root>}
+                                          {uploadSUcess && 
+                                             <Callout.Root id = "callout-root-upload" color="green" size="2" variant="soft" className="flex items-center ">
+                                                <Callout.Icon className="callout-icon-upload" >
+                                                   <InfoCircledIcon  />
+                                                </Callout.Icon>
+                                                <Callout.Text className="callout-text-upload"> File uploaded successfully </Callout.Text> 
+                                             </Callout.Root>}   
                                        </div>
                                     </Dialog.Content>  
                                  </Dialog.Portal>         

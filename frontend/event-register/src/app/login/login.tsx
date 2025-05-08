@@ -18,6 +18,9 @@ export default function Login() {
     
     if (!user_name || !password) {
       setError("Username and password are required");
+      setTimeout(() => {
+        setError("");
+      },2000)
       return false;
     }
 
@@ -48,6 +51,9 @@ export default function Login() {
       if (!response.ok) {
         setLoading(false);
         setError('User and password incorrects');
+        setTimeout(() => {
+          setError("");
+       },2000)
         return;
       }
       let data;
@@ -61,6 +67,8 @@ export default function Login() {
       localStorage.setItem('user_id',  data.user_id.toString());
       localStorage.setItem('user_name', user_name);  
       localStorage.setItem('organizer', data.organizer);
+      const loginDate = new Date().toISOString();
+      localStorage.setItem('login_date', loginDate);
 
       setLoading(true);
       setError('');
@@ -70,6 +78,9 @@ export default function Login() {
         setLoading(false);
         if (error instanceof TypeError && error.message === "Failed to fetch") {
           setError('The server is down, please try again later.');
+          setTimeout(() => {
+            setError("");
+          },2000)
         }
         else {
           setLoading(true);
@@ -155,8 +166,7 @@ export default function Login() {
   </form>
 
     /*
-    
-  */
+       */
 
 
 

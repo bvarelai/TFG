@@ -1,3 +1,18 @@
+.DialogContentMyInscription {
+  background-color: rgba(15, 17, 26, 0.95);
+  border-radius: 10px;
+  box-shadow: var(--shadow-6);
+  border-color: #1a1c2c;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 520px; 
+  max-width: 670px;
+  padding: 25px;
+  animation: contentShow 150ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
 
 #inscriptions_disp{
   width: 100%;
@@ -8,15 +23,58 @@
   justify-content: flex-start;
 }
 
+#badge-green-myinscriptions {
+  filter: brightness(1.7); /* Incrementa el brillo en un 20% */
+  background-color: rgba(40, 167, 69, 0.15);  
+  color: #2ecc71;
+  margin-left: 50px;
+  width: 90px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 15px;
+}
+
+#badge-blue-myinscriptions {
+  filter: brightness(1.7); /* Incrementa el brillo en un 20% */
+  background-color: rgba(52, 152, 219, 0.15);  /* Fondo translúcido */
+  color: #3498db; 
+  margin-left: 50px;
+  width: 90px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 15px;
+}
+
+#badge-red-myinscriptions {
+  filter: brightness(1.7); /* Incrementa el brillo en un 20% */
+  background-color: rgba(231, 76, 60, 0.15);   /* Fondo translúcido */
+  color: #e74c3c;   
+  margin-left: 50px;
+  width: 90px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 15px;
+}
+
+#heading-event-name{
+  font-size: 24px;
+}
+
 
 #box-myinscription{
   border-radius: 15px;
   background-color: #1a1c2c;
-  margin-left: 40px;
-  margin-top: 50px;
-  height: 150px;
-  width: 320px;
+  margin-left: 47px;
+  margin-top: 40px;
+  height: 215px;
+  width: 200px;
 }
+
+#box-myinscription:nth-child(n+8) {
+  margin-top: -80px; /* Reduce el margen superior para los elementos de la segunda fila */
+}
+
+
 
 #box-myinscription:hover{
   border-color: #9678C8;
@@ -24,20 +82,16 @@
 
 
 #info-date-myinscription-div{
- 
-  margin-left: 15px;  
+  margin-left: 40px;  
 }
 
 #info-clock-myinscription-div{
- 
-  margin-left: 15px;  
+  margin-left: 40px;  
 }  
 
 #info-members-myinscription-div{
  
-  margin-left: 15px;
-  margin-top: -1px;
-
+  margin-left: 40px;
 }
 
 #span-inscription-date{
@@ -50,7 +104,7 @@
 #icon-myinscription{
   height: 21px;
   width: 21px;
-  margin-left: 85px;
+  margin-left: -20px;
 }
 
 #icon-myinscription:hover{
