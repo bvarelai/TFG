@@ -41,7 +41,7 @@
 }
 
 #box-myevent:nth-child(n+7) {
-    margin-top: -80px; /* Reduce el margen superior para los elementos de la segunda fila */
+    margin-top: -275px; 
   }
   
 

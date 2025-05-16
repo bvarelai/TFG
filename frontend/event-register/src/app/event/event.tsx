@@ -7,6 +7,7 @@ import { MagnifyingGlassIcon,PlusIcon,Cross2Icon,MixIcon, LapTimerIcon, PersonIc
 import { Dialog,Select} from "radix-ui";
 import { useState, useEffect, useRef} from "react";
 import { Checkbox } from "radix-ui";
+import { redirect } from 'next/navigation';
 
 
 export default function Events({ onGoToReview, setSelectedEvent }: { onGoToReview: () => void; setSelectedEvent: (event: any) => void }) {
@@ -23,15 +24,12 @@ export default function Events({ onGoToReview, setSelectedEvent }: { onGoToRevie
    const [capacity, setcapacity] = useState<number>(0);   
    const [organizer_by, setOrganizerBy] = useState<string>("");
    const [event_full_description, setEventDescription] = useState<string>("");
-   const [duration, setDuration] = useState<number>(0);
    const [event_language, setEventLanguage] = useState<string>("");
    const [is_free, setIsFree] = useState<boolean>(false);
    const [error, setError] = useState<string>("");
    const [notification, setNotification] = useState<string>("");
    const [events, setEvents] = useState<any[]>([]);
    const [isOrganizer, setOrganizer] = useState<boolean>(false);
-   const [isRegister, setRegister] = useState<boolean>(false);
-   const [uploading, setUploading] = useState(false);
    const [search_event, setSearchEvent] = useState('')
    const [filter_celebration_date, setFilterCelebrationDate] = useState<string>("");
    const [filter_end_date, setFilterEndDate] = useState<string>("");
@@ -39,14 +37,18 @@ export default function Events({ onGoToReview, setSelectedEvent }: { onGoToRevie
 
    
    useEffect(() => {
-      const storedUserID = localStorage.getItem('user_id');
-      if (storedUserID) {
-        setUserID(parseInt(storedUserID));
+ 
+      const session_id = sessionStorage.getItem("session_id");
+      if (!session_id) {
+        redirect("/login");
+        return;
       }
-      const storedValue = localStorage.getItem('organizer');
-     if (storedValue !== null) {
-         setOrganizer(JSON.parse(storedValue));
-      }
+      const user_id = sessionStorage.getItem("user_id");
+      const organizer = sessionStorage.getItem("organizer");
+      if(user_id)
+         setUserID(Number(user_id));
+      if(organizer)
+         setOrganizer(JSON.parse(organizer));
       findEvents()      
       
    }, []);
@@ -80,7 +82,8 @@ export default function Events({ onGoToReview, setSelectedEvent }: { onGoToRevie
   
    const validateForm = (): boolean => {
       const validCategories = ["general", "alevin", "junior", "senior", "infantil"];
-     
+      const validTypes = ["infantil", "football", "basketball", "triathlon", "athletics", "swimming", "cycling", "hockey"] 
+      const validEditionFormat = /^\d{4}-\d{4}$/;
       const categories = category.split(",").map((cat) => cat.trim());
       const isValidCategory = categories.filter(cat => !validCategories.includes(cat)); 
       
@@ -98,7 +101,24 @@ export default function Events({ onGoToReview, setSelectedEvent }: { onGoToRevie
             setError("");
          },2000)
          return false;
-      } 
+      }
+      
+      if (!validTypes.includes(event_type)) {
+         setError("Invalid event type");
+         setTimeout(() => {
+            setError("");
+         },2000)
+         return false;
+      }
+
+      if (!validEditionFormat.test(event_edition)) {
+         setError("Invalid event edition format");
+         setTimeout(() => {
+            setError("");
+         }, 2000);
+         return false;
+      }
+      
 
       if (capacity <= 0) {
          setError("The capacity is not valid")
@@ -107,22 +127,23 @@ export default function Events({ onGoToReview, setSelectedEvent }: { onGoToRevie
          },2000)
          return false;
       }
-
-      if(duration <= 0) {
-         setError("The duration is not valid")
+       
+      if (description.trim().split(/\s+/).length > 10) {
+         setError("Description must not exceed 10 words.");
          setTimeout(() => {
             setError("");
          },2000)
          return false;
       }
-       
-      if (description.trim().split(/\s+/).length > 30) {
+
+      if (event_full_description.trim().split(/\s+/).length > 30) {
          setError("Description must not exceed 30 words.");
          setTimeout(() => {
             setError("");
          },2000)
          return false;
       }
+
        if (celebration_date > end_date){
          setError("End date must be after the start date");
          setTimeout(() => {
@@ -194,7 +215,6 @@ export default function Events({ onGoToReview, setSelectedEvent }: { onGoToRevie
          "end_date" : end_date,
          "capacity" : capacity, 
          "organizer_by" : organizer_by,
-         "duration" : duration,
          "event_full_description" : event_full_description, 
          "language" : event_language,
          "is_free" : is_free
@@ -225,7 +245,11 @@ export default function Events({ onGoToReview, setSelectedEvent }: { onGoToRevie
       setCelebrationDate("");
       setEndDate("");
       setcapacity(0);
-      findEvents()
+      setOrganizerBy("")
+      setEventLanguage("");
+      setIsFree(false);
+      setEventDescription("");
+      findEvents();
    }
 
    const findEvents = async () => {
@@ -297,7 +321,6 @@ export default function Events({ onGoToReview, setSelectedEvent }: { onGoToRevie
 
       const data = await responseEvent.json();
 
-      // Filtrar eventos que contengan al menos una de las categorías seleccionadas
       const filteredEvents = data.filter((event: any) => {
          const eventCategories = event.category.split(",").map((cat: string) => cat.trim());
          return categoryList.some((category) => eventCategories.includes(category));
@@ -392,68 +415,6 @@ export default function Events({ onGoToReview, setSelectedEvent }: { onGoToRevie
          return;
       }
    }
-   const createInscription = async (event_id : number,event_name : string, event_type:string, event_edition: string, category:string, event_description:string, location:string, celebration_date:string, end_date: string, capacity: number) => {
-
-      const formDetails = 
-      {
-         "event_id" : event_id,
-         "user_id" : user_id,
-         "event_name" : event_name,
-         "inscription_date" : "2022-12-12T12:12:12",
-         "location" : location
-      }
-      
-         
-      const responseInscription = await fetch('http://localhost:8000/inscription/register' , {
-         method: 'POST',
-         headers: {
-          'Content-Type': 'application/json',
-         },
-         body: JSON.stringify(formDetails)
-      });
-    
-      if(!responseInscription.ok){
-       setError('You are already register in this event')
-       setTimeout(() => {
-         setError("");
-      },2000)
-       return;
-      }
-      setError('')
-   
-      const formDetailsEvent = 
-      {
-         "event_name" : event_name,
-         "user_id" : user_id,
-         "event_type" : event_type,  
-         "event_edition" :  event_edition,
-         "event_description" : event_description,
-         "category": category,
-         "location"  : location,
-         "celebration_date"  : celebration_date,
-         "end_date" : end_date,
-         "capacity" : capacity - 1
-      }
-
-
-      const responseEvent = await fetch(`http://localhost:8000/event/update/${event_name}`, {
-         method: 'PUT',
-         headers: {
-          'Content-Type': 'application/json',
-         },
-         body: JSON.stringify(formDetailsEvent)
-      });
-
-      if (!responseEvent.ok) {
-         setError('Can`t register');
-         setTimeout(() => {
-            setError("");
-         },2000)
-         return;
-      }
-      findEvents()
-   }
-
    return (
       <div id = "events-list-div" className='flex flex-col border-2 border-solid border-white/[.08]'>   
          <div id = "title-events" className="flex flex-col relative border-2 border-solid border-white/[.08]">
@@ -588,23 +549,12 @@ export default function Events({ onGoToReview, setSelectedEvent }: { onGoToRevie
                               <div className="flex flex-col gap-1">                        
                                     <label htmlFor="organizer-by">Organizer by</label>
                                        <input
-                                          id = "input-event"  
+                                          id = "input-event-large"  
                                           name = "organizer-by"
                                           placeholder="organizer1"
                                           type="text"
                                           value={organizer_by}
                                           onChange={(e) => setOrganizerBy(e.target.value)}
-                                       />
-                              </div>
-                              <div className="flex flex-col gap-1">                        
-                                    <label htmlFor="duration">Duration</label>
-                                       <input
-                                          id = "input-event"  
-                                          name = "duration"
-                                          placeholder="1 hour"
-                                          type="number"
-                                          value={duration}
-                                          onChange={(e) => setDuration(e.target.valueAsNumber)}
                                        />
                               </div>
                            </div>

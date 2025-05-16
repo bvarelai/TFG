@@ -64,12 +64,12 @@ export default function Login() {
         setError('Error parsing server response');
         return;
       }
-      localStorage.setItem('user_id',  data.user_id.toString());
-      localStorage.setItem('user_name', user_name);  
-      localStorage.setItem('organizer', data.organizer);
       const loginDate = new Date().toISOString();
-      localStorage.setItem('login_date', loginDate);
-
+      sessionStorage.setItem("session_id", data.session_id);
+      sessionStorage.setItem("user_id", data.user_id.toString());
+      sessionStorage.setItem("user_name", user_name);
+      sessionStorage.setItem("organizer", data.organizer);
+      sessionStorage.setItem("login_date", loginDate);
       setLoading(true);
       setError('');
       setToken(true);

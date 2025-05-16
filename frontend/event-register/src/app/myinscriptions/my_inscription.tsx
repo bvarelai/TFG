@@ -1,7 +1,7 @@
 "use client"
 import { Heading, Box, Button,AlertDialog,Flex, Badge} from "@radix-ui/themes";
 import { useState, useEffect} from "react";
-import { MixIcon,LapTimerIcon,ClockIcon,SewingPinFilledIcon, TrashIcon} from "@radix-ui/react-icons";
+import { MixIcon,LapTimerIcon,ClockIcon,SewingPinFilledIcon, TrashIcon, DrawingPinFilledIcon} from "@radix-ui/react-icons";
 import { Dialog } from "radix-ui";
 
 
@@ -17,7 +17,7 @@ export default function MyInscription({ onGoToReview, setSelectedEvent }: { onGo
 
    useEffect(() => {
       const updateInscriptionAutomatically = async () => {
-         const user_id = localStorage.getItem('user_id');
+         const user_id = sessionStorage.getItem('user_id');
          if(inscriptions != null) {
             for (const inscription of inscriptions) {
                const eventDetails = await findEventInscription(inscription.event_name);
@@ -40,7 +40,7 @@ export default function MyInscription({ onGoToReview, setSelectedEvent }: { onGo
 
    const findMyInscription = async () => { 
       
-      const user_id = localStorage.getItem('user_id');
+      const user_id = sessionStorage.getItem('user_id');
 
       const responseInscription = await fetch(`http://localhost:8000/inscription/find/${user_id}` , {
          method: 'GET',
@@ -94,7 +94,9 @@ export default function MyInscription({ onGoToReview, setSelectedEvent }: { onGo
          inscription_date: data.inscription_date,
          start_date: start_date,
          end_date: end_date,
-         location: data.location
+         location: data.location,
+         category_inscription : data.category_inscription,
+         type_inscription : data.type_inscription
       };
       const responseInscription = await fetch(`http://localhost:8000/inscription/update`, {
          method: 'PUT',
@@ -113,7 +115,7 @@ export default function MyInscription({ onGoToReview, setSelectedEvent }: { onGo
    
    const deleteInscription = async (event_name: string, event_id: string) => {
       
-      const user_id = localStorage.getItem('user_id');
+      const user_id = sessionStorage.getItem('user_id');
 
       const responseDeleteInscription = await fetch(`http://localhost:8000/inscription/delete/${user_id}/${event_id}`, {
          method: 'DELETE',
@@ -137,7 +139,6 @@ export default function MyInscription({ onGoToReview, setSelectedEvent }: { onGo
 
       const formDetailsEvent = {
          event_name: data.event_name,
-         user_id: user_id,
          event_type: data.event_type,
          event_edition: data.event_edition,
          event_description: data.event_description,
@@ -147,7 +148,6 @@ export default function MyInscription({ onGoToReview, setSelectedEvent }: { onGo
          end_date: data.end_date,
          capacity: data.capacity + 1,
          organizer_by : data.organizer_by,
-         duration : data.duration,
          event_full_description: data.event_full_description,
          language : data.language,
          is_free : data.is_free
@@ -193,8 +193,8 @@ export default function MyInscription({ onGoToReview, setSelectedEvent }: { onGo
                            </Heading>
                            <div className="flex flex-col py-2 gap-1">
                               <div  id = "info-members-myinscription-div" className="flex flex-row items-center">
-                                 <SewingPinFilledIcon/>
-                                 <span id="event-date">{inscription.location}</span>   
+                                 <DrawingPinFilledIcon/>
+                                 <span id="event-date">{inscription.category_inscription}</span>   
                               </div>
                               <div  id = "info-date-myinscription-div"className="flex flex-row items-center">
                                  <LapTimerIcon/> 

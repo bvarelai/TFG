@@ -16,6 +16,7 @@ export default function Login() {
   const [age, setAge] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [phone, setPhone] = useState<string>("");
+  const [phonePrefix, setPhonePrefix] = useState("+34");
   const [city, setCity] = useState<string>("");
   const [autonomous_community, setAutonomousCommunity] = useState<string>("");
   const [country, setCountry] = useState<string>("");
@@ -50,8 +51,8 @@ export default function Login() {
       return false;
     }
 
-    if (!/^\+34[6-9]\d{8}$/.test(phone)) {
-      setError("Phone number is not valid");
+    if (!/^[6-9]\d{2} \d{3} \d{3}$/.test(phone)) {
+      setError("Phone number must be in format 600 123 456");
       setTimeout(() => {
         setError("");
       },2000)
@@ -123,10 +124,13 @@ export default function Login() {
         return;
       }
       const data = await responselogin.json();
-      localStorage.setItem('user_id', data.user_id);
-      localStorage.setItem('user_name', user_name);
-      localStorage.setItem('organizer', data.organizer);
-        
+
+      const loginDate = new Date().toISOString();
+      sessionStorage.setItem("session_id", data.session_id);
+      sessionStorage.setItem("user_id", data.user_id.toString());
+      sessionStorage.setItem("user_name", user_name);
+      sessionStorage.setItem("organizer", data.organizer);
+      sessionStorage.setItem("login_date", loginDate);        
       setLoading(true);
       setError("");
       setSucess(true);
@@ -202,7 +206,7 @@ export default function Login() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             /> 
-             <input className="relative top-[-50px]"
+            <input className="relative top-[-50px]"
               id = "input_register"
               name= "phone"
               placeholder="Ej: +34 600 123 456"

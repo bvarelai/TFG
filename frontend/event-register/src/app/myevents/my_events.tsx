@@ -9,7 +9,7 @@ import { Dialog, Select,Checkbox } from "radix-ui";
 
 export default function MyEvents({ onGoToReview, setSelectedEvent }: { onGoToReview: () => void; setSelectedEvent: (event: any) => void }) {   
    const [events, setEvents] = useState<any[]>([]);
-   const [user_id, setUserID] = useState<string>("");
+   const [user_id, setUserID] = useState<number>(0);
    const [notification, setNotification] = useState<string>("");
    const [error, setError] = useState<string>("");
    const [event_name, setEventname] = useState<string>("");
@@ -23,7 +23,6 @@ export default function MyEvents({ onGoToReview, setSelectedEvent }: { onGoToRev
    const [capacity, setcapacity] = useState<number>(0);   
    const [organizer_by, setOrganizerBy] = useState<string>("");
    const [event_full_description, setEventDescription] = useState<string>("");
-   const [duration, setDuration] = useState<number>(0);
    const [event_language, setEventLanguage] = useState<string>("");
    const [is_free, setIsFree] = useState<boolean>(false);
    const [category_result, setCategoryResult] = useState<string>("");
@@ -33,12 +32,17 @@ export default function MyEvents({ onGoToReview, setSelectedEvent }: { onGoToRev
 
 
    useEffect(() => {
-      const storedUserID = localStorage.getItem('user_id');
+      const storedUserID = sessionStorage.getItem('user_id');
       if (storedUserID) {
-        setUserID(storedUserID);
+        setUserID(Number(storedUserID));
       }
-      findMyEvents();
    }, []);
+
+   useEffect(() => {
+     if (user_id !== 0) {
+      findMyEvents(); // Llama a findMyEvents solo si user_id es válido
+     }
+   }, [user_id]);
 
    const handleSelectChange = (value: string) => {
       if(value == "general"){
@@ -76,7 +80,7 @@ export default function MyEvents({ onGoToReview, setSelectedEvent }: { onGoToRev
          },
    );
    
-   const handleFileChange = async (file: File, event_id: number, event_edition: string) => {
+   const handleFileChange = async (file: File, event_id: number, event_name : string, event_edition: string) => {
       if (!file){
          setError("File is required");
          setTimeout(() => {
@@ -96,7 +100,7 @@ export default function MyEvents({ onGoToReview, setSelectedEvent }: { onGoToRev
       const formData = new FormData();
       formData.append("file", file);      
 
-      const responseEvent = await fetch(`http://localhost:8000/event/result/upload/${event_id}?edition_result=${event_edition}&category_result=${category_result}`, {     
+      const responseEvent = await fetch(`http://localhost:8000/event/result/upload/${event_id}?event_name=${event_name}&edition_result=${event_edition}&category_result=${category_result}`, {     
          method: 'POST',
          body: formData, 
       }) 
@@ -147,22 +151,25 @@ export default function MyEvents({ onGoToReview, setSelectedEvent }: { onGoToRev
          },2000)
          return false;
       }
-
-      if(duration <= 0) {
-         setError("The duration is not valid")
-         setTimeout(() => {
-            setError("");
-         },2000)
-         return false;
-      }
        
-      if (description.trim().split(/\s+/).length > 30) {
-         setError("Description must not exceed 30 words.");
+      if (description.trim().split(/\s+/).length > 10) {
+         setError("Description must not exceed 10 words.");
          setTimeout(() => { 
             setError("")
          },2000)
          return false;
       }
+
+
+      if (event_full_description.trim().split(/\s+/).length > 30) {
+         setError("Description must not exceed 30 words.");
+         setTimeout(() => {
+            setError("");
+         },2000)
+         return false;
+      }
+
+
       if (celebration_date > end_date){
          setError("End date must be after the start date");
          setTimeout(() => { 
@@ -171,14 +178,13 @@ export default function MyEvents({ onGoToReview, setSelectedEvent }: { onGoToRev
          return false;
        }
 
-
       setError("");
       return true;
     };
 
    const findMyEvents = async () => {
 
-        const responseEvent = await fetch(`http://localhost:8000/event/find/${user_id}`, {     
+        const responseEvent = await fetch(`http://localhost:8000/event/find/myevents/${user_id}`, {     
          method: 'GET',
       })
       if (!responseEvent.ok){
@@ -208,7 +214,6 @@ export default function MyEvents({ onGoToReview, setSelectedEvent }: { onGoToRev
          "end_date" : end_date,
          "capacity" : capacity,
          "organizer_by" : organizer_by,
-         "duration" : duration,
          "event_full_description" : event_full_description,
          "language" : event_language,
          "is_free" : is_free,
@@ -417,23 +422,12 @@ export default function MyEvents({ onGoToReview, setSelectedEvent }: { onGoToRev
                                                 <div className="flex flex-col gap-1">                        
                                                       <label htmlFor="organizer-by">Organizer by</label>
                                                          <input
-                                                            id = "input-event"  
+                                                            id = "input-event-large"  
                                                             name = "organizer-by"
                                                             placeholder="organizer1"
                                                             type="text"
                                                             value={organizer_by}
                                                             onChange={(e) => setOrganizerBy(e.target.value)}
-                                                         />
-                                                </div>
-                                                <div className="flex flex-col gap-1">                        
-                                                      <label htmlFor="organizer-by">Duration</label>
-                                                         <input
-                                                            id = "input-event"  
-                                                            name = "duration"
-                                                            placeholder="1 hour"
-                                                            type="number"
-                                                            value={duration}
-                                                            onChange={(e) => setDuration(e.target.valueAsNumber)}
                                                          />
                                                 </div>
                                              </div>
@@ -592,7 +586,7 @@ export default function MyEvents({ onGoToReview, setSelectedEvent }: { onGoToRev
                                           </div>
                                           <Button id = "button-upload" onClick={() => {
                                              if (selectedFile && category_result) {
-                                                handleFileChange(selectedFile, event.event_id, event.event_edition);
+                                                handleFileChange(selectedFile, event.event_id, event.event_name, event.event_edition);
                                              }
                                              else{
                                                 setError('A CSV file and a category are required.')

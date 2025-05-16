@@ -18,31 +18,33 @@ export default function Home() {
   const [currentContent, setCurrentContent] = useState<string>('home');
   const [selectedEvent, setSelectedEvent] = useState<any>(null);
   const [selectedButton, setSelectedButton] = useState<string>("");
-
+ 
   useEffect(() => {
     const checkAuth = async () => {
+  
+      const session_id = sessionStorage.getItem("session_id");
 
-        const response = await fetch("http://localhost:8000/protected", {
-                method: "GET",
-                credentials: "include",
-            });
+      if (!session_id) {
+        redirect("/login");
+        return;
+      }
+      const response = await fetch(`http://localhost:8000/protected/${session_id}`, {
+        method: "GET",
+        credentials: "include",
+      });
 
-            if (!response.ok) {
-                redirect("/protected"); 
-            }
-            const data = await response.json();
-            localStorage.setItem('token', data.token);
-
-            if (!data.token) {
-                throw new Error("Token inválido");
-            }
-            const storedUsername = localStorage.getItem('user_name');
-            setUsername(storedUsername);
+      if (!response.ok) {
+          redirect("/protected"); 
+          return;
+      }
+      const data = await response.json();
+      const user_name = sessionStorage.getItem("user_name")
+      if(user_name)
+        setUsername(user_name);
+      const organizer = sessionStorage.getItem("organizer")
+      if(organizer) 
+        setOrganizer(JSON.parse(organizer));
             
-            const storedValue = localStorage.getItem('organizer');
-              if (storedValue !== null) {
-                setOrganizer(JSON.parse(storedValue));
-            }
     };
     checkAuth();
   }, []);

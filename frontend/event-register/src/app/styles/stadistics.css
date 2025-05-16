@@ -1,0 +1,304 @@
+#user-info{
+    background-color: #1a1c2c;
+    color:white;
+    border-radius: 15px;
+    margin-top: 15px;
+    margin-left: 15px;
+    height: 388px;
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-block-end: 10px;
+}
+
+#user-avatar{
+    margin-left: 10px;
+    margin-top: 25px;
+}
+
+#user-name-span{
+    margin-left: 10px;
+    margin-top: 20px;
+    font-size: 28px;
+}
+
+#user-other-span{
+    margin-left: 10px;
+    margin-top: -8px;
+    font-size: 16px;
+    color: grey;
+}
+
+#other-info{
+    margin-top: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+
+}
+
+#user-info-box{
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 15px;
+    margin: 5px;
+    width: 130px;
+    height: 110px;
+    align-items: center;
+    justify-content: center;
+    color: #cccccc;
+}
+
+#icon-email{
+    width: 25px;
+    height: 25px;
+}
+
+#span-registered-events{
+    font-size: 15px;
+}
+
+#email-span{
+    font-size: 15px;
+    margin-top: -10px;
+}
+
+.AvatarRoot {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	vertical-align: middle;
+	overflow: hidden;
+	user-select: none;
+	width: 75px;
+	height: 75px;
+	border-radius: 18px;
+	background-color: var(--black-a3);
+}
+
+.AvatarFallback {
+	width: 100%;
+	height: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background-color:  #3D2A54;
+	color: white;
+	font-size: 28px;
+	line-height: 1;
+	font-weight: 500;
+}
+
+#events-create{
+    background-color: #1a1c2c;
+    border-radius: 15px;
+    margin-top: 15px;
+    padding-block-end: 20px;
+    margin-left: 15px;
+    width: 340px;
+
+}
+
+#label-events-create{
+    margin-left: 25px;
+    font-size: 20px;
+    color: #cccccc;
+}
+#number-events-create{
+    margin-top: 5px;
+    margin-left: 25px;
+    font-size: 40px;
+}
+
+#label-attented-events{
+    margin-top: 10px;
+    margin-left: 25px;
+    font-size: 20px;
+    color: #cccccc;
+    padding-block-end: 10px;
+}
+
+#top-three{
+    border-radius: 10px;
+    width: 80%;
+    height: 24%;
+    margin-left: 35px;
+
+}
+
+#total-participants{
+    background-color: #1a1c2c;
+    border-radius: 15px;
+    margin-top: 15px;
+    padding-block-end: 20px;
+    margin-left: 10px;
+    width: 350px;
+}
+
+#most-attended-event{
+    background-color: #1a1c2c;
+    border-radius: 15px;
+    margin-top: 15px;
+    margin-left: 5px;
+    width: 355px;
+}
+
+
+#participants-by-category{
+    background-color: #1a1c2c;
+    border-radius: 15px;
+    margin-top: 15px;
+    padding-block-end: 15px;
+    padding-top: 25px;
+    margin-left: 15px;
+    width: 415px;
+}
+
+#label-participants{
+    margin-left: 25px;
+    font-size: 26px;
+    color: #cccccc;
+}
+
+
+#rating-info{
+    background-color: #1a1c2c;
+    color:white;
+    border-radius: 15px;
+    margin-top: 5px;
+    margin-left: 15px;
+    height: 435px;
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-block-end: 15px;
+}
+
+#number-events-info{
+    background-color: #1a1c2c;
+    color:white;
+    border-radius: 15px;
+    margin-top: 5px;
+    margin-left: 10px;
+    height: 435px;
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-block-end: 15px;
+}
+
+
+#label-rating{
+    margin-top: 15px;
+    margin-left: 25px;
+    font-size: 26px;
+    color: #cccccc;
+}
+
+
+#cheese-legend{
+    margin-left: 10px;
+}
+
+#bar-chart{
+    margin-top: 20px;
+    
+}
+#line-chart{
+     margin-top: 30px;
+}
+
+#star-review-info{
+    margin-top: 15px;
+    margin-left: 20px;
+    width: 50px;
+    height: 50px;
+}
+
+#average-review-score{
+    margin-top: 11px;
+    margin-left: 15px;
+    font-size: 40px;
+}
+
+#position-stats{
+    margin-top: 20px;
+    border-radius: 15px;
+    background-color: rgba(255, 255, 255, 0.05);
+    padding: 15px;
+}
+
+#icon-position{
+    width: 45px;
+    height: 45px;
+}
+
+#number-position{
+    font-size: 34px;
+}
+
+#span-position{
+    font-size: 16px;
+}
+
+#no-box-stadistics{
+    background-color: #1a1c2c;
+    border-radius: 15px;
+    margin-top: 15px;
+    padding-block-end: 15px;
+    padding-top: 25px;
+    margin-left: 15px;
+    width: 710px;
+    align-items: center;
+    justify-content: center;
+}
+
+#no-data-icon-stats{
+  height: 110px;
+  width: 110px;
+  color: grey;
+  margin-left: 40%;
+  margin-top: 10%;
+}
+
+#label-no-data-stats{
+  color: grey;
+  font-size: 30px;
+  margin-left: 29%;
+}
+
+#no-data-icon-stats2{
+  height: 110px;
+  width: 110px;
+  color: grey;
+  margin-left: 38%;
+  margin-top: 18%;
+}
+
+#label-no-data-stats2{
+  color: grey;
+  font-size: 30px;
+  margin-left: 18%;
+}
+
+#no-data-icon-stats3{
+  height: 110px;
+  width: 110px;
+  color: grey;
+  margin-left: 42%;
+  margin-top: 100px;
+}
+
+#label-no-data-stats3{
+  color: grey;
+  font-size: 30px;
+  margin-left: 37.5%;
+}
+
+
+#no-box-barchart{
+    background-color: #1a1c2c;
+    border-radius: 15px;
+    margin-top: 5px;
+    padding-block-end: 155px;
+    padding-top: 25px;
+    margin-left: 15px;
+    width: 98.5%;
+}
+

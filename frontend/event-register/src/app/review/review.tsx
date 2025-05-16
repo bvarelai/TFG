@@ -1,10 +1,9 @@
 "use client"
 import * as React from "react";
-import { Heading,Box, Button,TextArea,Badge,SegmentedControl}  from "@radix-ui/themes";
+import { Heading,Box, Button,TextArea,Badge,SegmentedControl, Text, Radio}  from "@radix-ui/themes";
 import { useState, useEffect, Key} from "react";
 import classnames from "classnames";
-import {DrawingPinFilledIcon,  SewingPinFilledIcon,PersonIcon} from "@radix-ui/react-icons"
-
+import { RadioGroup } from "radix-ui";
 import { MixIcon,StarFilledIcon,StarIcon, CheckIcon,Cross2Icon,ArrowUpIcon,ArrowDownIcon, ChevronDownIcon, ChevronUpIcon} from "@radix-ui/react-icons";
 import { Dialog, Select } from "radix-ui";
 
@@ -17,7 +16,7 @@ export default function Review({ event }: { event: any }) {
    const [reviews, setReviews] = useState<any[]>([]);
    const [index, setIndex]  = useState<number>(0);
    const [eventResultsHeaders, setEventResultsHeaders]  = useState<String[]>([]);
-   const [eventResultsData, setEventResultsData]  = useState<{ participant_name: string; position: string; time: string; score: string; category: string; }[]>([]);
+   const [eventResultsData, setEventResultsData]  = useState<string[][]>([]);
    const [reviewContent, setReviewsContent] = useState<string>("");
    const [rating, setRating] = useState<number>(0);
    const [visibleReviews, setVisibleReviews] = useState<number>(4); 
@@ -28,24 +27,26 @@ export default function Review({ event }: { event: any }) {
    const [visibleResult, setVisibleResult] = useState<boolean>(true);
    const [selectedSegment, setSelectedSegment] = useState<string>("");
    const [selectedSelect, setSelectedSelect] = useState<string>("");
-
    const startDate = new Date(event.celebration_date).toISOString().split("T")[0];
-   const endDate = new Date(event.end_date).toISOString().split("T")[0];
-   
+   const endDate = new Date(event.end_date).toISOString().split("T")[0];   
+   const start = new Date(event.celebration_date);
+   const end = new Date(event.end_date);
    const formattedStartDate = new Date(startDate).toLocaleDateString('en-US',{year: 'numeric', month: 'long', day: 'numeric'});
    const formattedEndDate = new Date(endDate).toLocaleDateString('en-US', {year: 'numeric', month: 'long', day: 'numeric'});
+   const [categoryInscription, setCategoryInscription] = useState<string>("");
+   const [selectedCategory, setSelectedCategory] = useState<string>("");
 
    useEffect(() => {  
-      const storedUserID = localStorage.getItem('user_id');
+      const storedUserID = sessionStorage.getItem('user_id');
       if (storedUserID) {
       setUserID(parseInt(storedUserID));
       }
-      const storedValue = localStorage.getItem('organizer');
+      const storedValue = sessionStorage.getItem('organizer');
       if (storedValue !== null) {
          setOrganizer(JSON.parse(storedValue));
       }
 
-      const storedUserName = localStorage.getItem('user_name');
+      const storedUserName = sessionStorage.getItem('user_name');
       if(storedUserName){
          setUserName(storedUserName)
       }
@@ -116,15 +117,7 @@ export default function Review({ event }: { event: any }) {
       const headers = rows[0].split(",");
       const dataRows = rows.slice(1).map((row) => {
          const cols = row.split(",");
-         return {
-           participant_name: cols[0], 
-           category: cols[1], 
-           position: cols[2], 
-           time:  cols[3],
-           score: cols[4], 
-           team: cols[5], 
-           country : cols[6]
-         };
+         return cols;
        });
       
       return {headers, dataRows}; 
@@ -155,17 +148,19 @@ export default function Review({ event }: { event: any }) {
    
 
     
-   const createInscription = async (event_id : number,event_name : string, event_type:string, event_edition: string, category:string, event_description:string, location:string, celebration_date:string, end_date: string, capacity: number, organizer_by: string, duration: number, event_full_description: string, language : string, is_free : boolean) => {
+   const createInscription = async (event_name : string, event_type:string, event_edition: string, category:string, category_inscription: string, event_description:string, location:string, celebration_date:string, end_date: string, capacity: number, organizer_by: string, event_full_description: string, language : string, is_free : boolean) => {
 
       const formDetails = 
       {
-         "event_id" : event_id,
+         "event_id" : event.event_id,
          "user_id" : user_id,
          "event_name" : event_name,
          "inscription_date" : "2022-12-12T12:12:12",
          "start_date" : celebration_date,
          "end_date" : end_date,
-         "location" : location
+         "location" : location,
+         "category_inscription" : category_inscription,
+         "type_inscription" : event_type
       }
       
       const responseInscription = await fetch('http://localhost:8000/inscription/register' , {
@@ -184,7 +179,6 @@ export default function Review({ event }: { event: any }) {
       const formDetailsEvent = 
       {
          "event_name" : event_name,
-         "user_id" : user_id,
          "event_type" : event_type,  
          "event_edition" :  event_edition,
          "event_description" : event_description,
@@ -194,7 +188,6 @@ export default function Review({ event }: { event: any }) {
          "end_date" : end_date,
          "capacity" : capacity - 1,
          "organizer_by" : organizer_by,
-         "duration" : duration,
          "event_full_description" : event_full_description,
          "language" : language,
          "is_free" : is_free
@@ -259,7 +252,7 @@ export default function Review({ event }: { event: any }) {
 
    const findReviews = async (event_id : number) => {
   
-      const responseReview = await fetch(`http://localhost:8000/review/find/${event_id}`, {
+      const responseReview = await fetch(`http://localhost:8000/review/event/find/${event_id}`, {
          method: 'GET',
       })
 
@@ -331,14 +324,14 @@ export default function Review({ event }: { event: any }) {
                      }
                   </div>
                   <div id ="div-all-info" className="grid grid-cols-2 gap-2 text-sm">
-                     <div id="first-info-col"><strong>Type:</strong> {event.event_type}</div>
+                     <div id="first-info-col"><strong>Type:</strong> {event.event_type} </div>
                      <div className="flex flex-row gap-1" id="second-info-col"><strong className="flex flex-row gap-1"> Category:</strong> {event.category}</div>
                      <div  className="flex flex-row gap-1" id="first-info-col"><strong className="flex flex-row gap-1"> Location:</strong> {event.location}</div>
                      <div className="flex flex-row gap-1" id="second-info-col"><strong className="flex flex-row gap-1" > Capacity:</strong> {event.capacity} places</div>
                      <div id="first-info-col"><strong>From:</strong> {event.celebration_date ? formattedStartDate: "N/A"} {event.celebration_date ? event.celebration_date.split("T")[1]: "N/A"}</div>
                      <div id="second-info-col"><strong>To:</strong> {event.end_date ? formattedEndDate: "N/A"} {event.end_date ? event.end_date.split("T")[1]: "N/A"}</div>
                      <div id="first-info-col"><strong>Organizer by:</strong> {event.organizer_by}</div>
-                     <div id="second-info-col"><strong>Duration:</strong> {event.duration} days </div>
+                     <div id="second-info-col"><strong>Duration:</strong> {Math.ceil((end.getTime() - start.getTime())/(1000 * 60 * 60 * 24))} days </div>
                      <div id="first-info-col"><strong>Price:</strong> {event.is_free == true ? "Free": "Paid"}</div>
                      <div id="second-info-col"> <strong>Language:</strong> {event.language}</div>
                      <div className="flex flex-row items-center gap-1">
@@ -361,7 +354,56 @@ export default function Review({ event }: { event: any }) {
                   <div id="description-full-event">
                      <p className="mt-4">{event.event_full_description}</p>
                   </div>
-                  <div> { !isOrganizer && (new Date().toISOString() < event.celebration_date) && !isRegister && <Button id = "button-inscription" color="pink" variant="soft" onClick={()=> createInscription(event.event_id,event.event_name, event.event_type,event.event_edition, event.category, event.event_description, event.location, event.celebration_date, event.end_date, event.capacity, event.organizer_by, event.duration, event.event_full_description, event.language, event.is_free)}>Register</Button>}</div>  
+                  <div> 
+                  {!isOrganizer && (new Date().toISOString() < event.celebration_date) && !isRegister &&
+                     (
+                        <Dialog.Root>
+                           <Dialog.Trigger asChild>
+                              <Button id = "button-inscription" color="pink" variant="soft">Register</Button> 
+                           </Dialog.Trigger>
+                           <Dialog.Portal>
+                              <Dialog.Overlay className="DialogOverlayReview" />
+                              <Dialog.Content className="DialogContentRegisterInscription border-2 border-solid border-white/[.08] ">
+                                 <Dialog.Title className="DialogTitle">Register for a Event</Dialog.Title>
+                                 <Dialog.Description className="DialogDescription">
+                                   Select a category to register: 
+                                 </Dialog.Description>
+                                    <div className="flex flex-col gap-1" id="div-inscription">
+                                       {event.category.split(",").map((category : any) => (
+                                          <div key = {category} className="flex flex-row gap-3 items-center"
+                                             onClick={() => setCategoryInscription(category)}>                                            
+                                             	<RadioGroup.Root
+                                                   className="RadioGroupRoot"
+                                                   value={selectedCategory} 
+                                                   onValueChange={(value) => {
+                                                      setSelectedCategory(value); 
+                                                      setCategoryInscription(value);
+                                                   }}
+                                                   aria-label="Select a category"
+                                                >
+                                                   <div style={{ display: "flex", alignItems: "center" }}>
+                                                      <RadioGroup.Item className="RadioGroupItem border-2 border-solid border-white/[.08]" value={category} id="r1">
+                                                         <RadioGroup.Indicator className="RadioGroupIndicator" />
+                                                      </RadioGroup.Item>
+                                                      <label className="Label" htmlFor="r1">
+                                                         {category}
+                                                      </label>
+                                                   </div>
+                                                </RadioGroup.Root>
+                                          </div>  
+                                       ))}
+                                    </div>
+                                    {!categoryInscription ? 
+                                      <Button id = "button-realize-inscription" variant="solid" color="violet" onClick={ () => createInscription(event.event_name, event.event_type,event.event_edition, event.category, categoryInscription, event.event_description, event.location, event.celebration_date, event.end_date, event.capacity, event.organizer_by, event.event_full_description, event.language, event.is_free)} disabled={true}>Register</Button> 
+                                      :
+                                      <Button id = "button-realize-inscription" variant="solid" color="violet" onClick={ () => createInscription(event.event_name, event.event_type,event.event_edition, event.category, categoryInscription, event.event_description, event.location, event.celebration_date, event.end_date, event.capacity, event.organizer_by, event.event_full_description, event.language, event.is_free)}>Register</Button>    
+                                   } 
+                              </Dialog.Content>
+                            </Dialog.Portal>
+                        </Dialog.Root>                    
+                     )
+                  }
+                  </div>  
             </div>
             <Dialog.Root>
                <Dialog.Trigger>
@@ -554,11 +596,9 @@ export default function Review({ event }: { event: any }) {
                               <tbody>
                                  {eventResultsData.map((data, index) => (
                                     <tr id="table-data" key={index} className="border border-gray-300 items-center">
-                                       <td className="border border-gray-300 p-2">{data.participant_name}</td>
-                                       <td className="border border-gray-300 p-2">{data.category}</td>
-                                       <td className="border border-gray-300 p-2">{data.position}</td>
-                                       <td className="border border-gray-300 p-2">{data.time}</td>
-                                       <td className="border border-gray-300 p-2">{data.score}</td>
+                                      {data.map((cell, index) => (
+                                          <td key={index} className="border border-gray-300 p-2">{cell}</td>
+                                       ))}
                                     </tr>
                                  ))}
                               </tbody>

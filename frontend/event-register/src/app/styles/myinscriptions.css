@@ -71,7 +71,7 @@
 }
 
 #box-myinscription:nth-child(n+8) {
-  margin-top: -80px; /* Reduce el margen superior para los elementos de la segunda fila */
+  margin-top: -270px;
 }
 
 
