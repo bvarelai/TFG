@@ -10,6 +10,8 @@ class InscriptionCreate(BaseModel):
     start_date : datetime
     end_date : datetime
     location : str
+    category_inscription : str
+    type_inscription : str
 
 class InscriptionUpdate(BaseModel):
     event_id  : Optional[int]
@@ -19,3 +21,5 @@ class InscriptionUpdate(BaseModel):
     start_date : Optional[datetime]
     end_date : Optional[datetime]
     location : Optional[str]   
+    category_inscription : Optional[str]
+    type_inscription : Optional[str]

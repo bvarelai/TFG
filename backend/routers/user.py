@@ -4,12 +4,14 @@ from crud.user import create_user, find_user_by_name, find_all_user, authenticat
 from utils.utils import create_access_token,verify_token
 from database import get_db
 from datetime import timedelta
-from fastapi.security import  OAuth2PasswordRequestForm
+from fastapi.security import  OAuth2PasswordRequestForm, HTTPBearer, HTTPAuthorizationCredentials
 from schemas.user import UserCreate
+from uuid import uuid4
 
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 router = APIRouter()
+security = HTTPBearer()
 
 @router.post("/user/register")
 def register_user( user: UserCreate, db: Session = Depends(get_db)):
@@ -41,28 +43,32 @@ def login_user(response: Response, form_data: OAuth2PasswordRequestForm = Depend
             detail="Incorrect Username or password",
             headers={"WWW-Authenticate": "Bearer"},
         )
+    session_id = str(uuid4())
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(
         data={"sub": user.user_name}, expires_delta=access_token_expires
     )
     verify_token(token=access_token)
     response.set_cookie(
-            key="access_cookie", value=access_token, httponly=True, samesite="Lax")
-    return {"message": "Login user", "organizer": user.is_organizer, "user_id" : user.user_id}
+        key=f"access_cookie_{session_id}", value=access_token, httponly=True, samesite="Lax"
+    )
+    return {"message": "Login user", "organizer": user.is_organizer, "user_id" : user.user_id, "session_id" : session_id}
 
-@router.post("/user/logout/{user_name}")
-def logout_user(user_name: str, response: Response, db: Session = Depends(get_db)):
-    db_user = find_user_by_name(db, user_name)
-    if not db_user:
-        raise HTTPException(status_code=404, detail="No user available")     
-    response.delete_cookie(key="access_cookie")
-    return {"message": "Logout user"}
+@router.post("/user/logout/{session_id}")
+def logout_user(session_id: str, response: Response):
+    # Eliminar la cookie asociada al session_id
+    response.delete_cookie(f"access_cookie_{session_id}")
+    return {"message": "Logout successful"}
 
-@router.get("/protected")
-def protected_route(request: Request):
-    token = request.cookies.get("access_cookie")    
+@router.get("/protected/{session_id}")
+def protected_route(request: Request, session_id: str):
+    token = request.cookies.get(f"access_cookie_{session_id}")
     if not token:
         raise HTTPException(status_code=401, detail="No authorized")
+    try:
+        payload = verify_token(token)  # Valida el token
+    except Exception as e:
+        raise HTTPException(status_code=401, detail="Invalid or expired token")
     
     return {"message": "Accessible protected route", "token": token}    
 

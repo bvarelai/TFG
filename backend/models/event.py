@@ -16,7 +16,6 @@ class Event(Base):
     end_date = Column(DateTime(timezone=True), nullable=None) 
     capacity = Column(Integer,nullable=None, index=True)
     organizer_by = Column(String, nullable=None)
-    duration = Column(Integer, nullable=None, index=True)
     event_full_description = Column(String, nullable=None)
     language = Column(String, nullable=None, index=True)
     is_free = Column(Boolean, nullable=None, index=True)

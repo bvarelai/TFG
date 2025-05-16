@@ -14,14 +14,12 @@ class EventCreate(BaseModel):
     end_date : datetime
     capacity : int
     organizer_by : str
-    duration : int
     event_full_description : str
     language : str
     is_free : bool
 
 class EventUpdate(BaseModel):
     event_name: Optional[str]
-    user_id : Optional[int]
     event_type : Optional[str]
     event_edition : Optional[str]
     category : Optional[str]
@@ -31,7 +29,6 @@ class EventUpdate(BaseModel):
     end_date : Optional[datetime]
     capacity : Optional[int]
     organizer_by : Optional[str]
-    duration : Optional[int]
     event_full_description : Optional[str]
     language : Optional[str]
     is_free : Optional[bool]

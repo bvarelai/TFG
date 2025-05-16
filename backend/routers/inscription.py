@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from fastapi import APIRouter, Depends, HTTPException, Request, Response
-from crud.inscription import create_inscription, find_inscription_by_userId, find_inscription_by_userId_and_eventId, remove_inscription,change_inscription
+from crud.inscription import create_inscription, find_inscription_by_userId, find_inscription_by_eventId, find_inscription_by_userId_and_eventId, remove_inscription,change_inscription
 from database import get_db
 from schemas.inscription import InscriptionCreate
 
@@ -16,6 +16,13 @@ def register_inscription(inscription: InscriptionCreate, db: Session = Depends(g
 @router.get("/inscription/find/{user_id}")
 def get_all_inscription_by_userId(user_id: int, db: Session = Depends(get_db)):
     db_inscription = find_inscription_by_userId(db, user_id=user_id)
+    if not db_inscription:
+        raise HTTPException(status_code=404, detail="No inscriptions available")
+    return db_inscription
+
+@router.get("/inscription/find/event/{event_id}")
+def get_all_inscription_by_eventId(event_id: int, db: Session = Depends(get_db)):
+    db_inscription = find_inscription_by_eventId(db, event_id=event_id)
     if not db_inscription:
         raise HTTPException(status_code=404, detail="No inscriptions available")
     return db_inscription

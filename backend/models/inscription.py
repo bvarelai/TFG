@@ -11,6 +11,8 @@ class Inscription(Base):
     start_date = Column(DateTime, nullable=None)
     end_date = Column(DateTime, nullable=None)                 
     location = Column(String, nullable=None)
+    category_inscription = Column(String, nullable=None)
+    type_inscription = Column(String, nullable=None)
 
 event = relationship("Events", back_populates="Inscriptions")
 user = relationship("Users", back_populates="Inscriptions")

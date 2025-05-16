@@ -21,16 +21,16 @@ def get_review(user_id: int, event_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Review no available")
     return db_event
 
-@router.get("/review/find/{event_id}")
+@router.get("/review/event/find/{event_id}")
 def get_review(event_id: int, db: Session = Depends(get_db)):
     db_event = find_review_by_eventId(db, event_id=event_id)
     if not db_event:
         raise HTTPException(status_code=404, detail="Review no available")
     return db_event
 
-@router.get("/review/find/{user_id}")
+@router.get("/review/user/find/{user_id}")
 def get_review(user_id: int, db: Session = Depends(get_db)):
-    db_event = find_review_by_userId(db, user_id=user_id)
+    db_event = find_review_by_userId(db=db, user_id=user_id)
     if not db_event:
         raise HTTPException(status_code=404, detail="Review no available")
     return db_event

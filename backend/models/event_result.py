@@ -6,6 +6,7 @@ class EventResult(Base):
     __tablename__ = "EventsResults"
     result_id = Column(Integer, primary_key=True, index=True) 
     event_id = Column(Integer,ForeignKey("Events.event_id"), index=True) 
+    event_name = Column(String, nullable=True)
     csv_file = Column(LargeBinary, nullable=True)  
     edition_result = Column(String, nullable=True)
     category_result = Column(String, nullable=True) 

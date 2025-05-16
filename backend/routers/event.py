@@ -42,7 +42,7 @@ def get_event(category: str, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Events no available")
     return db_event
 
-@router.get ("/event/find/{user_id}")
+@router.get ("/event/find/myevents/{user_id}")
 def get_event_by_userId( user_id: int, db: Session = Depends(get_db)):
     db_event = find_event_by_userId(db, user_id)
     if not db_event:
@@ -100,8 +100,8 @@ def delete_event(event_name : str, db: Session = Depends(get_db)):
 
 
 @router.post("/event/result/upload/{event_id}")
-async def register_event_result( event_id: int, edition_result:str, category_result: str, file: UploadFile = File(...), db: Session = Depends(get_db)):
-    db_event_result = await create_event_result_csv(file=file, event_id=event_id, edition_result=edition_result, category_result=category_result, db=db)
+async def register_event_result( event_id: int, event_name : str, edition_result:str, category_result: str, file: UploadFile = File(...), db: Session = Depends(get_db)):
+    db_event_result = await create_event_result_csv(file=file, event_id=event_id,event_name=event_name, edition_result=edition_result, category_result=category_result, db=db)
     if not db_event_result:
         raise HTTPException(status_code=400, detail="Error saving CSV file to the database")
     return {"message": "CSV file uploaded successfully"}

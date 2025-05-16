@@ -3,7 +3,7 @@ from models.event_result import EventResult
 from fastapi import UploadFile
 from schemas.event_result import EventResultCreate
 
-async def create_event_result_csv(file: UploadFile, event_id: int, edition_result:str, category_result: str, db: Session):
+async def create_event_result_csv(file: UploadFile, event_id: int,event_name : str, edition_result:str, category_result: str, db: Session):
     try:
         if file.content_type != "text/csv":
             return {"success": False, "message": "Invalid file type. Only CSV files are allowed."}
@@ -12,6 +12,7 @@ async def create_event_result_csv(file: UploadFile, event_id: int, edition_resul
 
         event_result = EventResult(
             event_id=event_id,
+            event_name = event_name,
             csv_file=csv_content,
             edition_result=edition_result,
             category_result=category_result

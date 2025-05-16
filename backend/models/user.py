@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, Integer, Boolean
+from sqlalchemy import Column, String, Integer, Boolean,DateTime
 from sqlalchemy.orm import relationship
 from database import engine, Base
 
@@ -15,6 +15,7 @@ class User(Base):
     autonomous_community = Column(String, nullable = False)
     country = Column(String, nullable=False)
     is_organizer = Column(Boolean,nullable=False)
+    register_date = Column(DateTime)
 
 inscription = relationship("Inscriptions", back_populates="Users")
 event = relationship("Events", back_populates="Users")

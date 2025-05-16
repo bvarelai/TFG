@@ -1,10 +1,10 @@
 from sqlalchemy.orm import Session
 from models.user import User
 from schemas.user import UserCreate
-
+from datetime import datetime
 
 def create_user(db: Session,  user: UserCreate):
-    db_user = User(user_name=user.user_name,user_surname=user.user_surname,password=user.password, age=user.age, email=user.email, phone=user.phone, city=user.city, autonomous_community=user.autonomous_community, country=user.country, is_organizer=user.is_organizer)
+    db_user = User(user_name=user.user_name,user_surname=user.user_surname,password=user.password, age=user.age, email=user.email, phone=user.phone, city=user.city, autonomous_community=user.autonomous_community, country=user.country, is_organizer=user.is_organizer, register_date=datetime.now().replace(microsecond=0))
     db.add(db_user)
     db.commit() 
     return "User created"
