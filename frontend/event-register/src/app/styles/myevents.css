@@ -180,9 +180,7 @@
     width: 100px;
     user-select: none;
 }
-#button-upload:hover{
-    border-color: #9678C8;    
-}
+
 
 #callout-root-upload {
   margin-top: 10px;

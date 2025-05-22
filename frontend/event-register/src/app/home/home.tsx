@@ -10,6 +10,8 @@ import Events from '../event/event';
 import MyEvents from '../myevents/my_events';
 import Review from '../review/review';
 import Logout from '../logout/logout';
+import Accept from '../paypal/accept/page';
+
 
 export default function Home() {
   

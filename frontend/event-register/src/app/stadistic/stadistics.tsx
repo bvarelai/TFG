@@ -601,7 +601,7 @@ export default function Stadistics() {
                               <span id="label-events-create">Total attended events</span>
                            </div>
                            <div id="events-create" className="flex flex-col border-2 border-solid border-white/[.08]">
-                                 <span id="number-events-create">
+                                 <span id="last-attended-event">
                                     {findLastAttendedEvent()}
                                  </span>
                                  <span id="label-events-create">Last attended event</span>
@@ -676,7 +676,7 @@ export default function Stadistics() {
                               <span id="label-events-create">Average review score</span>
                            </div>
                            <div id="total-participants" className="flex flex-col border-2 border-solid border-white/[.08]">
-                              <span id="number-events-create">
+                              <span id="last-attended-event">
                                  {bestEvent}
                               </span>
                               <span id="label-events-create">Event with best position</span>

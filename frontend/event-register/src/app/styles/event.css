@@ -244,8 +244,6 @@
 
 
 #button-green {
-  background-color: rgba(15, 17, 26, 0.8);
-  color: var(--green-11);
   outline-color: var(--green-7);
   border: 1px solid #333;
   border-radius: 15px; 
@@ -253,16 +251,12 @@
   margin-left: 140px;  
   padding: 0 15px;
   font-size: 18px;
-  line-height: 1;
-  font-weight: 500;
   height: 35px;
   width: 100px;
   user-select: none;
 }
 
-#button-green:hover {
-  background-color: var(--green-12);
-}
+
 
 .IconButton {
   all: unset;
@@ -320,6 +314,10 @@
 }
 #input-event:hover{
   border-color: #9678C8;
+}
+
+#input-event:disabled{
+  background-color: #333;
 }
 
 #input-event-large{

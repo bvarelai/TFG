@@ -25,8 +25,8 @@ export default function MyInscription({ onGoToReview, setSelectedEvent }: { onGo
                   await updateInscription(
                      eventDetails.event_id,
                      Number(user_id),
-                     eventDetails.celebration_date, // Replace with the user's name if available
-                     eventDetails.end_date, // Replace with the review text if necessary
+                     eventDetails.celebration_date, 
+                     eventDetails.end_date, 
                   );
                }
                else if (!eventDetails) {
@@ -55,7 +55,7 @@ export default function MyInscription({ onGoToReview, setSelectedEvent }: { onGo
       if (Array.isArray(data)) {
          setInscriptions(data);
       } else {
-         setInscriptions([]); // Si no es un array, establece un array vacío
+         setInscriptions([]); 
          setNotification("No inscriptions to show");
       }
    }
@@ -205,11 +205,11 @@ export default function MyInscription({ onGoToReview, setSelectedEvent }: { onGo
                                  <span id="event-date">{inscription.inscription_date ? inscription.inscription_date.split("T")[1] : "N/A"}</span>  
                               </div>
                               <div className="flex items-center py-3">
-                              {(new Date().toISOString() < inscription.start_date) ? 
+                              {(new Date() < new Date(inscription.start_date)) ? 
                                  <Badge id="badge-green-myinscriptions" color="green" variant="soft" >
                                        Pending
                                  </Badge> :
-                              ((new Date().toISOString() >= inscription.start_date) && (new Date().toISOString() <= inscription.end_date)) ?  
+                              ((new Date() >= new Date(new Date(inscription.start_date).getFullYear(), new Date(inscription.start_date).getMonth(), new Date(inscription.start_date).getDate())) && (new Date() <= new Date(new Date(inscription.end_date).getFullYear(), new Date(inscription.end_date).getMonth(), new Date(inscription.end_date).getDate() + 1))) ?  
                                  <Badge id="badge-blue-myinscriptions" color="blue" variant="solid">
                                        In Progress
                                  </Badge> :
@@ -223,7 +223,7 @@ export default function MyInscription({ onGoToReview, setSelectedEvent }: { onGo
                      </Dialog.Trigger>    
                      <div id="buttons-myevent" className="flex flex-row gap-2 items-center">
                            <AlertDialog.Root>
-                              { ((new Date().toISOString() < inscription.start_date) ||  (new Date().toISOString() > inscription.end_date) ) &&  
+                              { ((new Date() < new Date(inscription.start_date)) ||  (new Date() > new Date(inscription.end_date))) &&  
                                  <AlertDialog.Trigger>
                                     <TrashIcon id="icon-myinscription" />                               
                                  </AlertDialog.Trigger>

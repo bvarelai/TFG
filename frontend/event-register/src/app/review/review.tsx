@@ -1,5 +1,6 @@
 "use client"
 import * as React from "react";
+import { registerInscription } from "../paypalUtils"; // Ajusta la ruta según tu estructura
 import { Heading,Box, Button,TextArea,Badge,SegmentedControl, Text, Radio}  from "@radix-ui/themes";
 import { useState, useEffect, Key} from "react";
 import classnames from "classnames";
@@ -7,8 +8,13 @@ import { RadioGroup } from "radix-ui";
 import { MixIcon,StarFilledIcon,StarIcon, CheckIcon,Cross2Icon,ArrowUpIcon,ArrowDownIcon, ChevronDownIcon, ChevronUpIcon} from "@radix-ui/react-icons";
 import { Dialog, Select } from "radix-ui";
 
+import { randomUUID } from "crypto";
+
 export default function Review({ event }: { event: any }) {
-   
+
+   const [openDialog, setOpenDialog] = useState(false);
+   const [tokenPayPal, setTokenPaypal] = useState<string>("");
+   const [tokenExpiry, setTokenExpiry] = useState<number>(0);
    const [user_id, setUserID] = useState<number>(0);
    const [user_name, setUserName] = useState<string>("");
    const [isOrganizer, setOrganizer] = useState<boolean>(false);
@@ -27,6 +33,7 @@ export default function Review({ event }: { event: any }) {
    const [visibleResult, setVisibleResult] = useState<boolean>(true);
    const [selectedSegment, setSelectedSegment] = useState<string>("");
    const [selectedSelect, setSelectedSelect] = useState<string>("");
+   const [selectPaypal, setSelectPaypal] = useState<boolean>(false);
    const startDate = new Date(event.celebration_date).toISOString().split("T")[0];
    const endDate = new Date(event.end_date).toISOString().split("T")[0];   
    const start = new Date(event.celebration_date);
@@ -89,6 +96,33 @@ export default function Review({ event }: { event: any }) {
    }, []);
 
    useEffect(() => {
+      const checkCancel = () => {
+         if (sessionStorage.getItem("paypal_cancel") === "1") {
+            setOpenDialog(false);
+            setSelectPaypal(false);
+            setSelectedCategory("");
+            sessionStorage.removeItem("paypal_cancel");
+         }
+      };
+      window.addEventListener("focus", checkCancel);
+      return () => window.removeEventListener("focus", checkCancel);
+   }, []);
+
+   useEffect(() => {
+    const checkAccept = () => {
+         if (sessionStorage.getItem("paypal_accept") === "1") {
+            setOpenDialog(false);
+            setSelectPaypal(false);
+            setSelectedCategory("");
+            sessionStorage.removeItem("paypal_accept");
+         }
+      };
+      window.addEventListener("focus", checkAccept);
+      return () => window.removeEventListener("focus", checkAccept);
+   }, []);
+
+
+   useEffect(() => {
     if (edition_result && category_result) {
       findEventResults(event.event_id, edition_result, category_result);
     }
@@ -147,66 +181,96 @@ export default function Review({ event }: { event: any }) {
    };
    
 
-    
-   const createInscription = async (event_name : string, event_type:string, event_edition: string, category:string, category_inscription: string, event_description:string, location:string, celebration_date:string, end_date: string, capacity: number, organizer_by: string, event_full_description: string, language : string, is_free : boolean) => {
-
-      const formDetails = 
-      {
-         "event_id" : event.event_id,
-         "user_id" : user_id,
-         "event_name" : event_name,
-         "inscription_date" : "2022-12-12T12:12:12",
-         "start_date" : celebration_date,
-         "end_date" : end_date,
-         "location" : location,
-         "category_inscription" : category_inscription,
-         "type_inscription" : event_type
-      }
+   const getTokenPayPal = async () => {
       
-      const responseInscription = await fetch('http://localhost:8000/inscription/register' , {
-         method: 'POST',
-         headers: {
-          'Content-Type': 'application/json',
+      const clientId = "AXakwYqmd8PphTBOtOof0v-jX8MkPdpHljszEmeSQh-FNbSDSo12W8zb0qDAYD5nJ4ZbkKQFbgrFwCqi";
+      const clientSecret = "EJ0a166KijEwMxv38NtMdc_BmcyehpiNSSFdu815iyvPxqxofUQWte2sMCVLCNildYv7Nmwz27DJNVt7";
+      const credentials = btoa(`${clientId}:${clientSecret}`);
+
+      const responsePayPal = await fetch("https://api-m.paypal.com/v1/oauth2/token", {
+         method : "POST",
+         headers : {
+          "Content-Type": "application/x-www-form-urlencoded",
+          "Authorization": `Basic ${credentials}`,
          },
-         body: JSON.stringify(formDetails)
-      });
-    
-      if(!responseInscription.ok){
-        return;
-      }
-      setRegister(true)
+         body: "grant_type=client_credentials",
+      })
 
-      const formDetailsEvent = 
-      {
-         "event_name" : event_name,
-         "event_type" : event_type,  
-         "event_edition" :  event_edition,
-         "event_description" : event_description,
-         "category": category,
-         "location"  : location,
-         "celebration_date"  : celebration_date,
-         "end_date" : end_date,
-         "capacity" : capacity - 1,
-         "organizer_by" : organizer_by,
-         "event_full_description" : event_full_description,
-         "language" : language,
-         "is_free" : is_free
-      }
-
-
-      const responseEvent = await fetch(`http://localhost:8000/event/update/${event_name}`, {
-         method: 'PUT',
-         headers: {
-          'Content-Type': 'application/json',
-         },
-         body: JSON.stringify(formDetailsEvent)
-      });
-
-      if (!responseEvent.ok) {
+      if(!responsePayPal.ok){
+         setNotification("Error getting token");
          return;
       }
+      const data = await responsePayPal.json();
+      if(data.access_token) {
+         setTokenPaypal(data.access_token)
+         sessionStorage.setItem("token", data.access_token);
+         setTokenExpiry(Date.now() + data.expires_in * 1000);
+         return data.access_token;
+      }
+      return null;
    }
 
+   const realisePaidPayPal = async(token: string, category_inscription : string) => {
+
+      const responsePayPal = await fetch("https://api-m.paypal.com/v2/checkout/orders", {
+         method: "POST",
+         headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+         },
+         body: JSON.stringify({
+            "intent": "CAPTURE",
+            "purchase_units": [
+               { "amount": { "currency_code": "EUR", "value": (event.language) } }
+            ],
+            "application_context": {
+               "return_url": "http://localhost:3000/paypal/accept",
+
+               "cancel_url": "http://localhost:3000/paypal/cancel",
+            }
+         })
+      })
+      if(!responsePayPal.ok){
+         setNotification("Error creating order");
+         return null;
+      }
+      const data = await responsePayPal.json();
+      const approveLink = data.links?.find((link: { rel: string; }) => link.rel === "approve")?.href;
+      if (approveLink) {
+         window.location.href = approveLink;  
+      } else {
+         setNotification("No approval link from PayPal");
+      } 
+      return data.id;   
+   }
+
+   
+
+   const createInscription = async (event_name : string, event_type:string, event_edition: string, category:string, category_inscription: string, event_description:string, location:string, celebration_date:string, end_date: string, capacity: number, organizer_by: string, event_full_description: string, language : string, is_free : boolean) => {
+
+      sessionStorage.setItem("event", JSON.stringify(event));
+      sessionStorage.setItem("category_inscription", category_inscription);
+
+      if(!is_free){
+         let token = tokenPayPal 
+         if(!token || Date.now() > tokenExpiry){
+            token = await getTokenPayPal();
+            if(!token){
+               setNotification("No token");
+               return;
+            }
+         }
+         const orderId =  await realisePaidPayPal(token, category_inscription);
+         if(!orderId){
+            setNotification("No order");
+            return;
+         }
+         return;
+      }      
+      let register = await registerInscription(event,user_id,event_name, event_type, event_edition, category, category_inscription, event_description, location, celebration_date, end_date, capacity, organizer_by, event_full_description, language, is_free);
+      setRegister(register)
+   }
+  
    const findInscription = async (user_id : number,event_id : number) => {
       
       const response = await fetch(`http://localhost:8000/inscription/find/${user_id}/${event_id}`, {
@@ -275,10 +339,10 @@ export default function Review({ event }: { event: any }) {
       }
       const data = await responseResult.json();
       if (data.csv_file) {
-         const csvData = data.csv_file; // Accede al contenido del CSV
-         const { headers, dataRows } = processCsvData(csvData); // Procesa el CSV
-         setEventResultsHeaders(headers); // Actualiza las cabeceras
-         setEventResultsData(dataRows); // Actualiza las filas de datos
+         const csvData = data.csv_file; 
+         const { headers, dataRows } = processCsvData(csvData); 
+         setEventResultsHeaders(headers); 
+         setEventResultsData(dataRows); 
          setVisibleResult(true);
       }      
       else{
@@ -288,14 +352,14 @@ export default function Review({ event }: { event: any }) {
 
    const showMoreReviews = () => {
       if (visibleReviews < reviews.length) {
-        setVisibleReviews(visibleReviews + index); // Muestra 5 más
+        setVisibleReviews(visibleReviews + index); 
         setReviewIndex(review_index+index); 
       }
     };
     
     const showLessReviews = () => {
       if (visibleReviews > 4) {
-        setVisibleReviews(visibleReviews - index); // Muestra 5 menos
+        setVisibleReviews(visibleReviews - index);
         setReviewIndex(review_index-index)
       }
     };
@@ -310,11 +374,11 @@ export default function Review({ event }: { event: any }) {
             <div id = "even-information" className="flex flex-col p-5 border-2 border-solid border-white/[.08]">
                   <div className="flex flex-row justify-between items-center">
                      <Heading id = "event-info-heading" className="text-3xl font-bold mb-4"> {event.event_name} Information</Heading>
-                      {(new Date().toISOString() < event.celebration_date) ? 
+                      {new Date() < new Date(event.celebration_date) ? 
                         <Badge id="badge-review-green" color="green" variant="solid">
                               Published
                         </Badge> :
-                     ((new Date().toISOString() >= event.celebration_date) && (new Date().toISOString() <= event.end_date)) ?  
+                     ((new Date() >= new Date(new Date(event.celebration_date).getFullYear(), new Date(event.celebration_date).getMonth(), new Date(event.celebration_date).getDate())) && (new Date() <= new Date(new Date(event.end_date).getFullYear(), new Date(event.end_date).getMonth(), new Date(event.end_date).getDate() + 1))) ?  
                         <Badge id="badge-review-blue" color="blue" variant="solid">
                               Ongoing
                         </Badge> :
@@ -332,12 +396,12 @@ export default function Review({ event }: { event: any }) {
                      <div id="second-info-col"><strong>To:</strong> {event.end_date ? formattedEndDate: "N/A"} {event.end_date ? event.end_date.split("T")[1]: "N/A"}</div>
                      <div id="first-info-col"><strong>Organizer by:</strong> {event.organizer_by}</div>
                      <div id="second-info-col"><strong>Duration:</strong> {Math.ceil((end.getTime() - start.getTime())/(1000 * 60 * 60 * 24))} days </div>
-                     <div id="first-info-col"><strong>Price:</strong> {event.is_free == true ? "Free": "Paid"}</div>
-                     <div id="second-info-col"> <strong>Language:</strong> {event.language}</div>
+                     <div id="first-info-col"><strong>Free:</strong> {event.is_free == true ? "Yes": "No"}</div>
+                     {!event.is_free && <div id="second-info-col"> <strong>Price:</strong> {event.language} €</div> }
                      <div className="flex flex-row items-center gap-1">
                      {!isOrganizer && (
                         <>
-                           <strong id="first-info-col">Status:</strong>
+                           {event.is_free ? <strong id="second-info-col">Status:</strong> : <strong id="first-info-col">Status:</strong>} 
                            {!isRegister ? (
                            <span id="register-status" className="flex flex-row items-center gap-1 text-red-600">
                               Not Registered <Cross2Icon />
@@ -357,9 +421,9 @@ export default function Review({ event }: { event: any }) {
                   <div> 
                   {!isOrganizer && (new Date().toISOString() < event.celebration_date) && !isRegister &&
                      (
-                        <Dialog.Root>
+                        <Dialog.Root  open={openDialog} onOpenChange={setOpenDialog} >
                            <Dialog.Trigger asChild>
-                              <Button id = "button-inscription" color="pink" variant="soft">Register</Button> 
+                              <Button id = "button-inscription" color="violet" onClick={() => setOpenDialog(true)}>Register</Button> 
                            </Dialog.Trigger>
                            <Dialog.Portal>
                               <Dialog.Overlay className="DialogOverlayReview" />
@@ -382,7 +446,7 @@ export default function Review({ event }: { event: any }) {
                                                    aria-label="Select a category"
                                                 >
                                                    <div style={{ display: "flex", alignItems: "center" }}>
-                                                      <RadioGroup.Item className="RadioGroupItem border-2 border-solid border-white/[.08]" value={category} id="r1">
+                                                      <RadioGroup.Item className="RadioGroupItem border-2 border-solid border-white/[.08]" value={category}>
                                                          <RadioGroup.Indicator className="RadioGroupIndicator" />
                                                       </RadioGroup.Item>
                                                       <label className="Label" htmlFor="r1">
@@ -393,11 +457,13 @@ export default function Review({ event }: { event: any }) {
                                           </div>  
                                        ))}
                                     </div>
-                                    {!categoryInscription ? 
-                                      <Button id = "button-realize-inscription" variant="solid" color="violet" onClick={ () => createInscription(event.event_name, event.event_type,event.event_edition, event.category, categoryInscription, event.event_description, event.location, event.celebration_date, event.end_date, event.capacity, event.organizer_by, event.event_full_description, event.language, event.is_free)} disabled={true}>Register</Button> 
-                                      :
-                                      <Button id = "button-realize-inscription" variant="solid" color="violet" onClick={ () => createInscription(event.event_name, event.event_type,event.event_edition, event.category, categoryInscription, event.event_description, event.location, event.celebration_date, event.end_date, event.capacity, event.organizer_by, event.event_full_description, event.language, event.is_free)}>Register</Button>    
-                                   } 
+                                    {!event.is_free ? (
+                                       <>
+                                       <Button id="button-realize-inscription-paypal" variant="solid" color="indigo" onClick={() => createInscription(event.event_name, event.event_type, event.event_edition, event.category, categoryInscription, event.event_description, event.location, event.celebration_date, event.end_date, event.capacity, event.organizer_by, event.event_full_description, event.language, event.is_free)} disabled={!(categoryInscription)}>PayPal</Button></>    
+                                    ) : (
+                                       <Button id="button-realize-inscription" variant="solid" color="violet" onClick={() => createInscription(event.event_name, event.event_type, event.event_edition, event.category, categoryInscription, event.event_description, event.location, event.celebration_date, event.end_date, event.capacity, event.organizer_by, event.event_full_description, event.language, event.is_free)} disabled={!(categoryInscription)}>Accept</Button>       
+                                    )}
+                                    {notification}
                               </Dialog.Content>
                             </Dialog.Portal>
                         </Dialog.Root>                    

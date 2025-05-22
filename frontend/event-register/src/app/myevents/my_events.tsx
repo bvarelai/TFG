@@ -136,6 +136,14 @@ export default function MyEvents({ onGoToReview, setSelectedEvent }: { onGoToRev
         return false;
       }
 
+      if (event_name.length > 15) {
+         setError("Event name must not exceed 15 letters.");
+         setTimeout(() => {
+            setError("");
+         },2000)
+         return false;
+      }
+      
       if (isValidCategory.length > 0) {
          setError("Invalid category");
          setTimeout(() => { 
@@ -151,6 +159,23 @@ export default function MyEvents({ onGoToReview, setSelectedEvent }: { onGoToRev
          },2000)
          return false;
       }
+
+      if(organizer_by.length > 15){
+         setError("Organizer name must not exceed 12 letters.");
+         setTimeout(() => {
+            setError("");
+         },2000)
+         return false;
+      }
+
+      if( isNaN(Number(event_language)) || Number(event_language) <= 0){
+         setError("The price is not valid")
+         setTimeout(() => {
+            setError("");
+         },2000)
+         return false;
+      }
+
        
       if (description.trim().split(/\s+/).length > 10) {
          setError("Description must not exceed 10 words.");
@@ -283,11 +308,11 @@ export default function MyEvents({ onGoToReview, setSelectedEvent }: { onGoToRev
                                     <PersonIcon/>
                                     <span id="event-date">{event.capacity}</span>   
                                  </div>
-                                 {(new Date().toISOString() < event.celebration_date) ? 
+                                 {new Date() < new Date(event.celebration_date) ? 
                                     <Badge id="badge-green-event" color="green" variant="solid">
                                        Published
                                     </Badge> :
-                                 ((new Date().toISOString() >= event.celebration_date) && (new Date().toISOString() <= event.end_date)) ?  
+                                 ((new Date() >= new Date(new Date(event.celebration_date).getFullYear(), new Date(event.celebration_date).getMonth(), new Date(event.celebration_date).getDate())) && (new Date() <= new Date(new Date(event.end_date).getFullYear(), new Date(event.end_date).getMonth(), new Date(event.end_date).getDate() + 1))) ?  
                                     <Badge id="badge-blue-event" color="blue" variant="solid">
                                           Ongoing
                                     </Badge> :
@@ -301,7 +326,7 @@ export default function MyEvents({ onGoToReview, setSelectedEvent }: { onGoToRev
                               <div>
                                  <Dialog.Root>
                                     <Dialog.Trigger asChild>
-                                       {(new Date().toISOString() < event.celebration_date) && <Pencil1Icon  data-event-id={event.event_id} id="icon-myevent-update"/>}
+                                       {(new Date() < new Date(event.celebration_date)) && <Pencil1Icon  data-event-id={event.event_id} id="icon-myevent-update"/>}
                                     </Dialog.Trigger>   
                                     <Dialog.Portal>
                                     <Dialog.Overlay className="DialogOverlay" />
@@ -433,14 +458,15 @@ export default function MyEvents({ onGoToReview, setSelectedEvent }: { onGoToRev
                                              </div>
                                              <div className="flex flex-row items-center gap-5">
                                                 <div className="flex flex-col gap-1">                        
-                                                      <label htmlFor="Language">Language</label>
+                                                      <label htmlFor="Language">Event price</label>
                                                          <input
                                                             id = "input-event"  
-                                                            name = "language"
-                                                            placeholder="language"
+                                                            name = "price"
+                                                            placeholder="15"
                                                             type="text"
                                                             value={event_language}
                                                             onChange={(e) => setEventLanguage(e.target.value)}
+                                                            disabled = {is_free}
                                                          />
                                                 </div>
                                                 <div id = "is-free-event" className="flex flex-row gap-2 items-center"  onClick={() => setIsFree(!is_free)}>                        
@@ -469,7 +495,7 @@ export default function MyEvents({ onGoToReview, setSelectedEvent }: { onGoToRev
                                              </div>
                                           </div>
                                           <Dialog.Close asChild >
-                                             <Button onClick={updateEvent} id="button-green">update</Button> 
+                                             <Button onClick={updateEvent} id="button-green" color="violet" >update</Button> 
                                           </Dialog.Close>
                                           <Dialog.Close asChild>
                                              <Button className="IconButton" aria-label="Close">
@@ -496,7 +522,7 @@ export default function MyEvents({ onGoToReview, setSelectedEvent }: { onGoToRev
                               </div>                        
                               <div>
                                  <AlertDialog.Root>
-                                    {(new Date().toISOString() < event.celebration_date || new Date().toISOString() > event.end_date) && 
+                                    {(new Date() < new Date(event.celebration_date) || new Date() > new Date(event.end_date)) && 
                                        <AlertDialog.Trigger>
                                           <TrashIcon data-event-id={event.event_id} id="icon-myevent-delete"/>
                                        </AlertDialog.Trigger>
@@ -584,7 +610,7 @@ export default function MyEvents({ onGoToReview, setSelectedEvent }: { onGoToRev
                                                    </Select.Root>
                                                 </div>
                                           </div>
-                                          <Button id = "button-upload" onClick={() => {
+                                          <Button id = "button-upload" color="violet" onClick={() => {
                                              if (selectedFile && category_result) {
                                                 handleFileChange(selectedFile, event.event_id, event.event_name, event.event_edition);
                                              }

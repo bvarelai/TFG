@@ -108,6 +108,13 @@
     font-size: 40px;
 }
 
+#last-attended-event{
+    margin-top: 5px;
+    margin-left: 25px;
+    font-size: 28px;
+}
+
+
 #label-attented-events{
     margin-top: 10px;
     margin-left: 25px;

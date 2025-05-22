@@ -24,7 +24,7 @@ export default function Events({ onGoToReview, setSelectedEvent }: { onGoToRevie
    const [capacity, setcapacity] = useState<number>(0);   
    const [organizer_by, setOrganizerBy] = useState<string>("");
    const [event_full_description, setEventDescription] = useState<string>("");
-   const [event_language, setEventLanguage] = useState<string>("");
+   const [event_language, setEventLanguage] = useState<string>("0");
    const [is_free, setIsFree] = useState<boolean>(false);
    const [error, setError] = useState<string>("");
    const [notification, setNotification] = useState<string>("");
@@ -34,10 +34,23 @@ export default function Events({ onGoToReview, setSelectedEvent }: { onGoToRevie
    const [filter_celebration_date, setFilterCelebrationDate] = useState<string>("");
    const [filter_end_date, setFilterEndDate] = useState<string>("");
    const [isMoreThan12, setIsMoreThan12] = useState(false);
-
+   const [visibleEvents, setVisibleEvents] = useState<number>(4); 
+   
    
    useEffect(() => {
  
+      const updateVisibleEvents = () => {
+         if (window.matchMedia("(max-width: 707px)").matches) {
+            setVisibleEvents(4);
+         } else if (window.matchMedia("(max-width: 1024px)").matches) {
+            setVisibleEvents(6);
+         } else {
+            setVisibleEvents(18);
+         }
+      };
+      
+      updateVisibleEvents();
+
       const session_id = sessionStorage.getItem("session_id");
       if (!session_id) {
         redirect("/login");
@@ -82,7 +95,7 @@ export default function Events({ onGoToReview, setSelectedEvent }: { onGoToRevie
   
    const validateForm = (): boolean => {
       const validCategories = ["general", "alevin", "junior", "senior", "infantil"];
-      const validTypes = ["infantil", "football", "basketball", "triathlon", "athletics", "swimming", "cycling", "hockey"] 
+      const validTypes = ["football", "basketball", "triathlon", "athletics", "swimming", "cycling", "hockey"] 
       const validEditionFormat = /^\d{4}-\d{4}$/;
       const categories = category.split(",").map((cat) => cat.trim());
       const isValidCategory = categories.filter(cat => !validCategories.includes(cat)); 
@@ -95,6 +108,15 @@ export default function Events({ onGoToReview, setSelectedEvent }: { onGoToRevie
         return false;
       }
 
+      if (event_name.length > 20) {
+         setError("Event name must not exceed 20 letters.");
+         setTimeout(() => {
+            setError("");
+         },2000)
+         return false;
+      }
+      
+      
       if (isValidCategory.length > 0) {
          setError("Invalid category");
          setTimeout(() => {
@@ -120,6 +142,15 @@ export default function Events({ onGoToReview, setSelectedEvent }: { onGoToRevie
       }
       
 
+      if(isNaN(Number(event_language)) || Number(event_language) <= 0 )
+      {
+         setError("The price is not valid")
+         setTimeout(() => {
+            setError("");
+         },2000)
+         return false;
+      }
+
       if (capacity <= 0) {
          setError("The capacity is not valid")
          setTimeout(() => {
@@ -130,6 +161,14 @@ export default function Events({ onGoToReview, setSelectedEvent }: { onGoToRevie
        
       if (description.trim().split(/\s+/).length > 10) {
          setError("Description must not exceed 10 words.");
+         setTimeout(() => {
+            setError("");
+         },2000)
+         return false;
+      }
+
+      if(organizer_by.length > 15){
+         setError("Organizer name must not exceed 12 letters.");
          setTimeout(() => {
             setError("");
          },2000)
@@ -560,14 +599,15 @@ export default function Events({ onGoToReview, setSelectedEvent }: { onGoToRevie
                            </div>
                            <div className="flex flex-row items-center gap-5">
                               <div className="flex flex-col gap-1">                        
-                                    <label htmlFor="Language">Language</label>
+                                    <label htmlFor="Language">Event price</label>
                                        <input
                                           id = "input-event"  
-                                          name = "language"
-                                          placeholder="language"
+                                          name = "price"
+                                          placeholder="15"
                                           type="text"
                                           value={event_language}
                                           onChange={(e) => setEventLanguage(e.target.value)}
+                                          disabled = {is_free}
                                        />
                               </div>
                               <div id = "is-free-event" className="flex flex-row gap-2 items-center"  onClick={() => setIsFree(!is_free)}>                        
@@ -596,7 +636,7 @@ export default function Events({ onGoToReview, setSelectedEvent }: { onGoToRevie
                            </div>
                         </div>
                         <Dialog.Close asChild >
-                           <Button onClick= {createEvent} id="button-green">create</Button> 
+                           <Button onClick= {createEvent} id="button-green" color="violet">create</Button> 
                         </Dialog.Close>
                         <Dialog.Close asChild onClick = {resetForm}>
                            <Button className="IconButton" aria-label="Close">
@@ -695,8 +735,8 @@ export default function Events({ onGoToReview, setSelectedEvent }: { onGoToRevie
             </div>
          </div>          
          <div id = "events_disp" className="flex flex-wrap" onSubmit={findEvents}>           
-               {events.length > 0 ? (  // Verifica si hay eventos
-                  events.map((event) => (
+               {events.length > 0 ? ( 
+                  events.slice(0,visibleEvents).map((event) => (
                      <Dialog.Root key={event.event_name}>
                         <Dialog.Trigger asChild>
                            <Box
@@ -721,11 +761,12 @@ export default function Events({ onGoToReview, setSelectedEvent }: { onGoToRevie
                                  <span id="event-date">{event.capacity}</span>   
                               </div>
                               <div className="flex items-center py-3">
-                                 {(new Date().toISOString() < event.celebration_date) ? 
+                                 
+                                 {(new Date() < new Date(event.celebration_date)) ? 
                                     <Badge id="badge-green-event" color="green" variant="soft">
                                           Published
                                     </Badge> :
-                                 ((new Date().toISOString() >= event.celebration_date) && (new Date().toISOString() <= event.end_date)) ?  
+                                 ((new Date() >= new Date(new Date(event.celebration_date).getFullYear(), new Date(event.celebration_date).getMonth(), new Date(event.celebration_date).getDate())) && (new Date() <= new Date(new Date(event.end_date).getFullYear(), new Date(event.end_date).getMonth(), new Date(event.end_date).getDate() + 1))) ?  
                                     <Badge id="badge-blue-event" color="blue" variant="soft">
                                           Ongoing
                                     </Badge> :

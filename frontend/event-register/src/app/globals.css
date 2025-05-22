@@ -8,6 +8,7 @@
 @import "styles/myevents.css";
 @import "styles/review.css";
 @import "styles/stadistics.css";
+@import "styles/paypal.css";
 
 @tailwind base;
 @tailwind components;

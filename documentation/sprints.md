@@ -22,12 +22,12 @@ Tanto la instalación del backend como del software
 Poder dar de alta eventos, modificarlos o eliminarlos. Inscribir o desuscribirte de un evento  
 + Testing  
 
-## Sprint 4 : Permitir que usuarios puedan comentar eventos y visualizar el resultado de estos (02/04/2025 - )
+## Sprint 4 : Permitir que usuarios puedan comentar eventos y visualizar el resultado de estos (02/04/2025 - 30/04/2025)
 
-## Sprint 5 : Estadisticas de usuarios
+## Sprint 5 : Estadisticas de usuarios (30/04/2025 - 15/05/2025)
 
-## Sprint 6 : Añadir una pasarela de pago (Paypal)
+## Sprint 6 : Añadir una pasarela de pago (Paypal) (15/05/2025 - 22/05/2035)
 
-## Sprint 7 : Integración y optimización 
-
-## Sprint 8 : Redacción de la memoria 
+## Sprint 7 : Adaptar el diseño a varios dispositivos (diseño reponsive)  (22/05/2025 - )
+ 
+## Sprint 8 : Redacción de la memoria (22/05/2025 - )

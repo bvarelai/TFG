@@ -18,9 +18,13 @@ npm install @radix-ui/react-icons
 npm install @radix-ui/react-avatar   
 npm install @radix-ui/react-checkbox  
 npm install @radix-ui/react-dialog  
+npm install tailwindcss-animate  
 npm install radix-themes-tw postcss-import --dev` //Para que funcione la configuracion del Tailwind**   
 npx shadcn@latest add table`                     //Uso de shadcn para la creacion de las tablas**  
 npm install @tanstack/react-table   
+npm install -D @playwright/test  //Añadimos el framework Playwright
+npm install react-router-doms //Mirar si lo uso
+
 ```
 - Para ejecutar el frontend usamos el siguiente comando:  
 `npm run dev`
@@ -30,8 +34,9 @@ npm install @tanstack/react-table
 ### Frontend
 - Para las pruebas End-to-End usamos Playwright, un testing framework que nos proporciona NextJs
 ```bash
+npx playwright install
 npm init playwright   
 npm run build //En una terminal    
 npm run dev    
-npx playwright test //En otra terminal     
+npx playwright test --debug //En otra terminal     
 ```

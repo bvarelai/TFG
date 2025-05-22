@@ -296,19 +296,7 @@
             color: #A0A0A0;
         }
         
-        #button-inscription{
-            color: white;
-            margin-left: -10px;
-            border: 1px solid #333;
-            border-radius: 15px; 
-            padding: 0 15px;
-            font-size: 14px;
-            line-height: 1;
-            font-weight: 500;
-            height: 30px;
-            width: 90px;
-            user-select: none;
-        }
+       
         #button-inscription:hover{
             border-color: #9678C8;    
         }
@@ -761,17 +749,14 @@
             border: 1px solid #333;
             border-radius: 15px; 
             padding: 0 15px;
-            font-size: 14px;
-            line-height: 1;
-            font-weight: 500;
-            height: 30px;
+            font-size: 16px;
+            height: 32px;
             width: 90px;
             user-select: none;
-        }
-        #button-inscription:hover{
-            border-color: #9678C8;    
+            margin-top: 15px;
         }
 
+        
         #div-inscription{
             margin-top: -10px;
         }
@@ -823,6 +808,11 @@
             padding-left: 15px;
         }
 
+        #div-paypal{
+            margin-top: -10px;
+
+        }
+
 
         #button-realize-inscription{
             color: white;
@@ -839,8 +829,19 @@
             user-select: none;
         }
 
-        #button-realize-inscription:hover{
-            border-color: #9678C8;    
+        #button-realize-inscription-paypal{
+            color: white;
+            margin-top: 20px;
+            margin-left: 75%;
+            border: 1px solid #333;
+            border-radius: 10px; 
+            padding: 0 15px;
+            font-size: 15px;
+            line-height: 1;
+            font-weight: 500;
+            height: 30px;
+            width: 90px;
+            user-select: none;
         }
         
         #no-box-result{
