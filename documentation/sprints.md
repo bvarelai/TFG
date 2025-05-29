@@ -23,11 +23,12 @@ Poder dar de alta eventos, modificarlos o eliminarlos. Inscribir o desuscribirte
 + Testing  
 
 ## Sprint 4 : Permitir que usuarios puedan comentar eventos y visualizar el resultado de estos (02/04/2025 - 30/04/2025)
-
+prediccion : 75 h
+real : 85 h
 ## Sprint 5 : Estadisticas de usuarios (30/04/2025 - 15/05/2025)
 
-## Sprint 6 : Añadir una pasarela de pago (Paypal) (15/05/2025 - 22/05/2035)
+## Sprint 6 : Añadir una pasarela de pago (Paypal) (15/05/2025 - 22/05/2025)
 
-## Sprint 7 : Adaptar el diseño a varios dispositivos (diseño reponsive)  (22/05/2025 - )
+## Sprint 7 : Adaptar el diseño a varios dispositivos (diseño reponsive)  (22/05/2025 -  )
  
 ## Sprint 8 : Redacción de la memoria (22/05/2025 - )
