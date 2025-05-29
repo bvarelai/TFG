@@ -34,7 +34,7 @@ def test_register_an_existing_event():
         "event_name": "event2", "user_id" : 2,  "event_type" : "type",
         "event_edition" : "edition", "category" : "category", "event_description" : "event_description",  "location" : "location",
         "celebration_date" : "2025-03-28T18:56:59", "end_date": "2025-03-28T18:56:59", "capacity" : 22, "organizer_by" : "organizer",
-        "duration" : 1, "event_full_description" : "event_full_description", "language" : "language", "is_free" : False}
+        "event_full_description" : "event_full_description", "language" : "language", "is_free" : False}
 
     event.post("/event/register", json=event_data, headers={"content-type" : "application/json"})
     
@@ -56,7 +56,7 @@ def test_find_event_by_name():
         "event_name": "event3", "user_id" : 2,  "event_type" : "type",
         "event_edition" : "edition", "category" : "category", "event_description" : "event_description",  "location" : "location",
         "celebration_date" : "2025-03-28T18:56:59", "end_date": "2025-03-28T18:56:59", "capacity" : 33, "organizer_by" : "organizer",
-        "duration" : 1, "event_full_description" : "event_full_description", "language" : "language", "is_free" : True}
+        "event_full_description" : "event_full_description", "language" : "language", "is_free" : True}
     event.post("/event/register", json=event_data)
     response = event.get("/event/find/name/event3")
     assert response.status_code == 200
@@ -73,7 +73,6 @@ def test_find_event_by_name():
       "celebration_date": "2025-03-28T18:56:59",
       "capacity": 33,
       "organizer_by": "organizer",
-      "duration": 1,
       "event_full_description": "event_full_description",
       "language": "language",
       "is_free": True
@@ -104,7 +103,6 @@ def test_find_events():
       "celebration_date": "2025-03-28T18:56:59",
       "capacity": 11,
       "organizer_by": "organizer",
-      "duration": 1,
       "event_full_description": "event_full_description",
       "language": "language",
       "is_free": True
@@ -122,7 +120,6 @@ def test_find_events():
       "celebration_date": "2025-03-28T18:56:59",
       "capacity": 22,
       "organizer_by": "organizer",
-      "duration": 1,
       "event_full_description": "event_full_description",
       "language": "language",
       "is_free": False
@@ -140,7 +137,6 @@ def test_find_events():
       "celebration_date": "2025-03-28T18:56:59",
       "capacity": 33,
       "organizer_by": "organizer",
-      "duration": 1,
       "event_full_description": "event_full_description",
       "language": "language",
       "is_free": True
@@ -163,7 +159,6 @@ def test_find_event_by_type():
       "celebration_date": "2025-03-28T18:56:59",
       "capacity": 11,
       "organizer_by": "organizer",
-      "duration": 1,
       "event_full_description": "event_full_description",
       "language": "language",
       "is_free": True
@@ -181,7 +176,6 @@ def test_find_event_by_type():
       "celebration_date": "2025-03-28T18:56:59",
       "capacity": 22,
       "organizer_by": "organizer",
-      "duration": 1,
       "event_full_description": "event_full_description",
       "language": "language",
       "is_free": False
@@ -199,7 +193,6 @@ def test_find_event_by_type():
       "celebration_date": "2025-03-28T18:56:59",
       "capacity": 33,
       "organizer_by": "organizer",
-      "duration": 1,
       "event_full_description": "event_full_description",
       "language": "language",
       "is_free": True
@@ -230,7 +223,6 @@ def test_find_event_by_category():
       "celebration_date": "2025-03-28T18:56:59",
       "capacity": 11,
       "organizer_by": "organizer",
-      "duration": 1,
       "event_full_description": "event_full_description",
       "language": "language",
       "is_free": True  
@@ -249,7 +241,6 @@ def test_find_event_by_category():
       "celebration_date": "2025-03-28T18:56:59",
       "capacity": 22,
       "organizer_by": "organizer",
-      "duration": 1,
       "event_full_description": "event_full_description",
       "language": "language",
       "is_free": False
@@ -267,7 +258,6 @@ def test_find_event_by_category():
       "celebration_date": "2025-03-28T18:56:59",
       "capacity": 33,
       "organizer_by": "organizer",
-      "duration": 1,
       "event_full_description": "event_full_description",
       "language": "language",
       "is_free": True
@@ -281,7 +271,7 @@ def test_find_non_existent_event_by_category():
     }
 
 def test_find_event_by_userId():
-    response = event.get("/event/find/2")
+    response = event.get("/event/find/myevents/2")
     assert response.status_code == 200
     assert response.json() ==  [
  {
@@ -297,7 +287,6 @@ def test_find_event_by_userId():
       "celebration_date": "2025-03-28T18:56:59",
       "capacity": 11,
       "organizer_by": "organizer",
-      "duration": 1,
       "event_full_description": "event_full_description",
       "language": "language",
       "is_free": True  
@@ -316,7 +305,6 @@ def test_find_event_by_userId():
       "celebration_date": "2025-03-28T18:56:59",
       "capacity": 22,
       "organizer_by": "organizer",
-      "duration": 1,
       "event_full_description": "event_full_description",
       "language": "language",
       "is_free": False
@@ -334,14 +322,13 @@ def test_find_event_by_userId():
       "celebration_date": "2025-03-28T18:56:59",
       "capacity": 33,
       "organizer_by": "organizer",
-      "duration": 1,
       "event_full_description": "event_full_description",
       "language": "language",
       "is_free": True
     }]
 
 def test_find_non_existent_event_by_userId():
-    response = event.get("/event/find/4")  
+    response = event.get("/event/find/myevents/4")  
     assert response.status_code == 404
     assert response.json() == {
        "detail": "Events no available"
@@ -364,7 +351,6 @@ def test_find_event_by_date():
       "celebration_date": "2025-03-28T18:56:59",
       "capacity": 11,
       "organizer_by": "organizer",
-      "duration": 1,
       "event_full_description": "event_full_description",
       "language": "language",
       "is_free": True
@@ -382,7 +368,6 @@ def test_find_event_by_date():
       "celebration_date": "2025-03-28T18:56:59",
       "capacity": 22,
       "organizer_by": "organizer",
-      "duration": 1,
       "event_full_description": "event_full_description",
       "language": "language",
       "is_free": False
@@ -400,7 +385,6 @@ def test_find_event_by_date():
       "celebration_date": "2025-03-28T18:56:59",
       "capacity": 33,
       "organizer_by": "organizer",
-      "duration": 1,
       "event_full_description": "event_full_description",
       "language": "language",
       "is_free": True
@@ -430,7 +414,6 @@ def test_find_event_by_small_capacity():
       "celebration_date": "2025-03-28T18:56:59",
       "capacity": 11,
       "organizer_by": "organizer",
-      "duration": 1,
       "event_full_description": "event_full_description",
       "language": "language",
       "is_free": True
@@ -448,7 +431,6 @@ def test_find_event_by_small_capacity():
       "celebration_date": "2025-03-28T18:56:59",
       "capacity": 22, 
       "organizer_by": "organizer",
-      "duration": 1,
       "event_full_description": "event_full_description",
       "language": "language",
       "is_free": False
@@ -466,7 +448,6 @@ def test_find_event_by_small_capacity():
       "celebration_date": "2025-03-28T18:56:59",
       "capacity": 33,
       "organizer_by": "organizer",
-      "duration": 1,
       "event_full_description": "event_full_description",
       "language": "language",
       "is_free": True
@@ -496,7 +477,6 @@ def test_find_event_by_big_capacity():
       "celebration_date": "2025-03-28T18:56:59",
       "capacity": 11,
       "organizer_by": "organizer",
-      "duration": 1,
       "event_full_description": "event_full_description",
       "language": "language",
       "is_free": True
@@ -514,7 +494,6 @@ def test_find_event_by_big_capacity():
       "celebration_date": "2025-03-28T18:56:59",
       "capacity": 22, 
       "organizer_by": "organizer",
-      "duration": 1,
       "event_full_description": "event_full_description",
       "language": "language",
       "is_free": False
@@ -532,7 +511,6 @@ def test_find_event_by_big_capacity():
       "celebration_date": "2025-03-28T18:56:59",
       "capacity": 33,
       "organizer_by": "organizer",
-      "duration": 1,
       "event_full_description": "event_full_description",
       "language": "language",
       "is_free": True
@@ -562,7 +540,6 @@ def test_find_event_by_medium_capacity():
       "celebration_date": "2025-03-28T18:56:59",
       "capacity": 11,
       "organizer_by": "organizer",
-      "duration": 1,
       "event_full_description": "event_full_description",
       "language": "language",
       "is_free": True
@@ -580,7 +557,6 @@ def test_find_event_by_medium_capacity():
       "celebration_date": "2025-03-28T18:56:59",
       "capacity": 22, 
       "organizer_by": "organizer",
-      "duration": 1,
       "event_full_description": "event_full_description",
       "language": "language",
       "is_free": False
@@ -598,7 +574,6 @@ def test_find_event_by_medium_capacity():
       "celebration_date": "2025-03-28T18:56:59",
       "capacity": 33,
       "organizer_by": "organizer",
-      "duration": 1,
       "event_full_description": "event_full_description",
       "language": "language",
       "is_free": True
@@ -615,7 +590,7 @@ def test_update_event():
     response = event.put("/event/update/event1",
                          json={"event_name": "event1", "user_id" : 2,  "event_type" : "type",
                                "event_edition" : "edition", "category" : "category", "event_description" : "event_description",  "location" : "location",
-                               "celebration_date" : "2025-03-28T18:56:59", "end_date": "2025-03-28T18:56:59", "capacity" : 12, "organizer_by" : "organizer", "duration": 1, "event_full_description": "event_full_description", "language": "language", "is_free": True},
+                               "celebration_date" : "2025-03-28T18:56:59", "end_date": "2025-03-28T18:56:59", "capacity" : 12, "organizer_by" : "organizer", "event_full_description": "event_full_description", "language": "language", "is_free": True},
                          headers={"content-type" : "application/json"}
     )
     assert response.status_code==200
@@ -626,7 +601,7 @@ def test_update_non_existent_event():
     response = event.put("/event/update/event4",
                          json={"event_name": "event4", "user_id" : 2,  "event_type" : "type",
                                "event_edition" : "edition", "category" : "category", "event_description" : "event_description",  "location" : "location",
-                               "celebration_date" : "2025-03-28T18:56:59", "end_date": "2025-03-28T18:56:59", "capacity" : 12, "organizer_by" : "organizer", "duration": 1, "event_full_description": "event_full_description", "language": "language", "is_free": True},
+                               "celebration_date" : "2025-03-28T18:56:59", "end_date": "2025-03-28T18:56:59", "capacity" : 12, "organizer_by" : "organizer", "event_full_description": "event_full_description", "language": "language", "is_free": True},
                          headers={"content-type" : "application/json"}
     )
     assert response.status_code==404
@@ -657,8 +632,9 @@ async def test_register_event_result():
       "file": ("results.csv", csv_content, "text/csv"),
   }
 
-  # Los campos de texto van como query params, no como form
   params = {
+      "event_id": 1,
+      "event_name": "event1",
       "edition_result": "edition",
       "category_result": "category"
   }
@@ -680,6 +656,7 @@ def test_download_event_result():
     assert response.json() == [
         {
             "event_id": 1,
+            "event_name": "event1",
             "edition_result": "edition",
             "result_id": 1,
             "category_result": "category",
@@ -687,6 +664,7 @@ def test_download_event_result():
         },
         {
             "event_id": 1,
+            "event_name": "event1",
             "edition_result": "edition",
             "result_id": 2,
             "category_result": "category",
@@ -706,6 +684,7 @@ def test_find_event_result_by_edition_and_category():
   assert response.status_code == 200
   assert response.json() == {
       "event_id": 1,
+      "event_name": "event1",
       "edition_result": "edition",
       "result_id": 1,
       "category_result": "category",

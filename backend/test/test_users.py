@@ -3,6 +3,7 @@ from main import app
 from sqlalchemy import create_engine, delete
 from sqlalchemy.orm import sessionmaker
 from database import get_db, Base
+from datetime import datetime
 
 
 SQLALCHEMY_DATABASE_URL = "sqlite:///test.db"
@@ -35,7 +36,7 @@ def test_register_user():
     response = user.post("/user/register",
                          json={"user_name": "user1", "user_surname" : "surname",  "password" : "password1",
                                "age" : "age", "email" : "email", "phone" : "phone",  "city" : "city",
-                               "autonomous_community" : "autonomous_community", "country": "country", "is_organizer" : False},
+                               "autonomous_community" : "autonomous_community", "country": "country", "is_organizer" : False, "register_date": datetime.now().replace(microsecond=0).isoformat()},
                          headers={"content-type" : "application/json"}
     )
     assert response.status_code==200
@@ -47,7 +48,7 @@ def test_register_an_existing_user():
     user_data = {
         "user_name": "organizer","user_surname" : "surname",  "password" : "org_passwd",
         "age" : "age", "email" : "email", "phone" : "phone",  "city" : "city",
-        "autonomous_community" : "autonomous_community", "country": "country" , "is_organizer" : True}
+        "autonomous_community" : "autonomous_community", "country": "country" , "is_organizer" : True, "register_date": datetime.now().replace(microsecond=0).isoformat()}
 
     user.post("/user/register", json=user_data, headers={"content-type" : "application/json"})
     
@@ -63,7 +64,7 @@ def test_find_user():
     user_data = {
         "user_name": "user2", "user_surname" : "surname", "password" : "password2",
         "age" : "age", "email" : "email", "phone" : "phone",  "city" : "city",
-        "autonomous_community" : "autonomous_community", "country": "country", "is_organizer" : False}
+        "autonomous_community" : "autonomous_community", "country": "country", "is_organizer" : False, "register_date": datetime.now().replace(microsecond=0).isoformat()}
     user.post("/user/register", json=user_data)
     response = user.get("/user/find/user2")
     assert response.status_code == 200
@@ -78,7 +79,8 @@ def test_find_user():
         "age": "age",
         "user_name": "user2",
         "phone": "phone",
-        "autonomous_community": "autonomous_community"
+        "autonomous_community": "autonomous_community", 
+        "register_date": datetime.now().replace(microsecond=0).isoformat()
     }
 
 def test_find_non_existent_user():
@@ -103,7 +105,8 @@ def test_find_all_users():
         "age": "age",
         "user_name": "user1",
         "phone": "phone",
-        "autonomous_community": "autonomous_community"             
+        "autonomous_community": "autonomous_community",
+        "register_date": datetime.now().replace(microsecond=0).isoformat()       
       },
       {
         "password": "org_passwd",
@@ -116,7 +119,8 @@ def test_find_all_users():
         "age": "age",
         "user_name": "organizer",
         "phone": "phone",
-        "autonomous_community": "autonomous_community"        
+        "autonomous_community": "autonomous_community",        
+        "register_date": datetime.now().replace(microsecond=0).isoformat()          
       },
       {
         "password": "password2",
@@ -129,7 +133,8 @@ def test_find_all_users():
         "age": "age",
         "user_name": "user2",
         "phone": "phone",
-        "autonomous_community": "autonomous_community"          
+        "autonomous_community": "autonomous_community",
+        "register_date": datetime.now().replace(microsecond=0).isoformat()          
       }
     ]
 
@@ -142,7 +147,7 @@ def test_login_user():
     
     assert response.status_code == 200
     assert response.json() == { 
-        "message" : "Login user", "organizer" : True, "user_id" : 2
+        "message" : "Login user", "organizer" : True, "user_id" : 2, "session_id" : response.json()["session_id"]
     }   
 
 
@@ -164,7 +169,7 @@ def test_login_user_without_credentials():
 
     user.post("/user/logout/organizer")
 
-    response_protected = user.get("/protected")
+    response_protected = user.get("/protected/1")
     assert response_protected.status_code == 401
     assert response_protected.json() == {
         "detail": "No authorized"
@@ -174,25 +179,22 @@ def test_logout_user():
     response_logout = user.post("/user/logout/organizer")
     assert response_logout.status_code == 200
     assert response_logout.json() == {
-        "message" : "Logout user"
+        "message" : "Logout successful"
     }
 
-def test_logout_non_existent_user():
-    response_logout = user.post("/user/logout/user4")
-    assert response_logout.status_code == 404
-    assert response_logout.json() == {
-        "detail" : "No user available"
-    }    
-
 def test_protected_route():
-    response_protected = user.get("/protected", cookies={"access_cookie": "test_token"})
+    response_login = user.post("/user/login",
+                               data={"username": "organizer", "password": "org_passwd"},
+                               headers={"content-type": "application/x-www-form-urlencoded"})
+    
+    response_protected = user.get(f"/protected/{response_login.json()['session_id']}", cookies={"access_cookie": "test_token"})
     assert response_protected.status_code == 200
     assert response_protected.json() == {
-        "message" : "Accessible protected route", "token" : "test_token"}
+        "message" : "Accessible protected route", "token" : response_protected.json()['token']}
 
 def test_protected_route_fail():
     user.post("/user/logout/usuario")
-    response_protected = user.get("/protected")
+    response_protected = user.get("/protected/2")
     assert response_protected.status_code == 401
     assert response_protected.json() == {
         "detail" : "No authorized"

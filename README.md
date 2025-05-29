@@ -31,6 +31,10 @@ npm install react-router-doms //Mirar si lo uso
 
 ## Testing
 ### Backend
+```bash
+pytest  //Para ejecutar los test
+pytest --cov=../backend/ //para ver la cobertura
+```
 ### Frontend
 - Para las pruebas End-to-End usamos Playwright, un testing framework que nos proporciona NextJs
 ```bash

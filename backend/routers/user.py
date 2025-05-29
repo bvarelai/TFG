@@ -56,7 +56,6 @@ def login_user(response: Response, form_data: OAuth2PasswordRequestForm = Depend
 
 @router.post("/user/logout/{session_id}")
 def logout_user(session_id: str, response: Response):
-    # Eliminar la cookie asociada al session_id
     response.delete_cookie(f"access_cookie_{session_id}")
     return {"message": "Logout successful"}
 

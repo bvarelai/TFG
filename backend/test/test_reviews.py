@@ -43,7 +43,7 @@ def test_find_no_review_by_userId_and_eventId():
     assert response.json() == {"detail": "Review no available"}
 
 def test_find_review_by_eventId():
-    response = review.get("/review/find/1")
+    response = review.get("/review/event/find/1")
     
     assert response.status_code == 200
     assert response.json() == [{
@@ -56,13 +56,13 @@ def test_find_review_by_eventId():
     }]
 
 def test_find_no_review_by_eventId():
-    response = review.get("/review/find/2")
+    response = review.get("/review/event/find/2")
     
     assert response.status_code == 404
     assert response.json() == {"detail": "Review no available"}    
 
 def test_find_review_by_userId():
-    response = review.get("/review/find/1")
+    response = review.get("/review/user/find/1")
     
     assert response.status_code == 200
     assert response.json() == [{
@@ -75,7 +75,7 @@ def test_find_review_by_userId():
     }]   
 
 def test_find_no_review_by_userId():
-    response = review.get("/review/find/2")
+    response = review.get("/review/user/find/2")
     
     assert response.status_code == 404
     assert response.json() == {"detail": "Review no available"}    
