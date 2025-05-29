@@ -34,9 +34,8 @@ test.describe("Testing AllEvents", () => {
         await page.locator('#input-event[name="event_location"]').fill('Madrid');
         await page.locator('#input-event[name="event_capacity"]').fill('100');
         await page.locator('#input-event-large[name="event_description"]').fill('This is a test event.');
-        await page.locator('#input-event[name="organizer-by"]').fill('Organizer');
-        await page.locator('#input-event[name="duration"]').fill('5');
-        await page.locator('#input-event[name="language"]').fill('English');
+        await page.locator('#input-event-large[name="organizer-by"]').fill('Organizer');
+        await page.locator('#input-event[name="price"]').fill('20');
         await page.locator('#input-event-big[name="description"]').fill('This is a test event.');
         await page.locator('#button-green').click();
         const newEvent = await page.locator('#heading-event-name', { hasText: 'New Event' });
@@ -63,9 +62,8 @@ test.describe("Testing AllEvents", () => {
         await page.locator('#input-event[name="event_location"]').fill('');
         await page.locator('#input-event[name="event_capacity"]').fill('0');
         await page.locator('#input-event-large[name="event_description"]').fill('');
-        await page.locator('#input-event[name="organizer-by"]').fill('');
-        await page.locator('#input-event[name="duration"]').fill('');
-        await page.locator('#input-event[name="language"]').fill('');
+        await page.locator('#input-event-large[name="organizer-by"]').fill('');
+        await page.locator('#input-event[name="price"]').fill('');
         await page.locator('#input-event-big[name="description"]').fill('');
         await page.locator('#button-green').click();
         const errorMessage = page.locator('#callout-root-event-register');
@@ -74,6 +72,34 @@ test.describe("Testing AllEvents", () => {
         await expect(errorMessage).not.toBeVisible();
     })
 
+     test("Register fail when event name is not valid ", async({page}) => {
+        await page.goto('/login');
+        await page.getByPlaceholder('Username',{exact: true}).fill('Organizer');
+        await page.getByPlaceholder('Password', {exact: true}).fill('password123');
+        await page.getByRole('button',{name: 'Login'}).click();
+        await expect(page).toHaveURL('/home', { timeout: 15000 });    
+        await page.goto('/home');
+        await page.getByTitle('All events');
+        await page.waitForSelector('#create-event', { state: 'visible' });
+        await page.locator('#create-event').click();
+        await page.locator('#input-event[name="event_name"]').fill('International Innovation and Entrepreneurship Summit');
+        await page.locator('#input-event[name="event_type"]').fill('football');
+        await page.locator('#input-event[name="event_edition"]').fill('2024-2025');
+        await page.locator('#input-event[name="event_category"]').fill('junior');
+        await page.locator('#input-event[name="event_date"]').fill('2025-06-01T10:00');
+        await page.locator('#input-event[name="event_end_date"]').fill('2025-06-10T12:00');
+        await page.locator('#input-event[name="event_location"]').fill('Madrid');
+        await page.locator('#input-event[name="event_capacity"]').fill('100');
+        await page.locator('#input-event-large[name="event_description"]').fill('This is a test event.');
+        await page.locator('#input-event-large[name="organizer-by"]').fill('Organizer');
+        await page.locator('#input-event[name="price"]').fill('20');
+        await page.locator('#input-event-big[name="description"]').fill('This is a test event.');
+        await page.locator('#button-green').click();
+        const errorMessage = page.locator('#callout-root-event-register');
+        await expect(errorMessage).toContainText('Event name must not exceed 20 letters.'); 
+        await page.waitForTimeout(2000);
+        await expect(errorMessage).not.toBeVisible();
+    })
 
     test("Register fail when event category is not valid", async({page}) => {
         await page.goto('/login');
@@ -94,9 +120,8 @@ test.describe("Testing AllEvents", () => {
         await page.locator('#input-event[name="event_location"]').fill('Madrid');
         await page.locator('#input-event[name="event_capacity"]').fill('5');
         await page.locator('#input-event-large[name="event_description"]').fill('This is a test event.');
-        await page.locator('#input-event[name="organizer-by"]').fill('Organizer');
-        await page.locator('#input-event[name="duration"]').fill('5');
-        await page.locator('#input-event[name="language"]').fill('English');
+        await page.locator('#input-event-large[name="organizer-by"]').fill('Organizer');
+        await page.locator('#input-event[name="price"]').fill('20');
         await page.locator('#input-event-big[name="description"]').fill('This is a test event.');
         await page.locator('#button-green').click();
         const errorMessage = page.locator('#callout-root-event-register');
@@ -105,7 +130,96 @@ test.describe("Testing AllEvents", () => {
         await expect(errorMessage).not.toBeVisible();
     })
     
-     
+    
+     test("Register fail when event type is not valid ", async({page}) => {
+        await page.goto('/login');
+        await page.getByPlaceholder('Username',{exact: true}).fill('Organizer');
+        await page.getByPlaceholder('Password', {exact: true}).fill('password123');
+        await page.getByRole('button',{name: 'Login'}).click();
+        await expect(page).toHaveURL('/home', { timeout: 15000 });    
+        await page.goto('/home');
+        await page.getByTitle('All events');
+        await page.waitForSelector('#create-event', { state: 'visible' });
+        await page.locator('#create-event').click();
+        await page.locator('#input-event[name="event_name"]').fill('New Event');
+        await page.locator('#input-event[name="event_type"]').fill('type');
+        await page.locator('#input-event[name="event_edition"]').fill('2024-2025');
+        await page.locator('#input-event[name="event_category"]').fill('junior');
+        await page.locator('#input-event[name="event_date"]').fill('2025-06-01T10:00');
+        await page.locator('#input-event[name="event_end_date"]').fill('2025-06-10T12:00');
+        await page.locator('#input-event[name="event_location"]').fill('Madrid');
+        await page.locator('#input-event[name="event_capacity"]').fill('100');
+        await page.locator('#input-event-large[name="event_description"]').fill('This is a test event.');
+        await page.locator('#input-event-large[name="organizer-by"]').fill('Organizer');
+        await page.locator('#input-event[name="price"]').fill('20');
+        await page.locator('#input-event-big[name="description"]').fill('This is a test event.');
+        await page.locator('#button-green').click();
+        const errorMessage = page.locator('#callout-root-event-register');
+        await expect(errorMessage).toContainText('Invalid event type'); 
+        await page.waitForTimeout(2000);
+        await expect(errorMessage).not.toBeVisible();
+    })
+
+    
+
+     test("Register fail when event edition is not valid ", async({page}) => {
+        await page.goto('/login');
+        await page.getByPlaceholder('Username',{exact: true}).fill('Organizer');
+        await page.getByPlaceholder('Password', {exact: true}).fill('password123');
+        await page.getByRole('button',{name: 'Login'}).click();
+        await expect(page).toHaveURL('/home', { timeout: 15000 });    
+        await page.goto('/home');
+        await page.getByTitle('All events');
+        await page.waitForSelector('#create-event', { state: 'visible' });
+        await page.locator('#create-event').click();
+        await page.locator('#input-event[name="event_name"]').fill('New Event');
+        await page.locator('#input-event[name="event_type"]').fill('football');
+        await page.locator('#input-event[name="event_edition"]').fill('edition');
+        await page.locator('#input-event[name="event_category"]').fill('junior');
+        await page.locator('#input-event[name="event_date"]').fill('2025-06-01T10:00');
+        await page.locator('#input-event[name="event_end_date"]').fill('2025-06-10T12:00');
+        await page.locator('#input-event[name="event_location"]').fill('Madrid');
+        await page.locator('#input-event[name="event_capacity"]').fill('100');
+        await page.locator('#input-event-large[name="event_description"]').fill('This is a test event.');
+        await page.locator('#input-event-large[name="organizer-by"]').fill('Organizer');
+        await page.locator('#input-event[name="price"]').fill('20');
+        await page.locator('#input-event-big[name="description"]').fill('This is a test event.');
+        await page.locator('#button-green').click();
+        const errorMessage = page.locator('#callout-root-event-register');
+        await expect(errorMessage).toContainText('Invalid event edition format'); 
+        await page.waitForTimeout(2000);
+        await expect(errorMessage).not.toBeVisible();
+    })
+
+    test("Register fail when event price is not valid ", async({page}) => {
+        await page.goto('/login');
+        await page.getByPlaceholder('Username',{exact: true}).fill('Organizer');
+        await page.getByPlaceholder('Password', {exact: true}).fill('password123');
+        await page.getByRole('button',{name: 'Login'}).click();
+        await expect(page).toHaveURL('/home', { timeout: 15000 });    
+        await page.goto('/home');
+        await page.getByTitle('All events');
+        await page.waitForSelector('#create-event', { state: 'visible' });
+        await page.locator('#create-event').click();
+        await page.locator('#input-event[name="event_name"]').fill('New Event');
+        await page.locator('#input-event[name="event_type"]').fill('football');
+        await page.locator('#input-event[name="event_edition"]').fill('2024-2025');
+        await page.locator('#input-event[name="event_category"]').fill('junior');
+        await page.locator('#input-event[name="event_date"]').fill('2025-06-01T10:00');
+        await page.locator('#input-event[name="event_end_date"]').fill('2025-06-10T12:00');
+        await page.locator('#input-event[name="event_location"]').fill('Madrid');
+        await page.locator('#input-event[name="event_capacity"]').fill('100');
+        await page.locator('#input-event-large[name="event_description"]').fill('This is a test event.');
+        await page.locator('#input-event-large[name="organizer-by"]').fill('Organizer');
+        await page.locator('#input-event[name="price"]').fill('-23');
+        await page.locator('#input-event-big[name="description"]').fill('This is a test event.');
+        await page.locator('#button-green').click();
+        const errorMessage = page.locator('#callout-root-event-register');
+        await expect(errorMessage).toContainText('The price is not valid'); 
+        await page.waitForTimeout(2000);
+        await expect(errorMessage).not.toBeVisible();
+    })
+
 
     test("Register fail when event places is not valid", async({page}) => {
         await page.goto('/login');
@@ -119,16 +233,15 @@ test.describe("Testing AllEvents", () => {
         await page.locator('#create-event').click();
         await page.locator('#input-event[name="event_name"]').fill('New Event');
         await page.locator('#input-event[name="event_type"]').fill('football');
-        await page.locator('#input-event[name="event_edition"]').fill('1st');
+        await page.locator('#input-event[name="event_edition"]').fill('2024-2025');
         await page.locator('#input-event[name="event_category"]').fill('junior');
         await page.locator('#input-event[name="event_date"]').fill('2025-06-01T10:00');
         await page.locator('#input-event[name="event_end_date"]').fill('2025-06-10T12:00');
         await page.locator('#input-event[name="event_location"]').fill('Madrid');
         await page.locator('#input-event[name="event_capacity"]').fill('-5');
         await page.locator('#input-event-large[name="event_description"]').fill('This is a test event.');
-        await page.locator('#input-event[name="organizer-by"]').fill('Organizer');
-        await page.locator('#input-event[name="duration"]').fill('5');
-        await page.locator('#input-event[name="language"]').fill('English');
+        await page.locator('#input-event-large[name="organizer-by"]').fill('Organizer');
+        await page.locator('#input-event[name="price"]').fill('20');
         await page.locator('#input-event-big[name="description"]').fill('This is a test event.');
         await page.locator('#button-green').click();
         const errorMessage = page.locator('#callout-root-event-register');
@@ -136,37 +249,6 @@ test.describe("Testing AllEvents", () => {
         await page.waitForTimeout(2000);
         await expect(errorMessage).not.toBeVisible();
     })
-
-    test("Register fail when event duration is not valid", async({page}) => {
-        await page.goto('/login');
-        await page.getByPlaceholder('Username',{exact: true}).fill('Organizer');
-        await page.getByPlaceholder('Password', {exact: true}).fill('password123');
-        await page.getByRole('button',{name: 'Login'}).click();
-        await expect(page).toHaveURL('/home', { timeout: 15000 });    
-        await page.goto('/home');
-        await page.getByTitle('All events');
-        await page.waitForSelector('#create-event', { state: 'visible' });
-        await page.locator('#create-event').click();
-        await page.locator('#input-event[name="event_name"]').fill('New Event');
-        await page.locator('#input-event[name="event_type"]').fill('football');
-        await page.locator('#input-event[name="event_edition"]').fill('1st');
-        await page.locator('#input-event[name="event_category"]').fill('junior');
-        await page.locator('#input-event[name="event_date"]').fill('2025-06-01T10:00');
-        await page.locator('#input-event[name="event_end_date"]').fill('2025-06-10T12:00');
-        await page.locator('#input-event[name="event_location"]').fill('Madrid');
-        await page.locator('#input-event[name="event_capacity"]').fill('5');
-        await page.locator('#input-event-large[name="event_description"]').fill('This is a test event.');
-        await page.locator('#input-event[name="organizer-by"]').fill('Organizer');
-        await page.locator('#input-event[name="duration"]').fill('-5');
-        await page.locator('#input-event[name="language"]').fill('English');
-        await page.locator('#input-event-big[name="description"]').fill('This is a test event.');
-        await page.locator('#button-green').click();
-        const errorMessage = page.locator('#callout-root-event-register');
-        await expect(errorMessage).toContainText('The duration is not valid'); 
-        await page.waitForTimeout(2000);
-        await expect(errorMessage).not.toBeVisible();
-    })
-
 
 
     test("Register fail when event description is not valid", async({page}) => {
@@ -181,24 +263,81 @@ test.describe("Testing AllEvents", () => {
         await page.locator('#create-event').click();
         await page.locator('#input-event[name="event_name"]').fill('New Event');
         await page.locator('#input-event[name="event_type"]').fill('football');
-        await page.locator('#input-event[name="event_edition"]').fill('1st');
+        await page.locator('#input-event[name="event_edition"]').fill('2024-2025');
         await page.locator('#input-event[name="event_category"]').fill('junior');
         await page.locator('#input-event[name="event_date"]').fill('2025-06-01T10:00');
         await page.locator('#input-event[name="event_end_date"]').fill('2025-06-10T12:00');
         await page.locator('#input-event[name="event_location"]').fill('Madrid');
         await page.locator('#input-event[name="event_capacity"]').fill('100');
-        await page.locator('#input-event-large[name="event_description"]').fill('New Event is the perfect experience for innovators and creatives. Join a day filled with inspiration, networking, and learning from experts. Enjoy unique moments that will boost your vision and success.');        await page.locator('#input-event[name="event_capacity"]').fill('100');
-        await page.locator('#input-event[name="organizer-by"]').fill('Organizer');
-        await page.locator('#input-event[name="duration"]').fill('5');
-        await page.locator('#input-event[name="language"]').fill('English');
+        await page.locator('#input-event-large[name="event_description"]').fill('New Event is the perfect experience for innovators and creatives. Join a day filled with inspiration, networking, and learning from experts. Enjoy unique moments that will boost your vision and success.');        
+        await page.locator('#input-event-large[name="organizer-by"]').fill('Organizer');
+        await page.locator('#input-event[name="price"]').fill('20');
         await page.locator('#input-event-big[name="description"]').fill('This is a test event.');
+        await page.locator('#button-green').click();
+        const errorMessage = page.locator('#callout-root-event-register');
+        await expect(errorMessage).toContainText('Description must not exceed 10 words.'); 
+        await page.waitForTimeout(2000);
+        await expect(errorMessage).not.toBeVisible();
+    })
+
+    test("Register fail when Organizer name is not valid ", async({page}) => {
+        await page.goto('/login');
+        await page.getByPlaceholder('Username',{exact: true}).fill('Organizer');
+        await page.getByPlaceholder('Password', {exact: true}).fill('password123');
+        await page.getByRole('button',{name: 'Login'}).click();
+        await expect(page).toHaveURL('/home', { timeout: 15000 });    
+        await page.goto('/home');
+        await page.getByTitle('All events');
+        await page.waitForSelector('#create-event', { state: 'visible' });
+        await page.locator('#create-event').click();
+        await page.locator('#input-event[name="event_name"]').fill('New Event');
+        await page.locator('#input-event[name="event_type"]').fill('football');
+        await page.locator('#input-event[name="event_edition"]').fill('2024-2025');
+        await page.locator('#input-event[name="event_category"]').fill('junior');
+        await page.locator('#input-event[name="event_date"]').fill('2025-06-01T10:00');
+        await page.locator('#input-event[name="event_end_date"]').fill('2025-06-10T12:00');
+        await page.locator('#input-event[name="event_location"]').fill('Madrid');
+        await page.locator('#input-event[name="event_capacity"]').fill('100');
+        await page.locator('#input-event-large[name="event_description"]').fill('This is a test event.');
+        await page.locator('#input-event-large[name="organizer-by"]').fill('Innovate Future Group');
+        await page.locator('#input-event[name="price"]').fill('20');
+        await page.locator('#input-event-big[name="description"]').fill('This is a test event.');
+        await page.locator('#button-green').click();
+        const errorMessage = page.locator('#callout-root-event-register');
+        await expect(errorMessage).toContainText('Organizer name must not exceed 12 letters.'); 
+        await page.waitForTimeout(2000);
+        await expect(errorMessage).not.toBeVisible();
+    })
+
+
+     test("Register fail when event full description is not valid", async({page}) => {
+        await page.goto('/login');
+        await page.getByPlaceholder('Username',{exact: true}).fill('Organizer');
+        await page.getByPlaceholder('Password', {exact: true}).fill('password123');
+        await page.getByRole('button',{name: 'Login'}).click();
+        await expect(page).toHaveURL('/home', { timeout: 15000 });    
+        await page.goto('/home');
+        await page.getByTitle('All events');
+        await page.waitForSelector('#create-event', { state: 'visible' });
+        await page.locator('#create-event').click();
+        await page.locator('#input-event[name="event_name"]').fill('New Event');
+        await page.locator('#input-event[name="event_type"]').fill('football');
+        await page.locator('#input-event[name="event_edition"]').fill('2024-2025');
+        await page.locator('#input-event[name="event_category"]').fill('junior');
+        await page.locator('#input-event[name="event_date"]').fill('2025-06-01T10:00');
+        await page.locator('#input-event[name="event_end_date"]').fill('2025-06-10T12:00');
+        await page.locator('#input-event[name="event_location"]').fill('Madrid');
+        await page.locator('#input-event[name="event_capacity"]').fill('100');
+        await page.locator('#input-event-large[name="event_description"]').fill('This is a test event');        
+        await page.locator('#input-event-large[name="organizer-by"]').fill('Organizer');
+        await page.locator('#input-event[name="price"]').fill('20');
+        await page.locator('#input-event-big[name="description"]').fill('New Event is the perfect experience for innovators and creatives. Join a day filled with inspiration, networking, and learning from experts. Enjoy unique moments that will boost your vision and success.');
         await page.locator('#button-green').click();
         const errorMessage = page.locator('#callout-root-event-register');
         await expect(errorMessage).toContainText('Description must not exceed 30 words.'); 
         await page.waitForTimeout(2000);
         await expect(errorMessage).not.toBeVisible();
     })
-
 
     test("Register fail when event dates are not valid", async({page}) => {
         await page.goto('/login');
@@ -212,16 +351,15 @@ test.describe("Testing AllEvents", () => {
         await page.locator('#create-event').click();
         await page.locator('#input-event[name="event_name"]').fill('New Event');
         await page.locator('#input-event[name="event_type"]').fill('football');
-        await page.locator('#input-event[name="event_edition"]').fill('1st');
+        await page.locator('#input-event[name="event_edition"]').fill('2024-2025');
         await page.locator('#input-event[name="event_category"]').fill('junior');
         await page.locator('#input-event[name="event_date"]').fill('2025-06-18T10:00');
         await page.locator('#input-event[name="event_end_date"]').fill('2025-06-10T12:00');
         await page.locator('#input-event[name="event_location"]').fill('Madrid');
         await page.locator('#input-event[name="event_capacity"]').fill('100');
         await page.locator('#input-event-large[name="event_description"]').fill('This is a test event.');
-        await page.locator('#input-event[name="organizer-by"]').fill('Organizer');
-        await page.locator('#input-event[name="duration"]').fill('5');
-        await page.locator('#input-event[name="language"]').fill('English');
+        await page.locator('#input-event-large[name="organizer-by"]').fill('Organizer');
+        await page.locator('#input-event[name="price"]').fill('20');
         await page.locator('#input-event-big[name="description"]').fill('This is a test event.');
         await page.locator('#button-green').click();
         const errorMessage = page.locator('#callout-root-event-register');
@@ -404,9 +542,8 @@ test.describe("Testing AllEvents", () => {
         await page.locator('#input-event[name="event_location"]').fill('Madrid');
         await page.locator('#input-event[name="event_capacity"]').fill('100');
         await page.locator('#input-event-large[name="event_description"]').fill('This is a test event.');
-        await page.locator('#input-event[name="organizer-by"]').fill('Organizer');
-        await page.locator('#input-event[name="duration"]').fill('5');
-        await page.locator('#input-event[name="language"]').fill('English');
+        await page.locator('#input-event-large[name="organizer-by"]').fill('Organizer');
+        await page.locator('#chekbox-free-event').click();        
         await page.locator('#input-event-big[name="description"]').fill('This is a test event.');
         await page.locator('#button-green').click();
         const newEvent = await page.locator('#heading-event-name', { hasText: 'Event finished' });
@@ -432,9 +569,8 @@ test.describe("Testing AllEvents", () => {
         await page.locator('#input-event[name="event_location"]').fill('Madrid');
         await page.locator('#input-event[name="event_capacity"]').fill('100');
         await page.locator('#input-event-large[name="event_description"]').fill('This is a test event.');
-        await page.locator('#input-event[name="organizer-by"]').fill('Organizer');
-        await page.locator('#input-event[name="duration"]').fill('5');
-        await page.locator('#input-event[name="language"]').fill('English');
+        await page.locator('#input-event-large[name="organizer-by"]').fill('Organizer');
+        await page.locator('#chekbox-free-event').click();        
         await page.locator('#input-event-big[name="description"]').fill('This is a test event.');
         await page.locator('#button-green').click();
         const newEvent = await page.locator('#heading-event-name', { hasText: 'Event published' });
@@ -460,6 +596,8 @@ test.describe("Testing AllEvents", () => {
         const event_info_status = await page.locator('#register-status');
         await expect(event_info_status).toContainText('Not Registered');
         await page.locator('#button-inscription').click();
+        await page.locator('#radio-item[value="alevin"]').click();
+        await page.locator('#button-realize-inscription').click();
         await expect(event_info_status).toContainText('Registered');        
         await page.locator('#myinscriptions-button').click();
         const eventBoxes = page.locator('#box-myinscription', { hasText: 'Event finished' });
@@ -486,6 +624,8 @@ test.describe("Testing AllEvents", () => {
         const event_info_status = await page.locator('#register-status');
         await expect(event_info_status).toContainText('Not Registered');
         await page.locator('#button-inscription').click();
+        await page.locator('#radio-item[value="alevin"]').click();
+        await page.locator('#button-realize-inscription').click();
         await expect(event_info_status).toContainText('Registered');        
         await page.locator('#myinscriptions-button').click();
         const eventBoxes = page.locator('#box-myinscription', { hasText: 'Event published' });

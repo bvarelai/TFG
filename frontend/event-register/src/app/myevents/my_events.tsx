@@ -124,7 +124,8 @@ export default function MyEvents({ onGoToReview, setSelectedEvent }: { onGoToRev
    
    const validateForm = (): boolean => {
       const validCategories = ["general", "alevin", "junior", "senior", "infantil"];
-     
+      const validTypes = ["football", "basketball", "triathlon", "athletics", "swimming", "cycling", "hockey"] 
+      const validEditionFormat = /^\d{4}-\d{4}$/;
       const categories = category.split(",").map((cat) => cat.trim());
       const isValidCategory = categories.filter(cat => !validCategories.includes(cat)); 
       
@@ -136,8 +137,8 @@ export default function MyEvents({ onGoToReview, setSelectedEvent }: { onGoToRev
         return false;
       }
 
-      if (event_name.length > 15) {
-         setError("Event name must not exceed 15 letters.");
+      if (event_name.length > 20) {
+         setError("Event name must not exceed 20 letters.");
          setTimeout(() => {
             setError("");
          },2000)
@@ -151,6 +152,31 @@ export default function MyEvents({ onGoToReview, setSelectedEvent }: { onGoToRev
          },2000)
          return false;
       } 
+
+       if (!validTypes.includes(event_type)) {
+         setError("Invalid event type");
+         setTimeout(() => {
+            setError("");
+         },2000)
+         return false;
+      }
+
+      if (!validEditionFormat.test(event_edition)) {
+         setError("Invalid event edition format");
+         setTimeout(() => {
+            setError("");
+         }, 2000);
+         return false;
+      }
+
+      if(isNaN(Number(event_language)) || Number(event_language) <= 0 )
+      {
+         setError("The price is not valid")
+         setTimeout(() => {
+            setError("");
+         },2000)
+         return false;
+      }
 
       if (capacity <= 0) {
          setError("The capacity is not valid")

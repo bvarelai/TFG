@@ -24,7 +24,7 @@ export default function Events({ onGoToReview, setSelectedEvent }: { onGoToRevie
    const [capacity, setcapacity] = useState<number>(0);   
    const [organizer_by, setOrganizerBy] = useState<string>("");
    const [event_full_description, setEventDescription] = useState<string>("");
-   const [event_language, setEventLanguage] = useState<string>("0");
+   const [event_language, setEventLanguage] = useState<string>("15");
    const [is_free, setIsFree] = useState<boolean>(false);
    const [error, setError] = useState<string>("");
    const [notification, setNotification] = useState<string>("");
@@ -611,15 +611,21 @@ export default function Events({ onGoToReview, setSelectedEvent }: { onGoToRevie
                                        />
                               </div>
                               <div id = "is-free-event" className="flex flex-row gap-2 items-center"  onClick={() => setIsFree(!is_free)}>                        
-                                    {!is_free ? <Checkbox.Root className="CheckboxRoot" id="checkbox-root">
-                                    <Checkbox.Indicator className="CheckboxIndicator">
-                                       <CheckIcon />
-                                    </Checkbox.Indicator>
-                                 </Checkbox.Root> : <Checkbox.Root className="CheckboxRoot" defaultChecked>
-                                    <Checkbox.Indicator className="CheckboxIndicator">
-                                       <CheckIcon />
-                                    </Checkbox.Indicator>
-                                 </Checkbox.Root>}  
+                                    {!is_free ? 
+                                    <div id="chekbox-free-event">
+                                       <Checkbox.Root className="CheckboxRoot" id="checkbox-root">
+                                          <Checkbox.Indicator className="CheckboxIndicator">
+                                             <CheckIcon />
+                                          </Checkbox.Indicator>
+                                       </Checkbox.Root> 
+                                    </div> : 
+                                    <div id="chekbox-free-event">
+                                       <Checkbox.Root className="CheckboxRoot" defaultChecked>
+                                          <Checkbox.Indicator className="CheckboxIndicator">
+                                             <CheckIcon />
+                                          </Checkbox.Indicator>
+                                       </Checkbox.Root>
+                                    </div>}
                                  <label htmlFor="organizer-by">Is free?</label>
                               </div>
                            </div>

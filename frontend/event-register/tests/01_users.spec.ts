@@ -10,7 +10,7 @@ test.describe("Testing Register", () => {
         await page.getByPlaceholder('Password', {exact: true}).fill('password123');
         await page.getByPlaceholder('Age',{exact: true}).fill('30');
         await page.getByPlaceholder('Email',{exact: true}).fill('organizer.doe@example.com');
-        await page.getByPlaceholder('Ej: +34 600 123 456',{exact: true}).fill('+34600123456');
+        await page.getByPlaceholder('Ej: +34 600 123 456',{exact: true}).fill('600 123 456');
         await page.getByPlaceholder('City *', {exact: true}).fill('city');
         await page.getByPlaceholder('Autonomous Community *', {exact: true}).fill('Madrid');
         await page.getByPlaceholder('Country', {exact: true}).fill('Spain');
@@ -26,7 +26,7 @@ test.describe("Testing Register", () => {
         await page.getByPlaceholder('Password', {exact: true}).fill('password456');
         await page.getByPlaceholder('Age',{exact: true}).fill('30');
         await page.getByPlaceholder('Email',{exact: true}).fill('user.doe@example.com');
-        await page.getByPlaceholder('Ej: +34 600 123 456',{exact: true}).fill('+34600123456');
+        await page.getByPlaceholder('Ej: +34 600 123 456',{exact: true}).fill('600 123 456');
         await page.getByPlaceholder('City *', {exact: true}).fill('city');
         await page.getByPlaceholder('Autonomous Community *', {exact: true}).fill('Madrid');
         await page.getByPlaceholder('Country', {exact: true}).fill('Spain');
@@ -42,7 +42,7 @@ test.describe("Testing Register", () => {
         await page.getByPlaceholder('Password', {exact: true}).fill('password123');
         await page.getByPlaceholder('Age',{exact: true}).fill('30');
         await page.getByPlaceholder('Email',{exact: true}).fill('organizer.doe@example.com');
-        await page.getByPlaceholder('Ej: +34 600 123 456',{exact: true}).fill('+34600123456');
+        await page.getByPlaceholder('Ej: +34 600 123 456',{exact: true}).fill('600 123 456');
         await page.getByPlaceholder('City *', {exact: true}).fill('city');
         await page.getByPlaceholder('Autonomous Community *', {exact: true}).fill('Madrid');
         await page.getByPlaceholder('Country', {exact: true}).fill('Spain');
@@ -80,7 +80,7 @@ test.describe("Testing Register", () => {
         await page.getByPlaceholder('Password', {exact: true}).fill('password123');
         await page.getByPlaceholder('Age',{exact: true}).fill('Hola');
         await page.getByPlaceholder('Email',{exact: true}).fill('john.doe@example.com');
-        await page.getByPlaceholder('Ej: +34 600 123 456',{exact: true}).fill('+34600123456');
+        await page.getByPlaceholder('Ej: +34 600 123 456',{exact: true}).fill('600 123 456');
         await page.getByPlaceholder('City *', {exact: true}).fill('city');
         await page.getByPlaceholder('Autonomous Community *', {exact: true}).fill('Madrid');
         await page.getByPlaceholder('Country', {exact: true}).fill('Spain');
@@ -92,7 +92,27 @@ test.describe("Testing Register", () => {
         await expect(errorMessage).not.toBeVisible();
        
     })
+    test('Register fail when user phone is not valid', async({page}) => {
+        await page.goto('/register');
+        await page.getByPlaceholder('Name',{exact: true}).fill('user');
+        await page.getByPlaceholder('Surname',{exact: true}).fill('Surname');
+        await page.getByPlaceholder('Password', {exact: true}).fill('password456');
+        await page.getByPlaceholder('Age',{exact: true}).fill('30');
+        await page.getByPlaceholder('Email',{exact: true}).fill('user.doe@example.com');
+        await page.getByPlaceholder('Ej: +34 600 123 456',{exact: true}).fill('+34600123456');
+        await page.getByPlaceholder('City *', {exact: true}).fill('city');
+        await page.getByPlaceholder('Autonomous Community *', {exact: true}).fill('Madrid');
+        await page.getByPlaceholder('Country', {exact: true}).fill('Spain');
+        await page.locator('#checkbox-root').check();
+        await page.locator('#register-button').click();
+        const errorMessage = page.locator('#p-red');
+        await expect(errorMessage).toContainText('Phone number must be in format 600 123 456'); 
+        await page.waitForTimeout(2000);
+        await expect(errorMessage).not.toBeVisible();
+    })
+
 });
+
 
 test.describe("Testing Login", () => {
     

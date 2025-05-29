@@ -446,7 +446,7 @@ export default function Review({ event }: { event: any }) {
                                                    aria-label="Select a category"
                                                 >
                                                    <div style={{ display: "flex", alignItems: "center" }}>
-                                                      <RadioGroup.Item className="RadioGroupItem border-2 border-solid border-white/[.08]" value={category}>
+                                                      <RadioGroup.Item id= "radio-item" className="RadioGroupItem border-2 border-solid border-white/[.08]" value={category}>
                                                          <RadioGroup.Indicator className="RadioGroupIndicator" />
                                                       </RadioGroup.Item>
                                                       <label className="Label" htmlFor="r1">
