@@ -43,29 +43,28 @@ def login_user(response: Response, form_data: OAuth2PasswordRequestForm = Depend
             detail="Incorrect Username or password",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    session_id = str(uuid4())
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(
         data={"sub": user.user_name}, expires_delta=access_token_expires
     )
     verify_token(token=access_token)
     response.set_cookie(
-        key=f"access_cookie_{session_id}", value=access_token, httponly=True, samesite="Lax"
+        key="access_cookie", value=access_token, httponly=True, samesite="Lax"
     )
-    return {"message": "Login user", "organizer": user.is_organizer, "user_id" : user.user_id, "session_id" : session_id}
+    return {"message": "Login user", "organizer": user.is_organizer, "user_id" : user.user_id}
 
-@router.post("/user/logout/{session_id}")
-def logout_user(session_id: str, response: Response):
-    response.delete_cookie(f"access_cookie_{session_id}")
+@router.post("/user/logout")
+def logout_user(response: Response):
+    response.delete_cookie("access_cookie")
     return {"message": "Logout successful"}
 
-@router.get("/protected/{session_id}")
-def protected_route(request: Request, session_id: str):
-    token = request.cookies.get(f"access_cookie_{session_id}")
+@router.get("/protected")
+def protected_route(request: Request):
+    token = request.cookies.get("access_cookie")
     if not token:
         raise HTTPException(status_code=401, detail="No authorized")
     try:
-        payload = verify_token(token)  # Valida el token
+        payload = verify_token(token) 
     except Exception as e:
         raise HTTPException(status_code=401, detail="Invalid or expired token")
     
