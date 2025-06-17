@@ -193,15 +193,15 @@ export default function MyInscription({ onGoToReview, setSelectedEvent }: { onGo
                            </Heading>
                            <div className="flex flex-col py-2 gap-1">
                               <div  id = "info-members-myinscription-div" className="flex flex-row items-center">
-                                 <DrawingPinFilledIcon/>
+                                 <DrawingPinFilledIcon id="icon-box"/>
                                  <span id="event-date">{inscription.category_inscription}</span>   
                               </div>
                               <div  id = "info-date-myinscription-div"className="flex flex-row items-center">
-                                 <LapTimerIcon/> 
+                                 <LapTimerIcon id="icon-box"/> 
                                  <span id="event-date">{inscription.inscription_date ? inscription.inscription_date.split("T")[0] : "N/A"}</span>  
                               </div>   
                               <div  id = "info-clock-myinscription-div"className="flex flex-row items-center">
-                                 <ClockIcon/> 
+                                 <ClockIcon id="icon-box"/> 
                                  <span id="event-date">{inscription.inscription_date ? inscription.inscription_date.split("T")[1] : "N/A"}</span>  
                               </div>
                               <div className="flex items-center py-3">
@@ -259,41 +259,41 @@ export default function MyInscription({ onGoToReview, setSelectedEvent }: { onGo
                      <Dialog.Content>                        
                         <div className="flex flex-col gap-3">
                            <div className="flex flex-row gap-1 items-center">
-                              <SewingPinFilledIcon/>
-                              <span> {inscription.location}</span>  
+                              <SewingPinFilledIcon id ="icon-info"/>
+                              <span id="event-info"> {inscription.location}</span>  
                            </div> 
                            <div className="grid grid-cols-3 gap-14">
                               <div className="flex flex-col gap-3">
-                                 Register date
+                                 <span id= "event-info">Register date</span>
                                  <div className="flex flex-row gap-1 items-center">                                            
-                                    <LapTimerIcon/>
-                                    <span>{inscription.inscription_date ? inscription.inscription_date.split("T")[0] : "N/A"}</span>   
+                                    <LapTimerIcon id ="icon-info"/>
+                                    <span id="event-info">{inscription.inscription_date ? inscription.inscription_date.split("T")[0] : "N/A"}</span>   
                                  </div>
                                  <div className="flex flex-row gap-1 items-center">
-                                    <ClockIcon/>
-                                    <span>{inscription.inscription_date ? inscription.inscription_date.split("T")[1] : "N/A"}</span>
+                                    <ClockIcon id ="icon-info"/>
+                                    <span  id="event-info">{inscription.inscription_date ? inscription.inscription_date.split("T")[1] : "N/A"}</span>
                                  </div>
                               </div>
                               <div className="flex flex-col gap-3">
-                                 Start date
+                                 <span id= "event-info">Start date</span>
                                  <div className="flex flex-row gap-1 items-center">                                            
                                     <LapTimerIcon/>
-                                    <span>{inscription.start_date ? inscription.start_date.split("T")[0] : "N/A"}</span>   
+                                    <span  id="event-info">{inscription.start_date ? inscription.start_date.split("T")[0] : "N/A"}</span>   
                                  </div>
                                  <div className="flex flex-row gap-1 items-center">
-                                    <ClockIcon/>
-                                    <span>{inscription.start_date ? inscription.start_date.split("T")[1] : "N/A"}</span>
+                                    <ClockIcon id ="icon-info"/>
+                                    <span  id="event-info">{inscription.start_date ? inscription.start_date.split("T")[1] : "N/A"}</span>
                                  </div>
                               </div>
                               <div className="flex flex-col gap-3">
-                                 End date
+                                 <span id= "event-info">End date</span>
                                  <div className="flex flex-row gap-1 items-center">                                            
                                     <LapTimerIcon/>
-                                    <span>{inscription.end_date ? inscription.end_date.split("T")[0] : "N/A"}</span>   
+                                    <span  id="event-info">{inscription.end_date ? inscription.end_date.split("T")[0] : "N/A"}</span>   
                                  </div>
                                  <div className="flex flex-row gap-1 items-center">
-                                    <ClockIcon/>
-                                    <span>{inscription.end_date ? inscription.end_date.split("T")[1] : "N/A"}</span>
+                                    <ClockIcon id ="icon-info"/>
+                                    <span  id="event-info">{inscription.end_date ? inscription.end_date.split("T")[1] : "N/A"}</span>
                                  </div>
                               </div>
                               {notification}

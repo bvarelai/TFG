@@ -1,4 +1,132 @@
-.DialogContentMyInscription {
+@media only screen and (max-width: 707px) { 
+        
+    @media screen and (orientation: portrait) {
+      /*Vertical mobile desing*/
+      .DialogContentMyInscription {
+        background-color: rgba(15, 17, 26, 0.95);
+        border-radius: 10px;
+        box-shadow: var(--shadow-6);
+        border-color: #1a1c2c;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 630px; 
+        height: 440px;
+        padding: 25px;
+        animation: contentShow 150ms cubic-bezier(0.16, 1, 0.3, 1);
+     }
+
+
+      #inscriptions_disp{
+        width: 100%;
+        height: 1175px;
+        color:white;
+        flex-wrap: wrap;
+        display: flex;
+        justify-content: flex-start;
+      }
+
+      #badge-green-myinscriptions {
+        filter: brightness(1.7); /* Incrementa el brillo en un 20% */
+        background-color: rgba(40, 167, 69, 0.15);  
+        color: #2ecc71;
+        margin-top: 15px;
+        margin-left: 50px;
+        width: 150px;
+        align-items: center;
+        justify-content: center;
+        border-radius: 15px;
+        font-size: 30px;
+      }
+
+      #badge-blue-myinscriptions {
+        filter: brightness(1.7); /* Incrementa el brillo en un 20% */
+        background-color: rgba(52, 152, 219, 0.15);  /* Fondo translúcido */
+        color: #3498db; 
+        margin-top: 15px;
+        margin-left: 50px;
+        width: 150px;
+        align-items: center;
+        justify-content: center;
+        border-radius: 15px;
+        font-size: 30px;
+      }
+
+      #badge-red-myinscriptions {
+        filter: brightness(1.7); /* Incrementa el brillo en un 20% */
+        background-color: rgba(231, 76, 60, 0.15);   /* Fondo translúcido */
+        color: #e74c3c;
+        margin-top: 15px;   
+        margin-left: 50px;
+        width: 150px;
+        align-items: center;
+        justify-content: center;
+        border-radius: 15px;
+        font-size: 30px;
+      }
+
+      #heading-event-name{
+        font-size: 18px;
+      }
+
+
+      #box-myinscription{
+        border-radius: 15px;
+        background-color: #1a1c2c;
+        margin-left: 25px;
+        margin-top: 40px;
+        height: 325px;
+        width: 300px;
+      }
+
+      #box-myinscription:nth-child(n+8) {
+        margin-top: -270px;
+      }
+
+      #box-myinscription:hover{
+        border-color: #9678C8;
+      }
+
+
+      #info-date-myinscription-div{
+        margin-left: 40px;  
+      }
+
+      #info-clock-myinscription-div{
+        margin-left: 40px;  
+      }  
+
+      #info-members-myinscription-div{
+      
+        margin-left: 40px;
+      }
+
+      #span-inscription-date{
+        font-size: 15px;
+        color: grey;
+        margin-left: 15px;  
+        margin-top: 5px;
+      }
+
+      #icon-myinscription{
+        height: 40px;
+        width: 40px;
+        margin-left: 48px;
+        margin-top: -20px;
+      }
+
+      #icon-myinscription:hover{
+        background-color: #282b40;
+        color:#9678C8;
+        border-radius: 5px;
+      }
+  }  
+}
+
+@media only screen and (min-width: 707px) and (max-width: 1920px) { 
+        
+    .DialogContentMyInscription {
   background-color: rgba(15, 17, 26, 0.95);
   border-radius: 10px;
   box-shadow: var(--shadow-6);
@@ -112,3 +240,7 @@
   color:#9678C8;
   border-radius: 5px;
 }
+
+}
+
+

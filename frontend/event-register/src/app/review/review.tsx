@@ -8,7 +8,6 @@ import { RadioGroup } from "radix-ui";
 import { MixIcon,StarFilledIcon,StarIcon, CheckIcon,Cross2Icon,ArrowUpIcon,ArrowDownIcon, ChevronDownIcon, ChevronUpIcon} from "@radix-ui/react-icons";
 import { Dialog, Select } from "radix-ui";
 
-import { randomUUID } from "crypto";
 
 export default function Review({ event }: { event: any }) {
 
@@ -26,6 +25,7 @@ export default function Review({ event }: { event: any }) {
    const [reviewContent, setReviewsContent] = useState<string>("");
    const [rating, setRating] = useState<number>(0);
    const [visibleReviews, setVisibleReviews] = useState<number>(4); 
+   const [visibleReview, setVisibleReview] = useState<number>(4); 
    const [review_index, setReviewIndex] = useState<number>(0); 
    const [edition_result, setEditionResult] = useState<string>("");
    const [category_result, setCategoryResult] = useState<string>("")
@@ -75,14 +75,15 @@ export default function Review({ event }: { event: any }) {
    useEffect(() => {
       const updateVisibleReviews = () => {
          if (window.matchMedia("(max-width: 707px)").matches) {
-            setVisibleReviews(3);
-            setIndex(3)
-         } else if (window.matchMedia("(max-width: 1024px)").matches) {
-            setVisibleReviews(4);
+            setVisibleReview(2);
+            setIndex(2)
+         } 
+         if (window.matchMedia("(min-width: 707px) and (max-width: 1920px)").matches) {
+            setVisibleReview(4);
             setIndex(4)
          } else {
-            setVisibleReviews(6);
-            setIndex(6)
+            setVisibleReview(2);
+            setIndex(2)
          }
       };
 
@@ -367,13 +368,13 @@ export default function Review({ event }: { event: any }) {
    return ( 
    <div id = "events-list-div" className='flex flex-col border-2 border-solid border-white/[.08]'>
       <div id = "title-events" className="flex flex-col relative border-2 border-solid border-white/[.08]">
-            <Heading id="heading-events">Events results and reviews</Heading>  
+            <Heading id="heading-events">Results and reviews</Heading>  
       </div>
       <div id = "filter-info" className="flex flex-row gap-2 justify-between"> 
          <div id="event-info-comments" className="flex flex-col gap-2 h-full">
             <div id = "even-information" className="flex flex-col p-5 border-2 border-solid border-white/[.08]">
                   <div className="flex flex-row justify-between items-center">
-                     <Heading id = "event-info-heading" className="text-3xl font-bold mb-4"> {event.event_name} Information</Heading>
+                     <Heading id = "event-info-heading" className="text-3xl font-bold mb-4"> {event.event_name} Info</Heading>
                       {new Date() < new Date(event.celebration_date) ? 
                         <Badge id="badge-review-green" color="green" variant="solid">
                               Published
@@ -476,15 +477,15 @@ export default function Review({ event }: { event: any }) {
                   <div id= "event-comments" className="p-6 flex flex-col border-2 border-solid border-white/[.08]">
                      <Heading id = "comments-heading" className="text-3xl font-bold mb-1">Comments and Reviews</Heading> 
                         {reviews.length > 0 ? (  
-                           reviews.slice(0,4).map((review,index) => (
+                           reviews.slice(0,visibleReview).map((review,index) => (
                               <Box id ="box-review" key={event.review_id || index} className="flex flex-col border-2 border-solid border-white/[.08]">
                                  <div id = "rating-review" className="flex flex-row items-center gap-2">
                                        <div  className="flex flex-row">
                                           {Array.from({ length: review.review_rating }).map((_, index) => (
-                                             <StarFilledIcon key={`filled-${index}`} />
+                                             <StarFilledIcon id="valoration-review" key={`filled-${index}`} />
                                           ))}
                                           {Array.from({ length: 5 - review.review_rating }).map((_, index) => (
-                                             <StarIcon key={`empty-${index}`} />
+                                             <StarIcon id="valoration-review" key={`empty-${index}`} />
                                           ))}
                                        </div>
                                        <span id="text-review">{review.review_text}</span>
@@ -521,10 +522,10 @@ export default function Review({ event }: { event: any }) {
                                              <div id = "rating-review-view" className="flex flex-row items-center gap-2">
                                                    <div  className="flex flex-row">
                                                       {Array.from({ length: review.review_rating }).map((_, index) => (
-                                                         <StarFilledIcon key={`filled-${index}`} />
+                                                         <StarFilledIcon id="valoration-review" key={`filled-${index}`} />
                                                       ))}
                                                       {Array.from({ length: 5 - review.review_rating }).map((_, index) => (
-                                                         <StarIcon key={`empty-${index}`} />
+                                                         <StarIcon id="valoration-review" key={`empty-${index}`} />
                                                       ))}
                                                    </div>
                                                    <span id="text-review">{review.review_text}</span>
@@ -593,62 +594,65 @@ export default function Review({ event }: { event: any }) {
          </div>
          <div id="event-results" className = "flex flex-col border-2 border-solid border-white/[.08] p-6 gap-4 ">
             <Heading id="result-heading" className="text-3xl font-bold mb-4">Results</Heading>
-            
             {(new Date().toISOString() > event.end_date) ? (
-               <><SegmentedControl.Root onValueChange={(value) => handleSelectCategory(value)} variant="surface" id="segment-root" defaultValue="inbox">
-                     {!event.category.includes(",") && <SegmentedControl.Item id="segment-item" value={event.category} className="border-2 border-solid border-white/[.08]"
-                        data-state={selectedSegment === event.category ? "on" : "off"}
-                        onClick={() => setSelectedSegment(event.category)}
-                     >{event.category}</SegmentedControl.Item>}
-                     {event.category.split(",").length >= 2 ? (
-                        event.category.split(",").map((Item: string, index: Key | null | undefined) => (
-                           <SegmentedControl.Item
-                              key={index}
-                              id="segment-item"
-                              data-state={selectedSegment === Item.trim() ? "on" : "off"}
-                              onClick={() => setSelectedSegment(Item.trim())}
-                              value={Item.trim()}
-                              className="border-2 border-solid border-white/[.08]"
+               <>
+                  <div id= "div-select-result" className="flex flex-col gap-4">
+                     <SegmentedControl.Root onValueChange={(value) => handleSelectCategory(value)} variant="surface" id="segment-root" defaultValue="inbox">
+                        {!event.category.includes(",") && <SegmentedControl.Item id="segment-item" value={event.category} className="border-2 border-solid border-white/[.08]"
+                           data-state={selectedSegment === event.category ? "on" : "off"}
+                           onClick={() => setSelectedSegment(event.category)}
+                        >{event.category}</SegmentedControl.Item>}
+                        {event.category.split(",").length >= 2 ? (
+                           event.category.split(",").map((Item: string, index: Key | null | undefined) => (
+                              <SegmentedControl.Item
+                                 key={index}
+                                 id="segment-item"
+                                 data-state={selectedSegment === Item.trim() ? "on" : "off"}
+                                 onClick={() => setSelectedSegment(Item.trim())}
+                                 value={Item.trim()}
+                                 className="border-2 border-solid border-white/[.08]"
 
-                           >
-                              {Item.trim()}
-                           </SegmentedControl.Item>
-                        ))
-                     ) : null}
-                  </SegmentedControl.Root>
-                  <div id="filter-by-edition" className="flex flex-col">
-                     <Select.Root onValueChange={(value) => { handleSelectCategory(value); } }>
-                           <Select.Trigger className="SelectTrigger border-2 border-solid border-white/[.08]" aria-label="Food">
-                              <Select.Value placeholder="Select edition..." />
-                              <Select.Icon className="SelectIcon">
-                                 <ChevronDownIcon />
-                              </Select.Icon>
-                           </Select.Trigger>
-                           <Select.Portal>
-                              <Select.Content className="SelectContent border-2 border-solid border-white/[.08]">
-                                 <Select.ScrollUpButton className="SelectScrollButton border-2 border-solid border-white/[.08]">
-                                    <ChevronUpIcon />
-                                 </Select.ScrollUpButton>
-                                 <Select.Viewport className="SelectViewport">
-                                    <Select.Group>
-                                       <Select.Label className="SelectLabel">Edition</Select.Label>
-                                       <SelectItem id="select-item" value="2024-2025"
-                                          data-state={selectedSelect === "2024-2025" ? "on" : "off"}
-                                          onClick={() => setSelectedSelect("2024-2025")}
-                                       >2024-2025</SelectItem>
-                                       <SelectItem id="select-item" value="2023-2024"
-                                          data-state={selectedSelect === "2023-2024" ? "on" : "off"}
-                                          onClick={() => setSelectedSelect("2023-2024")}
-                                       >2023-2024</SelectItem>
-                                    </Select.Group>
-                                 </Select.Viewport>
-                                 <Select.ScrollDownButton className="SelectScrollButton">
+                              >
+                                 {Item.trim()}
+                              </SegmentedControl.Item>
+                           ))
+                        ) : null}
+                     </SegmentedControl.Root>
+                     <div id="filter-by-edition" className="flex flex-col">
+                        <Select.Root onValueChange={(value) => { handleSelectCategory(value); } }>
+                              <Select.Trigger className="SelectTrigger border-2 border-solid border-white/[.08]" aria-label="Food">
+                                 <Select.Value placeholder="Select edition..." />
+                                 <Select.Icon className="SelectIcon">
                                     <ChevronDownIcon />
-                                 </Select.ScrollDownButton>
-                              </Select.Content>
-                           </Select.Portal>
-                        </Select.Root>
-                  </div>
+                                 </Select.Icon>
+                              </Select.Trigger>
+                              <Select.Portal>
+                                 <Select.Content className="SelectContent border-2 border-solid border-white/[.08]">
+                                    <Select.ScrollUpButton className="SelectScrollButton border-2 border-solid border-white/[.08]">
+                                       <ChevronUpIcon />
+                                    </Select.ScrollUpButton>
+                                    <Select.Viewport className="SelectViewport">
+                                       <Select.Group>
+                                          <Select.Label className="SelectLabel">Edition</Select.Label>
+                                          <SelectItem id="select-item" value="2024-2025"
+                                             data-state={selectedSelect === "2024-2025" ? "on" : "off"}
+                                             onClick={() => setSelectedSelect("2024-2025")}
+                                          >2024-2025</SelectItem>
+                                          <SelectItem id="select-item" value="2023-2024"
+                                             data-state={selectedSelect === "2023-2024" ? "on" : "off"}
+                                             onClick={() => setSelectedSelect("2023-2024")}
+                                          >2023-2024</SelectItem>
+                                       </Select.Group>
+                                    </Select.Viewport>
+                                    <Select.ScrollDownButton className="SelectScrollButton">
+                                       <ChevronDownIcon />
+                                    </Select.ScrollDownButton>
+                                 </Select.Content>
+                              </Select.Portal>
+                           </Select.Root>
+                     </div>
+                 </div>
+
                      <div id="div-table-result" className="flex justify-center overflow-y-auto custom-scroll">
                         {eventResultsData.length > 0 && visibleResult ? (
                            <table id="table-result" className="border border-gray-300">

@@ -40,7 +40,7 @@ export default function MyEvents({ onGoToReview, setSelectedEvent }: { onGoToRev
 
    useEffect(() => {
      if (user_id !== 0) {
-      findMyEvents(); // Llama a findMyEvents solo si user_id es válido
+      findMyEvents(); 
      }
    }, [user_id]);
 
@@ -245,6 +245,8 @@ export default function MyEvents({ onGoToReview, setSelectedEvent }: { onGoToRev
       const data = await responseEvent.json();
       setNotification("")
       setEvents(data)
+      sessionStorage.setItem("myevents", JSON.stringify(data));
+
    }
 
    const updateEvent = async (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -306,7 +308,7 @@ export default function MyEvents({ onGoToReview, setSelectedEvent }: { onGoToRev
          <Heading id="heading-events">Your events</Heading>  
       </div>
       <div id = "events_disp" className="flex flex-wrap">        
-            {events.length > 0 ? (  // Verifica si hay eventos
+            {events.length > 0 ? (  
                events.map((event) => (
                   <Dialog.Root key={event.event_name}>                    
                         <Box
@@ -323,15 +325,15 @@ export default function MyEvents({ onGoToReview, setSelectedEvent }: { onGoToRev
                                  {event.event_name}
                                  </Heading>
                                  <div  id = "info-date-myevent-div"className="flex flex-row items-center">
-                                    <DrawingPinFilledIcon/>
+                                    <DrawingPinFilledIcon id="icon-box"/>
                                     <span title = "category" id="event-date">{event.category}</span>    
                                  </div>   
                                  <div  id = "info-clock-myevent-div"className="flex flex-row items-center">
-                                    <SewingPinFilledIcon/> 
+                                    <SewingPinFilledIcon id="icon-box"/> 
                                     <span id="event-date">{event.location}</span> 
                                  </div>
                                  <div  id = "info-members-myevent-div" className="flex flex-row items-center">
-                                    <PersonIcon/>
+                                    <PersonIcon id="icon-box"/>
                                     <span id="event-date">{event.capacity}</span>   
                                  </div>
                                  {new Date() < new Date(event.celebration_date) ? 
@@ -348,7 +350,7 @@ export default function MyEvents({ onGoToReview, setSelectedEvent }: { onGoToRev
                                  } 
                               </div>
                            </Dialog.Trigger>
-                           <div id="buttons-myevent" className="flex flex-row gap-2 items-center">
+                           <div id="buttons-myevent" className="flex flex-row gap-1 items-center">
                               <div>
                                  <Dialog.Root>
                                     <Dialog.Trigger asChild>
@@ -364,7 +366,7 @@ export default function MyEvents({ onGoToReview, setSelectedEvent }: { onGoToRev
                                           <div className="flex flex-col gap-3 py-2"> 
                                              <div className="flex flex-row items-center gap-5">
                                                 <div className="flex flex-col gap-1">
-                                                   <label htmlFor="event_name">Name</label>
+                                                   <label id= "label-create-event"  htmlFor="event_name">Name</label>
                                                    <input
                                                       id = "input-event"  
                                                       name = "event_name"
@@ -375,7 +377,7 @@ export default function MyEvents({ onGoToReview, setSelectedEvent }: { onGoToRev
                                                 />
                                                 </div>
                                                 <div className="fflex flex-col gap-1">
-                                                   <label htmlFor="event-type">Type</label>
+                                                   <label id= "label-create-event" htmlFor="event-type">Type</label>
                                                    <input
                                                       id = "input-event"  
                                                       name = "event_type"
@@ -388,7 +390,7 @@ export default function MyEvents({ onGoToReview, setSelectedEvent }: { onGoToRev
                                              </div>
                                              <div className="flex flex-row items-center gap-5">
                                                 <div className="flex flex-col gap-1">                        
-                                                      <label htmlFor="event-edition">Edition</label>
+                                                      <label  id= "label-create-event" htmlFor="event-edition">Edition</label>
                                                       <input
                                                          id = "input-event"  
                                                          name = "event_edition"
@@ -399,7 +401,7 @@ export default function MyEvents({ onGoToReview, setSelectedEvent }: { onGoToRev
                                                       />
                                                 </div>
                                                 <div className="flex flex-col gap-1">                        
-                                                         <label htmlFor="event-category">Category</label>
+                                                         <label id= "label-create-event"  htmlFor="event-category">Category</label>
                                                          <input
                                                             id = "input-event"  
                                                             name = "event_category"
@@ -412,7 +414,7 @@ export default function MyEvents({ onGoToReview, setSelectedEvent }: { onGoToRev
                                              </div>
                                              <div className="flex flex-row items-center gap-5">
                                                 <div className="flex flex-col gap-1">                        
-                                                      <label htmlFor="event-date">Start date</label>
+                                                      <label id= "label-create-event" htmlFor="event-date">Start date</label>
                                                       <input
                                                          id = "input-event"  
                                                          name = "event_date"
@@ -423,7 +425,7 @@ export default function MyEvents({ onGoToReview, setSelectedEvent }: { onGoToRev
                                                          />
                                                 </div>
                                                 <div className="flex flex-col gap-1">                        
-                                                      <label htmlFor="event-end-date">End date</label>
+                                                      <label id= "label-create-event" htmlFor="event-end-date">End date</label>
                                                          <input
                                                             id = "input-event"  
                                                             name = "event_end_date"
@@ -436,7 +438,7 @@ export default function MyEvents({ onGoToReview, setSelectedEvent }: { onGoToRev
                                              </div>
                                              <div className="flex flex-row items-center gap-5">
                                                 <div className="flex flex-col gap-1">                        
-                                                         <label htmlFor="event-location">Location</label>
+                                                         <label id= "label-create-event" htmlFor="event-location">Location</label>
                                                          <input
                                                             id = "input-event"  
                                                             name = "event_location"
@@ -447,7 +449,7 @@ export default function MyEvents({ onGoToReview, setSelectedEvent }: { onGoToRev
                                                          />
                                                 </div>
                                                 <div className="flex flex-col gap-1">                        
-                                                         <label htmlFor="event-capacity">Capacity</label>
+                                                         <label id= "label-create-event" htmlFor="event-capacity">Capacity</label>
                                                          <input
                                                             id = "input-event"  
                                                             name = "event_capacity"
@@ -459,7 +461,7 @@ export default function MyEvents({ onGoToReview, setSelectedEvent }: { onGoToRev
                                                 </div>
                                              </div>
                                              <div className="flex flex-col gap-1">                        
-                                                   <label htmlFor="event-description">Event resume</label>
+                                                   <label id= "label-create-event" htmlFor="event-description">Event resume</label>
                                                       <input
                                                          id = "input-event-large"  
                                                          name = "event_description"
@@ -471,7 +473,7 @@ export default function MyEvents({ onGoToReview, setSelectedEvent }: { onGoToRev
                                              </div>
                                              <div className="flex flex-row items-center gap-5">
                                                 <div className="flex flex-col gap-1">                        
-                                                      <label htmlFor="organizer-by">Organizer by</label>
+                                                      <label id= "label-create-event" htmlFor="organizer-by">Organizer by</label>
                                                          <input
                                                             id = "input-event-large"  
                                                             name = "organizer-by"
@@ -484,7 +486,7 @@ export default function MyEvents({ onGoToReview, setSelectedEvent }: { onGoToRev
                                              </div>
                                              <div className="flex flex-row items-center gap-5">
                                                 <div className="flex flex-col gap-1">                        
-                                                      <label htmlFor="Language">Event price</label>
+                                                      <label id= "label-create-event" htmlFor="Language">Event price</label>
                                                          <input
                                                             id = "input-event"  
                                                             name = "price"
@@ -505,11 +507,11 @@ export default function MyEvents({ onGoToReview, setSelectedEvent }: { onGoToRev
                                                          <CheckIcon />
                                                       </Checkbox.Indicator>
                                                    </Checkbox.Root>}  
-                                                   <label htmlFor="organizer-by">Is free?</label>
+                                                   <label id= "label-create-event" htmlFor="organizer-by">Is free?</label>
                                                 </div>
                                              </div>
                                              <div className="flex flex-col gap-1">
-                                                <label htmlFor="Event Description">Event Description</label>
+                                                <label id= "label-create-event" htmlFor="Event Description">Event Description</label>
                                                    <TextArea 
                                                    id= "input-event-big"
                                                    name = "description"
@@ -547,6 +549,99 @@ export default function MyEvents({ onGoToReview, setSelectedEvent }: { onGoToRev
                                  </Dialog.Root>    
                               </div>                        
                               <div>
+                                 <Dialog.Root>
+                                    <Dialog.Trigger asChild>
+                                       {(new Date().toISOString() > event.end_date) && <FileIcon data-event-id={event.event_id} id="file-myevent"/>}
+                                    </Dialog.Trigger>   
+                                    <Dialog.Portal>
+                                       <Dialog.Overlay className="DialogOverlay" />
+                                       <Dialog.Content className="DialogContentUpload border-2 border-solid border-white/[.08]">
+                                          <Dialog.Title className="DialogTitle">Event Result</Dialog.Title>
+                                          <Dialog.Description  className="DialogDescription">
+                                             Upload event result
+                                          </Dialog.Description>  
+                                          <div className="flex flex-col items-center gap-4">
+                                             <div className="flex flex-row items-center gap-2 items-center">
+                                                <label id= "label-create-event" htmlFor="event_name">CSV file</label>
+                                                <div className="border-2 border-solid border-white/[.08]">
+                                                   <input
+                                                      id = "input-upload"  
+                                                      name = "event_name"
+                                                      type="file"
+                                                      placeholder="Select the file..."
+                                                      onChange={(e) => {
+                                                         const file = e.target.files?.[0];
+                                                         if (file) {
+                                                            setSelectedFile(file); 
+                                                         }
+                                                      }}
+                                                   />
+                                                </div>
+                                             </div>
+                                             <div className="flex flex-row items-center gap-2 items-center">
+                                                <label id= "label-create-event" htmlFor="event_name">Event category</label>
+                                                   <div id="filter-by-edition-event">
+                                                      <Select.Root onValueChange={(value) => handleSelectChange(value)}>
+                                                         <Select.Trigger className="SelectTrigger border-2 border-solid border-white/[.08]" aria-label="Food">
+                                                            <Select.Value placeholder="Select category" />
+                                                            <Select.Icon className="SelectIcon">
+                                                               <ChevronDownIcon id="icon-chev" />
+                                                            </Select.Icon>
+                                                         </Select.Trigger>
+                                                         <Select.Portal>
+                                                            <Select.Content className="SelectContent border-2 border-solid border-white/[.08]">
+                                                               <Select.ScrollUpButton className="SelectScrollButton border-2 border-solid border-white/[.08]">
+                                                                  <ChevronUpIcon />
+                                                               </Select.ScrollUpButton>
+                                                               <Select.Viewport className="SelectViewport">
+                                                                  <Select.Group>
+                                                                     <Select.Label className="SelectLabel">Category</Select.Label>
+                                                                     {event.category.split(",").map((category : any, index : any) => (
+                                                                        <SelectItem key={index} value={category.trim()}>
+                                                                           {category.trim()}
+                                                                        </SelectItem>
+                                                                     ))}
+                                                                  </Select.Group>
+                                                               </Select.Viewport>
+                                                               <Select.ScrollDownButton className="SelectScrollButton">
+                                                                  <ChevronDownIcon />
+                                                               </Select.ScrollDownButton>
+                                                            </Select.Content>
+                                                         </Select.Portal>
+                                                      </Select.Root>
+                                                   </div>
+                                             </div>
+                                             <Button id = "button-upload" color="violet" onClick={() => {
+                                                if (selectedFile && category_result) {
+                                                   handleFileChange(selectedFile, event.event_id, event.event_name, event.event_edition);
+                                                }
+                                                else{
+                                                   setError('A CSV file and a category are required.')
+                                                   setTimeout(() => {
+                                                      setError('')
+                                                   },2000)
+                                                } 
+                                             }}>Upload</Button>
+                                             {error && 
+                                                <Callout.Root id = "callout-root-upload-error" color="red" size="2" variant="soft" className="flex items-center ">
+                                                   <Callout.Icon className="callout-icon-upload" >
+                                                      <ExclamationTriangleIcon  />
+                                                   </Callout.Icon>
+                                                   <Callout.Text className="callout-text-upload"> {error} </Callout.Text> 
+                                                </Callout.Root>}
+                                             {uploadSUcess && 
+                                                <Callout.Root id = "callout-root-upload" color="green" size="2" variant="soft" className="flex items-center ">
+                                                   <Callout.Icon className="callout-icon-upload" >
+                                                      <InfoCircledIcon  />
+                                                   </Callout.Icon>
+                                                   <Callout.Text className="callout-text-upload"> File uploaded successfully </Callout.Text> 
+                                                </Callout.Root>}   
+                                          </div>
+                                       </Dialog.Content>  
+                                    </Dialog.Portal>         
+                                 </Dialog.Root>      
+                              </div>
+                              <div>
                                  <AlertDialog.Root>
                                     {(new Date() < new Date(event.celebration_date) || new Date() > new Date(event.end_date)) && 
                                        <AlertDialog.Trigger>
@@ -565,7 +660,7 @@ export default function MyEvents({ onGoToReview, setSelectedEvent }: { onGoToRev
                                              </Button>
                                           </AlertDialog.Cancel>
                                           <AlertDialog.Action>
-                                             <Button onClick={() => deleteEvent(event.event_name)} variant="solid" color="red">
+                                             <Button  id ="delete-button" onClick={() => deleteEvent(event.event_name)} variant="solid" color="red">
                                                 Delete
                                              </Button>
                                           </AlertDialog.Action>
@@ -573,102 +668,8 @@ export default function MyEvents({ onGoToReview, setSelectedEvent }: { onGoToRev
                                     </AlertDialog.Content>
                                  </AlertDialog.Root>
                               </div>
-                              <div>
-                              <Dialog.Root>
-                                 <Dialog.Trigger asChild>
-                                    {(new Date().toISOString() > event.end_date) && <FileIcon data-event-id={event.event_id} id="file-myevent"/>}
-                                 </Dialog.Trigger>   
-                                 <Dialog.Portal>
-                                    <Dialog.Overlay className="DialogOverlay" />
-                                    <Dialog.Content className="DialogContentUpload border-2 border-solid border-white/[.08]">
-                                       <Dialog.Title className="DialogTitle">Event Result</Dialog.Title>
-                                       <Dialog.Description  className="DialogDescription">
-                                          Upload event result
-                                       </Dialog.Description>  
-                                       <div className="flex flex-col items-center gap-4">
-                                          <div className="flex flex-row items-center gap-2 items-center">
-                                             <label htmlFor="event_name">CSV file</label>
-                                             <div className="border-2 border-solid border-white/[.08]">
-                                                <input
-                                                   id = "input-upload"  
-                                                   name = "event_name"
-                                                   type="file"
-                                                   placeholder="Select the file..."
-                                                   onChange={(e) => {
-                                                      const file = e.target.files?.[0];
-                                                      if (file) {
-                                                         setSelectedFile(file); 
-                                                      }
-                                                   }}
-                                                />
-                                             </div>
-                                          </div>
-                                          <div className="flex flex-row items-center gap-2 items-center">
-                                             <label htmlFor="event_name">Event category</label>
-                                                <div id="filter-by-edition-event">
-                                                   <Select.Root onValueChange={(value) => handleSelectChange(value)}>
-                                                      <Select.Trigger className="SelectTrigger border-2 border-solid border-white/[.08]" aria-label="Food">
-                                                         <Select.Value placeholder="Select category" />
-                                                         <Select.Icon className="SelectIcon">
-                                                            <ChevronDownIcon />
-                                                         </Select.Icon>
-                                                      </Select.Trigger>
-                                                      <Select.Portal>
-                                                         <Select.Content className="SelectContent border-2 border-solid border-white/[.08]">
-                                                            <Select.ScrollUpButton className="SelectScrollButton border-2 border-solid border-white/[.08]">
-                                                               <ChevronUpIcon />
-                                                            </Select.ScrollUpButton>
-                                                            <Select.Viewport className="SelectViewport">
-                                                               <Select.Group>
-                                                                  <Select.Label className="SelectLabel">Category</Select.Label>
-                                                                  {event.category.split(",").map((category : any, index : any) => (
-                                                                     <SelectItem key={index} value={category.trim()}>
-                                                                        {category.trim()}
-                                                                     </SelectItem>
-                                                                  ))}
-                                                               </Select.Group>
-                                                            </Select.Viewport>
-                                                            <Select.ScrollDownButton className="SelectScrollButton">
-                                                               <ChevronDownIcon />
-                                                            </Select.ScrollDownButton>
-                                                         </Select.Content>
-                                                      </Select.Portal>
-                                                   </Select.Root>
-                                                </div>
-                                          </div>
-                                          <Button id = "button-upload" color="violet" onClick={() => {
-                                             if (selectedFile && category_result) {
-                                                handleFileChange(selectedFile, event.event_id, event.event_name, event.event_edition);
-                                             }
-                                             else{
-                                                setError('A CSV file and a category are required.')
-                                                setTimeout(() => {
-                                                   setError('')
-                                                },2000)
-                                             } 
-                                          }}>Upload</Button>
-                                          {error && 
-                                             <Callout.Root id = "callout-root-upload-error" color="red" size="2" variant="soft" className="flex items-center ">
-                                                <Callout.Icon className="callout-icon-upload" >
-                                                   <ExclamationTriangleIcon  />
-                                                </Callout.Icon>
-                                                <Callout.Text className="callout-text-upload"> {error} </Callout.Text> 
-                                             </Callout.Root>}
-                                          {uploadSUcess && 
-                                             <Callout.Root id = "callout-root-upload" color="green" size="2" variant="soft" className="flex items-center ">
-                                                <Callout.Icon className="callout-icon-upload" >
-                                                   <InfoCircledIcon  />
-                                                </Callout.Icon>
-                                                <Callout.Text className="callout-text-upload"> File uploaded successfully </Callout.Text> 
-                                             </Callout.Root>}   
-                                       </div>
-                                    </Dialog.Content>  
-                                 </Dialog.Portal>         
-                              </Dialog.Root>      
-                              </div>
                            </div>
                         </Box>
-                    
                      <Dialog.Portal>
                      <Dialog.Overlay className="DialogOverlay" />
                         <Dialog.Content className="DialogContentMyEvent border-2 border-solid border-white/[.08]">
@@ -680,36 +681,36 @@ export default function MyEvents({ onGoToReview, setSelectedEvent }: { onGoToRev
                               <div className="flex flex-col gap-3">
                                  <div className="flex items-center gap-3">
                                     <div className="flex flex-row gap-1 items-center">
-                                       <DrawingPinFilledIcon/>
-                                       <span>{event.category}</span>  
+                                       <DrawingPinFilledIcon id ="icon-info"/>
+                                       <span  id="event-info">{event.category}</span>  
                                     </div>
                                     <div className="flex flex-row gap-1 items-center">
-                                       <SewingPinFilledIcon/>
-                                       <span> {event.location}</span>  
+                                       <SewingPinFilledIcon id ="icon-info"/>
+                                       <span  id="event-info"> {event.location}</span>  
                                     </div> 
                                     <div className="flex flex-row gap-1 items-center">
-                                       <PersonIcon/>
-                                       <span> {event.capacity}</span>  
+                                       <PersonIcon id ="icon-info"/>
+                                       <span  id="event-info"> {event.capacity}</span>  
                                     </div>
                                  </div>
                                  <div className="flex flex-col gap-2">
-                                    Start date
-                                    <div className="flex flex-row gap-1 items-center">                                            
-                                       <LapTimerIcon/>
-                                       <span>{event.celebration_date.split("T")[0]}</span>   
+                                 <span id= "event-info">Start date</span>
+                                 <div className="flex flex-row gap-1 items-center">                                            
+                                       <LapTimerIcon id ="icon-info"/>
+                                       <span  id="event-info">{event.celebration_date.split("T")[0]}</span>   
                                     </div>
                                     <div className="flex flex-row gap-1 items-center">
-                                       <ClockIcon/>
-                                       <span>{event.celebration_date.split("T")[1]}</span>
+                                       <ClockIcon id ="icon-info"/>
+                                       <span  id="event-info">{event.celebration_date.split("T")[1]}</span>
                                     </div>
-                                    End date
+                                    <span id= "event-info">End date</span>
                                     <div className="flex flex-row gap-1 items-center">                                            
-                                       <LapTimerIcon/>
-                                       <span>{event.end_date.split("T")[0]}</span>   
+                                       <LapTimerIcon id ="icon-info"/>
+                                       <span  id="event-info">{event.end_date.split("T")[0]}</span>   
                                     </div>
                                     <div className="flex flex-row gap-1 items-center">
-                                       <ClockIcon/>
-                                       <span>{event.end_date.split("T")[1]}</span>
+                                       <ClockIcon id ="icon-info"/>
+                                       <span  id="event-info">{event.end_date.split("T")[1]}</span>
                                     </div>
                                  </div>
                                  <p id="event-description">{event.event_description}</p>
@@ -720,8 +721,8 @@ export default function MyEvents({ onGoToReview, setSelectedEvent }: { onGoToRev
                                  <Button
                                     variant="soft" color = "pink"
                                     onClick={() => {
-                                       setSelectedEvent(event); // Guarda los datos del evento seleccionado
-                                       onGoToReview(); // Navega a la sección "review"
+                                       setSelectedEvent(event); 
+                                       onGoToReview(); 
                                     }}
                                     id="button-more-details"
                                  >

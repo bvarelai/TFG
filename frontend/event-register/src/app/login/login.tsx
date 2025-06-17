@@ -65,7 +65,6 @@ export default function Login() {
         return;
       }
       const loginDate = new Date().toISOString();
-      sessionStorage.setItem("session_id", data.session_id);
       sessionStorage.setItem("user_id", data.user_id.toString());
       sessionStorage.setItem("user_name", user_name);
       sessionStorage.setItem("organizer", data.organizer);

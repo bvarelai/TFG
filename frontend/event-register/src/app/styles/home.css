@@ -1,4 +1,169 @@
-#events-main-div{
+
+@media only screen and (max-width: 707px){
+
+  @media screen and (orientation: portrait) {
+     
+    #events-main-div{
+      background-color: #1a1c2c;
+      width: 700px;
+    }
+    
+    #events-menu-div{
+      background-color: rgba(15, 17, 26, 0.8);
+      border-radius: 5px;
+      margin-block-end: 10px;
+      margin-left: 10px;
+      margin-right: 10px;
+    }
+
+    #menu-icon{
+      width: 60px;
+      height: 60px;
+    }
+
+    #home-button{
+      color: white;
+      width: 100px;
+      height: 100px;
+      border-radius: 3px;
+      font-size: 17px;
+      margin-left: 70px;
+      margin-top: 15px;
+      margin-block-end: 15px;
+    }
+    
+    #home-button:hover{
+      color:#9678C8;
+    }
+  
+    #home-button[data-state="on"] {
+      color: #9678C8; /* Color del texto */
+    }
+  
+    
+    #myevents-button{
+      color: white;
+      width: 100px;
+      height: 100px;
+      border-radius: 3px;
+      font-size: 17px;
+      margin-top: 15px;
+      margin-left: 50px;
+      margin-block-end: 15px;
+    }
+    
+    #myevents-button:hover{
+      color:#9678C8
+    }
+    
+    #myevents-button[data-state="on"] {
+      color: #9678C8; /* Color del texto */
+    }
+    
+    #myinscriptions-button{
+      color: white;
+      width: 100px;
+      height: 100px;
+      border-radius: 3px;
+      font-size: 17px;
+      margin-top: 15px;
+      margin-left: 50px;
+      margin-block-end: 15px;
+    }
+    
+    #myinscriptions-button:hover{
+      color:#9678C8
+    }
+    
+    #myinscriptions-button[data-state="on"] {
+      color: #9678C8; /* Color del texto */
+    }   
+  
+    #myreviews-button{
+      color: white;
+      width: 100px;
+      height: 100px;
+      border-radius: 3px;
+      font-size: 17px;
+      margin-top: 15px;
+      margin-left: 50px;
+      margin-block-end: 15px;
+    }
+    
+    #myreviews-button:hover{
+      color:#9678C8
+    }
+  
+    #myreviews-button[data-state="on"] {
+      color: #9678C8; /* Color del texto */
+    }   
+  
+  
+    #stadistics-button{
+      color: white;
+      width: 100px;
+      height: 100px;
+      border-radius: 3px;
+      font-size: 17px;
+      margin-top: 15px;
+      margin-left: 50px;
+      margin-block-end: 15px;
+    }
+    
+    #stadistics-button:hover{
+      color:#9678C8
+    }
+  
+    #stadistics-button[data-state="on"] {
+      color: #9678C8; /* Color del texto */
+    }   
+  
+    #profile-button{
+      color: white;
+      width: 100px;
+      height: 100px;
+      border-radius: 3px;
+      font-size: 17px;
+      margin-top: 15px;
+      margin-left: 50px;
+      margin-block-end: 15px;
+    }
+    
+    #profile-button:hover{
+      color:#9678C8
+    }
+    
+    #profile-button[data-state="on"] {
+      color: #9678C8; /* Color del texto */
+    }   
+  
+    #logout-button{
+      color: white;
+      width: 100px;
+      height: 100px;
+      border-radius: 3px;
+      font-size: 17px;
+      margin-top: 15px;
+      margin-left: 50px;
+      margin-block-end: 15px;
+    }
+    
+    #logout-button:hover{
+      color:#9678C8
+    }
+  
+    #logout-button[data-state="on"] {
+      color: #9678C8; /* Color del texto */
+    }   
+     
+  }
+} 
+
+
+
+@media only screen and (min-width: 707px) and (max-width: 1920px) { 
+
+  #events-main-div{
     height: 100vh;
     background-color: #1a1c2c;
   
@@ -13,7 +178,12 @@
     margin-top: 10px;
     margin-block-end: 10px;
   }
-  
+   
+  #menu-button{
+    display: none;
+  }
+
+
   #home-button{
     color: white;
     width: 100px;
@@ -141,3 +311,8 @@
     background-color: #1f2133; /* Color de fondo para el botón seleccionado */
     color: #9678C8; /* Color del texto */
   }   
+   
+}
+
+
+

@@ -15,6 +15,7 @@ export default function Stadistics() {
    const [review,setReview] =useState<any[]>([]);
    const [myinscriptions,setMyInscription] =useState<any[]>([]);
    const [myReviews,setMyReviews] =useState<any[]>([]);
+   const [user, setUser] = useState<any>([]);
    const [user_name, setUserName] = useState<string>("");
    const [sur_name, setSurname] = useState<String>("");
    const [age, setAge] = useState<Number>(0);
@@ -44,13 +45,36 @@ export default function Stadistics() {
          const formattedDate = date.toLocaleDateString('en-US', options);
          setMember(formattedDate);
       }
-      findEventsCreate()
    },[])
 
+
    useEffect(() => {
-      findMyInscriptions() 
-      findMyReviews()
-   },[])
+      const cached = sessionStorage.getItem("event_create");
+      if (cached) {
+         setEvents(JSON.parse(cached));
+      } else {
+         findEventsCreate()
+      }
+   }, []);
+
+   useEffect(() => {
+      const cached = sessionStorage.getItem("myinscriptions");
+      if (cached) {
+         setMyInscription(JSON.parse(cached));
+      } else {
+         findMyInscriptions()
+      }
+   }, []);
+
+   useEffect(() => {
+      const cached = sessionStorage.getItem("myreviews");
+      if (cached) {
+         setMyReviews(JSON.parse(cached));
+      } else {
+         findMyReviews()
+      }
+   }, []);
+
 
    useEffect(() => {
       if (myinscriptions.length > 0) {
@@ -69,6 +93,26 @@ export default function Stadistics() {
       findAllReviews();
    }, [events]);
 
+   useEffect(() => {
+      const cached = sessionStorage.getItem("allinscriptions");
+      if (cached) {
+         setInscription(JSON.parse(cached));
+      } else {
+         findAllInscriptions()
+      }
+   }, [events])
+
+   useEffect(() => {
+      const cached = sessionStorage.getItem("allreviews");
+      if (cached) {
+         setReview(JSON.parse(cached));
+      } else {
+         findAllReviews()
+      }
+   }, [events])
+   
+   
+   
    const findMostFrequentLocation = () => {
       if (events.length === 0) return "No locations available";
 
@@ -172,7 +216,7 @@ export default function Stadistics() {
       };
    };
 
-   const { best, worst, bestEvent} = getBestAndWorstPosition(user_name);
+   const { best, worst, bestEvent} = getBestAndWorstPosition(user.user_name);
 
 
    const calculateAveragePosition = (userName: string) => { 
@@ -324,17 +368,7 @@ export default function Stadistics() {
             return; 
          }
          const data = await reponse.json()
-
-         setUserName(data.user_name)
-         setSurname(data.user_surname)
-         setAge(data.age)
-         setEmail(data.email)
-         setCity(data.city)
-         setIsOrganizer(data.is_organizer)
-         setPhone(data.phone)
-         setCountry(data.country)
-         setAutonomy(data.autonomous_community)
-         setregisterDate(data.register_date)
+         setUser(data);
    }
 
    const findEventsCreate = async () => {
@@ -349,6 +383,7 @@ export default function Stadistics() {
        
       const data = await response.json()
       setEvents(data);      
+      sessionStorage.setItem("event_create", JSON.stringify(data));
    }
 
    const findTotalInscriptions = async () => {
@@ -387,6 +422,7 @@ export default function Stadistics() {
       
       const flattenedInscriptions = allInscriptions.flat();
       setInscription(flattenedInscriptions); 
+      sessionStorage.setItem("allinscriptions", JSON.stringify(flattenedInscriptions));
       return flattenedInscriptions.length; 
    }
 
@@ -408,6 +444,8 @@ export default function Stadistics() {
       
       const flattenedReview = allInscriptions.flat();
       setReview(flattenedReview); 
+      sessionStorage.setItem("allreviews", JSON.stringify(flattenedReview));
+
    }
 
    const findMyInscriptions = async() => {
@@ -423,6 +461,7 @@ export default function Stadistics() {
       const data = await response.json();
       if (Array.isArray(data)) {
          setMyInscription(data); 
+         sessionStorage.setItem("myinscriptions", JSON.stringify(data));
       } else {
          setMyInscription([]); 
       }
@@ -441,6 +480,7 @@ export default function Stadistics() {
       const data = await response.json();
       if (Array.isArray(data)) {
          setMyReviews(data); 
+         sessionStorage.setItem("myreviews", JSON.stringify(data));
       } else {
          setMyReviews([]); 
       }
@@ -468,21 +508,21 @@ export default function Stadistics() {
    return (
    <div id = "events-list-div" className='flex flex-col border-2 border-solid border-white/[.08]'>
       <div id = "title-events" className="flex flex-col relative border-2 border-solid border-white/[.08]">
-            <Heading id="heading-events">User information and Stadistics</Heading>  
+            <Heading id="heading-events">Profile and Stadistics</Heading>  
       </div>
       <div id = "filter-events" className="flex flex-col gap-2 "> 
-         <div className="flex flex-row">
+         <div id = "first-row" className="flex flex-row">
             <div id="user-info" className="flex flex-col border-2 border-solid border-white/[.08]">
                <div className="flex flex-row gap-2">
                   <div id="user-avatar">
                      <Avatar.Root className="AvatarRoot">
-                        <Avatar.Fallback className="AvatarFallback">{user_name[0]}</Avatar.Fallback>
+                        <Avatar.Fallback className="AvatarFallback">{user?.user_name?.[0]}</Avatar.Fallback>
                      </Avatar.Root>  
                   </div>
                   <div className="flex flex-col gap-2">
-                  <span id="user-name-span">{user_name}</span>
-                  <span id="user-other-span">{sur_name}</span>   
-                  <span id="user-other-span">{age.toString()} years </span>   
+                  <span id="user-name-span">{user.user_name}</span>
+                  <span id="user-other-span">{user.user_surname}</span>   
+                  <span id="user-other-span">{user.age} years </span>   
                   </div>
                </div>
                <div id="other-info" className="flex flex-col">
@@ -491,14 +531,14 @@ export default function Stadistics() {
                         <EnvelopeClosedIcon id="icon-email"/>
                         <span>Email</span>
                         <span id="email-span">
-                           {email}
+                           {user.email}
                         </span>               
                      </Box>
                      <Box id="user-info-box" className="flex flex-col gap-3 border-2 border-solid border-white/[.08]">
                         <SewingPinFilledIcon id="icon-email"/>
                         <span>City</span>
                         <span id="email-span">
-                           {city}
+                           {user.city}
                         </span>         
                      </Box>
                      <Box id="user-info-box" className="flex flex-col gap-3 border-2 border-solid border-white/[.08]">
@@ -512,14 +552,14 @@ export default function Stadistics() {
                         </div>
                         <span>Community</span>
                         <span id="email-span">
-                           {autonomy}
+                           {user.autonomous_community}
                         </span>         
                      </Box>
                      <Box id="user-info-box" className="flex flex-col gap-3 border-2 border-solid border-white/[.08]">
                      <GlobeIcon id="icon-email"/>
                      <span>Country</span>
                      <span id="email-span">
-                           {country}
+                           {user.country}
                      </span>         
                      </Box>
                   </div>
@@ -535,7 +575,7 @@ export default function Stadistics() {
                         </div>
                      <span id="phone-user" >Phone</span>
                      <span id="email-span">
-                        {phone}
+                        {user.phone}
                      </span>         
                      </Box>
                      
@@ -543,7 +583,7 @@ export default function Stadistics() {
                         <PersonIcon id="icon-email"/>
                         <span>User type</span>
                         <span id="email-span">
-                           {isOrganizer ? "Organizer" : "assistant"}
+                           {user.is_organizer ? "Organizer" : "assistant"}
                         </span>               
                      </Box>
                      <Box id="user-info-box" className="flex flex-col gap-3 border-2 border-solid border-white/[.08]">
@@ -570,7 +610,7 @@ export default function Stadistics() {
                 </Box>
               ) : (              
                   <div className="flex flex-row gap-2">                 
-                     {isOrganizer ? 
+                     {user.is_organizer ? 
                         <div className="flex flex-col">
                            <div id="events-create" className="flex flex-col border-2 border-solid border-white/[.08]">
                               <span id = "number-events-create">
@@ -615,7 +655,7 @@ export default function Stadistics() {
                         </div></>
                      }
                      <div className="flex flex-col">
-                        {isOrganizer ?                
+                        {user.is_organizer ?                
                            <>
                            <div id="total-participants" className="flex flex-col border-2 border-solid border-white/[.08]">
                               <span id="number-events-create">
@@ -630,8 +670,8 @@ export default function Stadistics() {
                               <>
                                  <span id="label-attented-events">Most Attented event</span>
                                  {calculateMostAttendedEvent().map((event, index) => {
-                                    const COLORS = ["#A076F9", "#C9B8FF", "#8F6BA8"]; // Oro, plata, bronce
-                                    const normalizedAttendance = (event.attendance).toFixed(2); // Normaliza el attendance
+                                    const COLORS = ["#A076F9", "#C9B8FF", "#8F6BA8"]; 
+                                    const normalizedAttendance = (event.attendance).toFixed(2); 
 
                                     return (
                                        <div
@@ -688,7 +728,7 @@ export default function Stadistics() {
                )
             }            
             <div className="flex flex-row">
-               {isOrganizer ?      
+               {user.is_organizer ?      
                   <div id="participants-by-category" className="flex flex-col border-2 border-solid border-white/[.08]">
                      {prepareChartData().length == 0 ? (
                        <><MixIcon id="no-data-icon-stats2"/><label id="label-no-data-stats2">No stadistics to show</label></>
@@ -758,11 +798,11 @@ export default function Stadistics() {
             <div className="flex flex-row">
                <div className="flex flex-col">
                   <div className="flex flex-row">
-                     {isOrganizer ?                      
+                     {user.is_organizer ?                      
                         <div id="rating-info" className="flex flex-col border-2 border-solid border-white/[.08]">                     
                            <span id="label-rating"> Mean event rating </span>
                            <div id ="bar-chart">
-                              <BarChart width={770} height={320} data={prepareBarChartData()}>
+                              <BarChart id="bar-dim" width={770} height={320} data={prepareBarChartData()}>
                                  <XAxis dataKey="name" stroke="#cccccc" />
                                  <YAxis stroke="#cccccc"/>
                                  <Tooltip />
@@ -788,7 +828,7 @@ export default function Stadistics() {
                   </div>
                </div>              
             <div className="flex flex-row">
-                  {isOrganizer ?
+                  {user.is_organizer ?
                      <div id="number-events-info" className="flex flex-col border-2 border-solid border-white/[.08]">                     
                         <span id="label-rating"> Number of events over time </span>
                         <div id ="line-chart">
@@ -824,7 +864,7 @@ export default function Stadistics() {
                                     <BarChartIcon id="icon-position"/>
                                     <span id="span-position"> Average position </span>
                                  </div>
-                                 <span id="number-position"> {getOrdinal(Number(calculateAveragePosition(user_name)))} </span>
+                                 <span id="number-position"> {getOrdinal(Number(calculateAveragePosition(user.user_name)))} </span>
                               </div>
                            </div>
                         </div>
