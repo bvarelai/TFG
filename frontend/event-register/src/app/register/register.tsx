@@ -240,15 +240,15 @@ export default function Login() {
             />
              <div id = "check-box-register" className="flex flex-rows gap-2.5 relative top-[-110px] items-center"
              onClick={() => setOrganizer(!organizer)}>
-              <Text className="Label" htmlFor="c1">
+              <Text id="register-label" className="Label" htmlFor="c1">
                 Be organizer
               </Text>
-              {!organizer ? <Checkbox.Root className="CheckboxRoot" id="checkbox-root">
-                <Checkbox.Indicator className="CheckboxIndicator">
+              {!organizer ? <Checkbox.Root className="CheckboxRootRegister" id="checkbox-root">
+                <Checkbox.Indicator className="CheckboxIndicatorRegister">
                   <CheckIcon />
                 </Checkbox.Indicator>
-              </Checkbox.Root> : <Checkbox.Root className="CheckboxRoot" defaultChecked>
-                <Checkbox.Indicator className="CheckboxIndicator">
+              </Checkbox.Root> : <Checkbox.Root className="CheckboxRootRegister" defaultChecked>
+                <Checkbox.Indicator className="CheckboxIndicatorRegister">
                   <CheckIcon />
                 </Checkbox.Indicator>
               </Checkbox.Root>}

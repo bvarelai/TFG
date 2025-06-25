@@ -270,7 +270,7 @@
       left: 50%;
       transform: translate(-50%, -50%);
       width: 635px; 
-      height: 620px;
+      height: 645px;
       max-width: 750px;
       padding: 25px;
       animation: contentShow 150ms cubic-bezier(0.16, 1, 0.3, 1);
@@ -351,7 +351,7 @@
       border-radius: 15px; 
       margin-left: 35%;  
       padding: 0 15px;
-      font-size: 23px;
+      font-size: 24px;
       line-height: 1;
       font-weight: 500;
       height: 50px;

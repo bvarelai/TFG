@@ -147,8 +147,7 @@ def test_login_user():
     
     assert response.status_code == 200
     assert response.json() == { 
-        "message" : "Login user", "organizer" : True, "user_id" : 2, "session_id" : response.json()["session_id"]
-    }   
+        "message" : "Login user", "organizer" : True, "user_id" : 2}   
 
 
 def test_login_unauthorized_user():
@@ -167,16 +166,16 @@ def test_login_user_without_credentials():
     
     assert response_login.status_code == 200
 
-    user.post("/user/logout/organizer")
+    user.post("/user/logout")
 
-    response_protected = user.get("/protected/1")
+    response_protected = user.get("/protected")
     assert response_protected.status_code == 401
     assert response_protected.json() == {
         "detail": "No authorized"
     }
 
 def test_logout_user():
-    response_logout = user.post("/user/logout/organizer")
+    response_logout = user.post("/user/logout", cookies={"access_cookie": "test_token"})
     assert response_logout.status_code == 200
     assert response_logout.json() == {
         "message" : "Logout successful"
@@ -187,14 +186,14 @@ def test_protected_route():
                                data={"username": "organizer", "password": "org_passwd"},
                                headers={"content-type": "application/x-www-form-urlencoded"})
     
-    response_protected = user.get(f"/protected/{response_login.json()['session_id']}", cookies={"access_cookie": "test_token"})
+    response_protected = user.get(f"/protected")
     assert response_protected.status_code == 200
     assert response_protected.json() == {
         "message" : "Accessible protected route", "token" : response_protected.json()['token']}
 
 def test_protected_route_fail():
-    user.post("/user/logout/usuario")
-    response_protected = user.get("/protected/2")
+    user.post("/user/logout")
+    response_protected = user.get("/protected")
     assert response_protected.status_code == 401
     assert response_protected.json() == {
         "detail" : "No authorized"
